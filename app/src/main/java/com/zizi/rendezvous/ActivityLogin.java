@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
 
-    Button btn_signin; // кнопка для входа
+    Button btn_signin; // кнопка для входа...
     Button btn_reg; // кнопка для регистрации
     String currentUserID; // ID текущего пользователя
     FirebaseFirestore fbStore; // база данных
