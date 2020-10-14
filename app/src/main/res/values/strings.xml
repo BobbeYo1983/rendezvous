@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">Рандеву</string>
+    <string name="til_contact">Напишите как можно с Вами связаться? Например:\n- писать на страницу в соц. сети...;\n- звонить по номеру +7905XXXXXXX.</string>
+    <string name="til_comment">Если желаете, то напишите здесь дополниельную информацию, например, пожелание к формату встречи...</string>
+    <string name="til_password">Не менее 8-ми символов без пробелов, обязательны: буква, цифра, заглавная буква.</string>
+    <string name="page_title">Встречи</string>
+    <string name="favorite">Избранное</string>
+    <string name="request">Запрос</string>
+
+    <string name="content_description_favorite">Избранное</string>
+    <string name="content_description_request">Запрос</string>
+    <string name="search">Поиск</string>
+    <string name="content_description_search">Поиск</string>
+    <string name="more">Еще</string>
+    <string name="content_description_more">Еще</string>
+
+
+    <string-array name="gender">
+        <item>Девушка</item>
+        <item>Мужчина</item>
+    </string-array>
+    <string-array name="city">
+        <item>Саров</item>
+        <item>Арзамас</item>
+        <item>Дивеево</item>
+    </string-array>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+</resources>

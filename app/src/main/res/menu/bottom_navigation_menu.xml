@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/meetings"
+        android:enabled="true"
+        android:icon="@drawable/ic_outline_how_to_vote_24"
+        android:title="Встречи"/>
+    <item
+        android:id="@+id/chats"
+        android:enabled="true"
+        android:icon="@drawable/ic_outline_message_24"
+        android:title="Чаты"/>
+</menu>

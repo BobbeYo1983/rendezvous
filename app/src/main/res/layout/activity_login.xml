@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/image_background"
+    android:scaleType="centerCrop"
+    tools:context=".ActivityLogin">
+
+    <!--android:visibility="invisible"-->
+    <!--    android:indeterminateTintMode="src_in"-->
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_email"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:hint="email:"
+        app:startIconDrawable="@drawable/ic_outline_email_24"
+        app:helperTextEnabled="true"
+        app:helperText="Например: putin@mail.ru"
+        app:errorEnabled="true"
+        app:counterEnabled="true"
+        app:counterMaxLength="50"
+        app:layout_constraintBottom_toTopOf="@+id/til_password"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/til_email_et"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:inputType="textEmailAddress"
+            android:maxLength="50"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/til_password"
+        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:hint="Пароль:"
+        app:startIconDrawable="@drawable/ic_outline_keyboard_24"
+        app:helperTextEnabled="true"
+        app:helperText="@string/til_password"
+        app:errorEnabled="true"
+        app:endIconMode="password_toggle"
+        app:counterEnabled="true"
+        app:counterMaxLength="20"
+        app:layout_constraintBottom_toTopOf="@+id/btn_signin"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:id="@+id/til_password_et"
+            android:layout_width="270dp"
+            android:layout_height="wrap_content"
+            android:inputType="textPassword"
+            android:maxLength="20"/>
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/btn_signin"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:text="Войти"
+        app:icon="@drawable/ic_outline_exit_to_app_24"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toTopOf="@+id/btn_reg"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"/>
+
+    <Button
+        android:id="@+id/btn_reg"
+        android:layout_width="270dp"
+        android:layout_height="wrap_content"
+        android:text="Зарегистрироваться"
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
+        app:icon="@drawable/ic_outline_account_box_24"
+        app:iconGravity="textStart"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginEnd="10dp"
+        android:layout_marginBottom="10dp"/>
+
+<!--    <ProgressBar
+        android:id="@+id/progressBar"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />-->
+
+    <ProgressBar
+        android:id="@+id/progressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:indeterminateTint="?attr/colorPrimary"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

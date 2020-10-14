@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityDetailsMeeting">
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:textSize="18sp"
+                android:text="Подробности встречи"
+                android:layout_marginBottom="10dp"/>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_name"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Имя:"
+                app:startIconDrawable="@drawable/ic_outline_account_box_24"
+                android:enabled="false"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_name_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_age"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Возраст:"
+                app:startIconDrawable="@drawable/ic_baseline_child_friendly_24"
+                android:enabled="false"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_age_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_comment"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Комментарий:"
+                app:startIconDrawable="@drawable/ic_outline_contact_phone_24"
+                android:enabled="false"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_comment_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="200"
+                    android:inputType="textMultiLine"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_contact"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ваши контактные данные:"
+                app:startIconDrawable="@drawable/ic_outline_contact_phone_24"
+                android:enabled="false"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="10dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_contact_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+
+            <!--<TextView
+            android:id="@+id/tv_name_header"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/style_tv"
+            android:gravity="left"
+            android:text="Имя:"
+            android:textColor="@color/gray_text"
+            android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_tv"
+                android:gravity="left"
+                android:text="Имя"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_age_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_tv"
+                android:gravity="left"
+                android:text="Возраст:"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_age"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_tv"
+                android:gravity="left"
+                android:text="Возраст"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_contact_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_tv"
+                android:gravity="left"
+                android:text="Контактные данные:"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_contact"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_tv"
+                android:gravity="left"
+                android:text="Контактные данные"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_comment_header"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_tv"
+                android:gravity="left"
+                android:text="Комментарий:"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />
+
+            <TextView
+                android:id="@+id/tv_comment"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/style_tv"
+                android:gravity="left"
+                android:text="Комментарий"
+                android:textColor="@color/gray_text"
+                android:textSize="20dp" />-->
+
+        </LinearLayout>
+    </ScrollView>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

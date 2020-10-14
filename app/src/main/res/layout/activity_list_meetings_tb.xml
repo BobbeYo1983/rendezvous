@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ActivityListMeetingsTb">
+
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
+
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/topAppBar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:title="@string/page_title"
+            app:menu="@menu/top_app_bar"
+            app:navigationIcon="@drawable/ic_outline_menu_24"
+            style="@style/Widget.MaterialComponents.Toolbar"
+            />
+
+
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <!-- Note: A RecyclerView can also be used -->
+<!--    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        &lt;!&ndash; Scrollable content &ndash;&gt;
+
+    </androidx.core.widget.NestedScrollView>-->
+
+<!--        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">-->
+
+            <fragment
+                android:id="@+id/fragment_place"
+                android:name="com.zizi.rendezvous.FragmentEmpty"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                tools:layout="@layout/fragment_empty"/>
+
+<!--        tools:layout="@layout/fragment_request_meeting"
+            android:name="com.zizi.rendezvous.FragmentListMeetings"
+-->
+
+        <!--        </ScrollView>-->
+
+<!--        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rv_meeting"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+
+/>-->
+
+
+
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>
