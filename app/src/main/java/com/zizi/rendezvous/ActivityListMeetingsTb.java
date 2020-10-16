@@ -139,8 +139,6 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
         if (currentUser == null) { // если пользователь пустой, не авторизирован
             startActivity(new Intent(ActivityListMeetingsTb.this, ActivityLogin.class)); // отправляем к началу на авторизацию
             finish(); // убиваем активити
-        } else {
-            UpdateUI(currentUser); // если пользователь авторизирован, то начинаем работать
         }
     }
 
@@ -148,11 +146,6 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         //adapter.stopListening(); // адаптер прекращает слушать БД
-    }
-
-    private void UpdateUI(FirebaseUser currentUser) {
-        //adapter.startListening(); // адаптер начинает слушать БД
-
     }
 
 /*    // скрываем нужный пункт меню

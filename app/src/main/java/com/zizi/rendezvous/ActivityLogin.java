@@ -27,7 +27,7 @@ import java.util.Map;
 
 public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
 
-    Button btn_signin; // кнопка для входа.....
+    Button btn_signin; // кнопка для входа
     Button btn_reg; // кнопка для регистрации
     String currentUserID; // ID текущего пользователя
     FirebaseFirestore fbStore; // база данных
@@ -278,7 +278,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         currentUser = mAuth.getCurrentUser(); //получаем текущего пользователя
         documentReference = fbStore.collection("users").document(currentUser.getEmail().toString()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
         Map<String, Object> user = new HashMap<>(); // коллекция ключ-значение
-        user.put("email", email);
+        user.put("email", currentUser.getEmail());
+        user.put("userID", currentUser.getUid());
         user.put("token", ServiceFirebaseCloudMessaging.GetToken(this)); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
 
         documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() { //

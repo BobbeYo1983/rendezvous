@@ -23,7 +23,6 @@ import android.widget.TextView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -65,7 +64,6 @@ public class FragmentListChats extends Fragment {
     Bundle bundleToChat; // параметры для передачи в фрагмент чата
     FragmentChat fragmentChat; // фрагмент с одним чатом
     MaterialToolbar topAppBar; // верхняя панелька
-    BadgeDrawable badgeDrawable; // для изменения количества непрочитанных сообщений
     //ArrayList<ModelSingleMeeting> infoAllItems; // информация по всем пользователям
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -160,38 +158,12 @@ public class FragmentListChats extends Fragment {
         recyclerView.setAdapter(adapter); // применяем адаптер
 
         UpdateChats(); // событийный метод по обновлению данных из БД, если будут меняться
-        //UpdateUnreads(); // функция обновления количества непрочитанных чатов
         ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
     }
 
-    /*void UpdateUnreads() { // функция обновления количества непрочитанных чатов
-
-        badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.chats); // значек около вкладки Чаты на нижней панели.
-        badgeDrawable.setVisible(false);
-
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + currentUser.getUid()); // ссылочка на количество непрочитанных сообщений текущего пользователя
-        databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (Integer.parseInt(snapshot.getValue(String.class)) > 0) { // если есть непрочитанные чаты
-                    badgeDrawable.setVisible(true);
-                    badgeDrawable.setNumber(Integer.parseInt(snapshot.getValue(String.class))); // показываем количество непрочитанных чатов
-                } else {
-                    badgeDrawable.setVisible(false);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-
-    }*/
-
-
-    //метод вызывается при изменении данных в БД
+    /**
+     * Метод вызывается при изменении данных в БД в списке чатов пользователя
+     */
     private void UpdateChats(){
         databaseReference = firebaseDatabase.getReference("chats/lists/" + currentUser.getUid() + "/"); //ссылка на данные
 
@@ -234,7 +206,9 @@ public class FragmentListChats extends Fragment {
         });
     }
 
-    //возвращает индекс чата в котором изменились данные
+    /**
+     * Возвращает индекс чата в котором изменились данные
+     */
     private int GetItemIndex (ModelChat modelChat){
 
         int index = -1;

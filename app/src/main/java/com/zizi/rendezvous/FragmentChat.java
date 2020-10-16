@@ -190,14 +190,10 @@ public class FragmentChat extends Fragment {
         topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         topAppBar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации менюшкой в верхней панельке
 
-
-        //topAppBar
-        //getSupportActionBar().setHomeAsUpIndicator(R.drawable.back_button);
-        //getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
-
-
         //добавляем слушателей - НАЧАЛО
+        /**
+         * Отправляем сообщение
+         */
         floatingActionButton.setOnClickListener(new View.OnClickListener() { // при нажатии на кнопку отправить сообщение в чате
             @Override
             public void onClick(View v) {
@@ -220,8 +216,9 @@ public class FragmentChat extends Fragment {
                     databaseReference = firebaseDatabase.getReference("chats/lists/" + partnerInfo.getUserID() + "/" + currentUser.getUid()  + "/"); // путь к листу чатов партнера
                     currentUserInfo.setUnReadMsg("1"); // записываем отметку, что есть непрочитанные сообщения
                     databaseReference.setValue(currentUserInfo); // записываем модель данных в БД
-
-
+                    // Так же надо партнеру подсветить, что у него есть непрочитанный чат
+                    databaseReference = firebaseDatabase.getReference("chats/lists/" + partnerInfo.getUserID() + "/unreads/"); // путь к непрочитанным чатам партнера
+                    databaseReference.child(currentUser.getUid()).setValue("unreadChat"); // записываем, что от меня у партнера есть непрочитанный чат
 
                     til_message_et.setText("");
 
@@ -256,7 +253,6 @@ public class FragmentChat extends Fragment {
         //////////////////////////
 
         UpdateMessages(); // событийный метод по обновлению данных из БД, если будут меняться
-        //UpdateUnreads(); // нужно мониторить, сколько у партнера непрочитанных чатов
 
         //ссылка на данные, формируем информацию о чатах пользователя
         databaseReference = firebaseDatabase.getReference("chats/lists/" + currentUser.getUid() + "/" + partnerInfo.getUserID() + "/");
@@ -309,31 +305,6 @@ public class FragmentChat extends Fragment {
             }
         });
     }
-
-/*    void UpdateUnreads() { // функция обновления количества непрочитанных чатов
-
-        badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.chats); // значек около вкладки Чаты на нижней панели.
-        badgeDrawable.setVisible(false);
-
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + currentUser.getUid()); // ссылочка на количество непрочитанных сообщений текущего пользователя
-        databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                if (Integer.parseInt(snapshot.getValue(String.class)) > 0) { // если есть непрочитанные чаты
-                    badgeDrawable.setVisible(true);
-                    badgeDrawable.setNumber(Integer.parseInt(snapshot.getValue(String.class))); // показываем количество непрочитанных чатов
-                } else {
-                    badgeDrawable.setVisible(false);
-                }
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });
-    }*/
 
     // класс адаптера для получения данных
     class Adapter extends RecyclerView.Adapter<Adapter.MessageViewHolder> {
