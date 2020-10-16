@@ -158,7 +158,9 @@ public class FragmentListChats extends Fragment {
         recyclerView.setAdapter(adapter); // применяем адаптер
 
         UpdateChats(); // событийный метод по обновлению данных из БД, если будут меняться
+
         ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
+
     }
 
     /**

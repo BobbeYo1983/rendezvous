@@ -217,8 +217,10 @@ public class FragmentChat extends Fragment {
                     currentUserInfo.setUnReadMsg("1"); // записываем отметку, что есть непрочитанные сообщения
                     databaseReference.setValue(currentUserInfo); // записываем модель данных в БД
                     // Так же надо партнеру подсветить, что у него есть непрочитанный чат
-                    databaseReference = firebaseDatabase.getReference("chats/lists/" + partnerInfo.getUserID() + "/unreads/"); // путь к непрочитанным чатам партнера
+                    databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID() + "/"); // путь к непрочитанным чатам партнера
                     databaseReference.child(currentUser.getUid()).setValue("unreadChat"); // записываем, что от меня у партнера есть непрочитанный чат
+                    //databaseReference = firebaseDatabase.getReference("chats/lists/" + partnerInfo.getUserID() + "/unreads/"); // путь к непрочитанным чатам партнера
+                    //databaseReference.child(currentUser.getUid()).setValue("unreadChat"); // записываем, что от меня у партнера есть непрочитанный чат
 
                     til_message_et.setText("");
 
@@ -256,8 +258,12 @@ public class FragmentChat extends Fragment {
 
         //ссылка на данные, формируем информацию о чатах пользователя
         databaseReference = firebaseDatabase.getReference("chats/lists/" + currentUser.getUid() + "/" + partnerInfo.getUserID() + "/");
+        partnerInfo.setUnReadMsg("0"); // делаем ноль непрочитанных сообщений
         databaseReference.setValue(partnerInfo); // записываем модель данных в БД, чтобы убрать отметку о непрочитанном чате, чтобы видел партнер, что прочитано.
 
+        //делаем, что настоящий чат прочитан
+        databaseReference = firebaseDatabase.getReference("chats/unreads/" + currentUser.getUid() + "/"); // путь к непрочитанным чатам партнера
+        databaseReference.child(partnerInfo.getUserID()).removeValue(); // удаляем веточку партнера, тем самым отмечаем, что чат прочитан
 
     }
 
