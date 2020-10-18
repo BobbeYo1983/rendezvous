@@ -13,8 +13,9 @@
         android:id="@+id/recyclerView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_above="@+id/til_message"
+        android:layout_above="@+id/tv_unread"
         />
+
 
 
     <com.google.android.material.textfield.TextInputLayout
@@ -52,6 +53,14 @@
         android:layout_alignParentRight="true"
         android:layout_alignParentBottom="true"
         />
+
+    <TextView
+        android:id="@+id/tv_unread"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_above="@+id/til_message"
+        android:layout_marginStart="10dp"
+        android:text="Не прочитано..." />
 
 </RelativeLayout>
 

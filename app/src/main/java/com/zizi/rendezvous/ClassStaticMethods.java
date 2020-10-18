@@ -31,24 +31,18 @@ public class ClassStaticMethods {
         firebaseDatabase = FirebaseDatabase.getInstance(); // инициализируем БД
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         currentUser = mAuth.getCurrentUser(); // получаем инфу о текущем пользователе
-        //bottomNavigationView.removeBadge(R.id.chats);
-        badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.chats); // создаем значек около вкладки Чаты на нижней панели, пока без номера
-        badgeDrawable.setVisible(false); // сразу делаем невидимым навсякий
-        countUnreads = 0; //количество непрочитанных чатов делаем ноль навсякий
-
         databaseReference = firebaseDatabase.getReference("chats/unreads/" + currentUser.getUid() + "/"); // ссылочка на количество непрочитанных сообщений текущего пользователя
-        //databaseReference = firebaseDatabase.getReference("chats/lists/" + currentUser.getUid() + "/unreads/"); // ссылочка на количество непрочитанных сообщений текущего пользователя
         databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 countUnreads = (int) snapshot.getChildrenCount(); // получаем количество непрочитанных чатов
                 if (countUnreads > 0) { // если есть непрочитанные чаты
-                    badgeDrawable.setVisible(true); // показываем значек
+                    //badgeDrawable.setVisible(true); // показываем значек
+                    badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.chats); // создаем значек около вкладки Чаты на нижней панели, пока без номера
                     badgeDrawable.setNumber(countUnreads); // показываем количество непрочитанных чатов
                 } else {
                     bottomNavigationView.removeBadge(R.id.chats); // удаляем значек с панели
                 }
-
             }
 
             @Override

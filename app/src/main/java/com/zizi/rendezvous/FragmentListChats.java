@@ -75,28 +75,6 @@ public class FragmentListChats extends Fragment {
         return inflater.inflate(R.layout.fragment_list_chats, container, false);
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) { // если пользователь пустой, не авторизирован
-            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
-            getActivity().finish(); // убиваем активити
-        }
-
-        //adapter.startListening(); // адаптер начинает слушать БД
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-        //adapter.stopListening(); // адаптер прекращает слушать БД
-    }
-
-
     @Override //Вызывается, когда отработает метод активности onCreate(), а значит фрагмент может обратиться к компонентам активности
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
@@ -158,10 +136,43 @@ public class FragmentListChats extends Fragment {
         recyclerView.setAdapter(adapter); // применяем адаптер
 
         UpdateChats(); // событийный метод по обновлению данных из БД, если будут меняться
-
         ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
 
     }
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        currentUser = mAuth.getCurrentUser();
+
+        if (currentUser == null) { // если пользователь пустой, не авторизирован
+            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
+            getActivity().finish(); // убиваем активити
+        }
+
+        //adapter.startListening(); // адаптер начинает слушать БД
+
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        //adapter.stopListening(); // адаптер прекращает слушать БД
+    }
+
+
+
 
     /**
      * Метод вызывается при изменении данных в БД в списке чатов пользователя
