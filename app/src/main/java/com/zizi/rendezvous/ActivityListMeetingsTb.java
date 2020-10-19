@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentTransaction;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -27,6 +28,7 @@ import com.google.firebase.iid.InstanceIdResult;
 
 public class ActivityListMeetingsTb extends AppCompatActivity {
 
+    //ИНИЦИАЛИЗАЦИЯ
     FirebaseAuth mAuth; // для работы с авторизацией FireBase
     MaterialToolbar topAppBar; // верхняя панелька
     FragmentManager fragmentManager; // для управления показом компонентов
@@ -36,6 +38,7 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
     Fragment currentFragment; // текущий фрагмент
     DatabaseReference databaseReference; //ссылка на данные
     FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
+    //SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,10 +91,7 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
         //}
         //intent.getEx
 
-        ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
-
-
-
+        ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем встречи
     }
 
 /*    @Override //метод когда принимается новое намерение
@@ -112,9 +112,15 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
 
     }*/
 
+    /**
+     * Меняет фрагмент на экране (в активити)
+     * @param FragmentNameNew - новый фрагмент, который надо показать
+     * @param Tag -
+     * @param toStack - добавлять его в стек или нет, чтобы можно было переходить по кнопке назад
+     */
     void ChangeFragment (Fragment FragmentNameNew, String Tag, boolean toStack){ // меняет отображение фрагмента
 
-        currentFragment = getSupportFragmentManager().findFragmentByTag(Tag);
+        currentFragment = getSupportFragmentManager().findFragmentByTag(Tag); //ищем фрагмент по тегу, тег мы ниже в функции добавляем при смене
 
         if ( !(currentFragment != null && currentFragment.isVisible()) ) { //если фрагмент этот уже открыт, то не выполнять операцию https://www.youtube.com/watch?v=2VLXdjpDD2g
 

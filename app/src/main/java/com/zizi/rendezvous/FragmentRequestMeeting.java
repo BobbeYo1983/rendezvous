@@ -1,5 +1,6 @@
 package com.zizi.rendezvous;
 
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -19,6 +20,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +48,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
     TextInputLayout til_name;
     TextInputEditText til_name_et; // имя пользователя
+    TextInputLayout til_gender; // пол пользователя
     AutoCompleteTextView til_gender_act; // пол пользователя
     TextInputLayout til_age;
     TextInputEditText til_age_et; // возраст пользователя
@@ -74,8 +77,6 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //Toast.makeText(getActivity().getApplicationContext(), "123", Toast.LENGTH_LONG).show();
-
         //инициализация - НАЧАЛО
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         fbStore = FirebaseFirestore.getInstance(); //инициализация БД
@@ -88,6 +89,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         // находим все вьюхи на активити
         til_name = getActivity().findViewById(R.id.til_name);
         til_name_et = getActivity().findViewById(R.id.til_name_et);
+        til_gender = getActivity().findViewById(R.id.til_gender);
         til_gender_act = getActivity().findViewById(R.id.til_gender_act);
         til_age = getActivity().findViewById(R.id.til_age);
         til_age_et = getActivity().findViewById(R.id.til_age_et);
@@ -105,8 +107,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
 
         //добавляем слушателей
-        //findViewById(R.id.btn_apply_request).setOnClickListener(this); //добавляем на кнопку слушателя
-        getActivity().findViewById(R.id.btn_apply_request).setOnClickListener((View.OnClickListener) this);
+        getActivity().findViewById(R.id.btn_apply_request).setOnClickListener((View.OnClickListener) this); // добавляем слушателя на кнопку
 
         // подгружаем сохраненные в памяти телефона данные
         saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
@@ -176,12 +177,35 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         //инициализация - КОНЕЦ
 
         //наполняем низпадающий список выбора пола для выбора пола
-        String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
-        ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_gender, gender);
-        til_gender_act.setAdapter(adapter_gender);
+        //String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
+        //ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_gender, gender);
+        //til_gender_act.setAdapter(adapter_gender);
 
-        AutoCompleteTextView til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act);
-        til_gender_you_act.setAdapter(adapter_gender);
+
+
+        til_gender_act.setOnClickListener(new View.OnClickListener() { // слушатель при нажатии
+            @Override
+            public void onClick(View v) {
+                //Toast.makeText(getContext(), "Пора покормить кота!", Toast.LENGTH_SHORT).show();
+                //til_gender_act.setText("Новый текст");
+
+                String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
+                new MaterialAlertDialogBuilder(getContext())
+                        .setTitle("Ваш пол:")
+                        .setItems(gender, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                //which - номер выбранного
+                            }
+                        })
+                        .show();
+
+            }
+        });
+
+        //til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act); // низпадающий список выбора пола партнера
+        //til_gender_you_act.setAdapter(adapter_gender);
+
 
         // заполняем низпадающий список с регионами
         ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Cities.regions);

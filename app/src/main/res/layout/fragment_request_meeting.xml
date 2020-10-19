@@ -43,7 +43,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
-                    android:maxLength="25"/>
+                    android:maxLength="25"
+                    android:digits="абвАБВ"
+                    />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -71,7 +73,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ваше возраст:"
+                android:hint="Ваш возраст:"
                 app:startIconDrawable="@drawable/ic_baseline_child_friendly_24"
                 app:counterEnabled="true"
                 app:counterMaxLength="2"
