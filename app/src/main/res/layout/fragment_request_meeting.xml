@@ -44,7 +44,7 @@
                     android:layout_height="wrap_content"
                     android:inputType="textPersonName"
                     android:maxLength="25"
-                    android:digits="абвАБВ"
+                    android:digits="абвгдеёжзийклмнопрстуфхцчшщъыьэюяАБВГДЕЁЖЗИЙКЛМНОПРСТУФХЦЧШЩЪЫЬЭЮЯ"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -58,7 +58,8 @@
                 app:startIconDrawable="@drawable/ic_outline_wc_24"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
-                android:layout_marginBottom="18dp">
+                android:layout_marginBottom="18dp"
+                >
 
                 <AutoCompleteTextView
                     android:id="@+id/til_gender_act"
@@ -75,17 +76,22 @@
                 android:layout_height="wrap_content"
                 android:hint="Ваш возраст:"
                 app:startIconDrawable="@drawable/ic_baseline_child_friendly_24"
-                app:counterEnabled="true"
-                app:counterMaxLength="2"
                 android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp">
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp"
+                >
 
-                <com.google.android.material.textfield.TextInputEditText
+                <AutoCompleteTextView
+                    android:id="@+id/til_age_act"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    />
+<!--                <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/til_age_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:maxLength="2"/>
+                />-->
 
             </com.google.android.material.textfield.TextInputLayout>
 

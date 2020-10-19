@@ -51,7 +51,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     TextInputLayout til_gender; // пол пользователя
     AutoCompleteTextView til_gender_act; // пол пользователя
     TextInputLayout til_age;
-    TextInputEditText til_age_et; // возраст пользователя
+    AutoCompleteTextView til_age_act; // возраст пользователя
     TextInputLayout til_contact;
     TextInputEditText til_contact_et;
     AutoCompleteTextView til_gender_you_act; // пол партнера
@@ -92,7 +92,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_gender = getActivity().findViewById(R.id.til_gender);
         til_gender_act = getActivity().findViewById(R.id.til_gender_act);
         til_age = getActivity().findViewById(R.id.til_age);
-        til_age_et = getActivity().findViewById(R.id.til_age_et);
+        til_age_act = getActivity().findViewById(R.id.til_age_act);
         til_contact = getActivity().findViewById(R.id.til_contact);
         til_contact_et = getActivity().findViewById(R.id.til_contact_et);
         til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act);
@@ -113,7 +113,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
         til_name_et.setText(saveParams.getString("name", ""));
         til_gender_act.setText(saveParams.getString("gender", ""));
-        til_age_et.setText(saveParams.getString("age", ""));
+        til_age_act.setText(saveParams.getString("age", ""));
         til_contact_et.setText(saveParams.getString("contact", ""));
         til_gender_you_act.setText(saveParams.getString("gender_you", ""));
         til_age_min_et.setText(saveParams.getString("age_min", ""));
@@ -177,38 +177,37 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         //инициализация - КОНЕЦ
 
         //наполняем низпадающий список выбора пола для выбора пола
-        //String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
-        //ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_gender, gender);
-        //til_gender_act.setAdapter(adapter_gender);
+        String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
+        ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_gender, gender);
+        til_gender_act.setAdapter(adapter_gender);
 
 
-
-        til_gender_act.setOnClickListener(new View.OnClickListener() { // слушатель при нажатии
+/*        til_age_act.setOnClickListener(new View.OnClickListener() { // слушатель при нажатии yf
             @Override
             public void onClick(View v) {
                 //Toast.makeText(getContext(), "Пора покормить кота!", Toast.LENGTH_SHORT).show();
                 //til_gender_act.setText("Новый текст");
 
-                String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
+                //String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
                 new MaterialAlertDialogBuilder(getContext())
-                        .setTitle("Ваш пол:")
-                        .setItems(gender, new DialogInterface.OnClickListener() {
+                        .setTitle("Ваш возраст:")
+                        .setItems(Data.ages, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                //which - номер выбранного
+                                til_age_act.setText(Data.ages[which]);
                             }
                         })
                         .show();
 
             }
-        });
+        });*/
 
-        //til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act); // низпадающий список выбора пола партнера
-        //til_gender_you_act.setAdapter(adapter_gender);
+        til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act); // низпадающий список выбора пола партнера
+        til_gender_you_act.setAdapter(adapter_gender);
 
 
         // заполняем низпадающий список с регионами
-        ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Cities.regions);
+        ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Data.regions);
         //final AutoCompleteTextView til_region_act = getActivity().findViewById(R.id.til_region_act);
         //til_region_act.setThreshold(1); подсказывать при вводе первого символа
         til_region_act.setAdapter(adapter_regions);
@@ -221,7 +220,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
                 switch(parent.getItemAtPosition(position).toString()) {
                     case "Республика Мордовия":
-                        ArrayAdapter<String> adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_town, Cities.TheRepublicOfMordovia);
+                        ArrayAdapter<String> adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_town, Data.theRepublicOfMordovia);
                         til_town_act.setAdapter(adapter_towns);
                         break;
                     default:
@@ -256,7 +255,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
             // Если поля все введены корректно
             if (!til_name_et.getText().toString().isEmpty() &
                 !til_gender_act.getText().toString().isEmpty() &
-                !til_age_et.getText().toString().isEmpty() &
+                !til_age_act.getText().toString().isEmpty() &
                 !til_contact_et.getText().toString().isEmpty() &
                 !til_gender_you_act.getText().toString().isEmpty() &
                 !til_age_min_et.getText().toString().isEmpty() &
@@ -271,7 +270,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
                     meeting.put("name", til_name_et.getText().toString());
                     meeting.put("gender", til_gender_act.getEditableText().toString());
-                    meeting.put("age", til_age_et.getText().toString());
+                    meeting.put("age", til_age_act.getText().toString());
                     meeting.put("contact", til_contact_et.getText().toString());
                     meeting.put("gender_you", til_gender_you_act.getEditableText().toString());
                     meeting.put("age_min", til_age_min_et.getText().toString());
@@ -294,7 +293,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                             editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память для входа
                             editorSaveParams.putString("name", til_name_et.getText().toString());
                             editorSaveParams.putString("gender", til_gender_act.getEditableText().toString());
-                            editorSaveParams.putString("age", til_age_et.getText().toString());
+                            editorSaveParams.putString("age", til_age_act.getText().toString());
                             editorSaveParams.putString("contact", til_contact_et.getText().toString());
                             editorSaveParams.putString("gender_you", til_gender_you_act.getEditableText().toString());
                             editorSaveParams.putString("age_min", til_age_min_et.getText().toString());
