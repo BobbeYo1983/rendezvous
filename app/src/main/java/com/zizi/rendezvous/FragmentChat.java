@@ -165,6 +165,7 @@ public class FragmentChat extends Fragment {
         topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         topAppBar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации менюшкой в верхней панельке
 
+
         //добавляем слушателей - НАЧАЛО
         /**
          * Отправляем сообщение

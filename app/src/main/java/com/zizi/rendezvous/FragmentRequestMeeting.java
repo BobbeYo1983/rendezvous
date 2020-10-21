@@ -1,13 +1,11 @@
 package com.zizi.rendezvous;
 
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -20,7 +18,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
@@ -46,6 +44,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     ActivityListMeetingsTb listMeetingsTbActivity; // настоящая активити
     FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
 
+    MaterialToolbar topAppBar; // верхняя панелька
+
     TextInputLayout til_name;
     TextInputEditText til_name_et; // имя пользователя
     TextInputLayout til_gender; // пол пользователя
@@ -56,9 +56,9 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     TextInputEditText til_contact_et;
     AutoCompleteTextView til_gender_you_act; // пол партнера
     TextInputLayout til_age_min;
-    TextInputEditText til_age_min_et; // возраст партнера минимальный
+    AutoCompleteTextView til_age_min_act; // возраст партнера минимальный
     TextInputLayout til_age_max;
-    TextInputEditText til_age_max_et; // возраст партнера максимальный
+    AutoCompleteTextView til_age_max_act; // возраст партнера максимальный
     AutoCompleteTextView til_region_act; // регион
     AutoCompleteTextView til_town_act; // город
     TextInputLayout til_comment;
@@ -97,14 +97,16 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_contact_et = getActivity().findViewById(R.id.til_contact_et);
         til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act);
         til_age_min = getActivity().findViewById(R.id.til_age_min);
-        til_age_min_et = getActivity().findViewById(R.id.til_age_min_et);
+        til_age_min_act = getActivity().findViewById(R.id.til_age_min_act);
         til_age_max = getActivity().findViewById(R.id.til_age_max);
-        til_age_max_et = getActivity().findViewById(R.id.til_age_max_et);
+        til_age_max_act = getActivity().findViewById(R.id.til_age_max_act);
         til_region_act = getActivity().findViewById(R.id.til_region_act);
         til_town_act = getActivity().findViewById(R.id.til_town_act);
         til_comment = getActivity().findViewById(R.id.til_comment);
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
+        topAppBar = getActivity().findViewById(R.id.topAppBar);
 
+        topAppBar.setTitle("Заявка"); // заголовок в панельке верхней
 
         //добавляем слушателей
         getActivity().findViewById(R.id.btn_apply_request).setOnClickListener((View.OnClickListener) this); // добавляем слушателя на кнопку
@@ -116,8 +118,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_age_act.setText(saveParams.getString("age", ""));
         til_contact_et.setText(saveParams.getString("contact", ""));
         til_gender_you_act.setText(saveParams.getString("gender_you", ""));
-        til_age_min_et.setText(saveParams.getString("age_min", ""));
-        til_age_max_et.setText(saveParams.getString("age_max", ""));
+        til_age_min_act.setText(saveParams.getString("age_min", ""));
+        til_age_max_act.setText(saveParams.getString("age_max", ""));
         til_region_act.setText(saveParams.getString("region", ""));
         til_town_act.setText(saveParams.getString("town", ""));
         til_comment_et.setText(saveParams.getString("comment", ""));
@@ -178,9 +180,11 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
         //наполняем низпадающий список выбора пола для выбора пола
         String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
-        ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_gender, gender);
+        ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, gender); // связываем с адаптером
         til_gender_act.setAdapter(adapter_gender);
 
+        ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.ages); //  связываем адаптер с данными
+        til_age_act.setAdapter(arrayAdapterAge);
 
 /*        til_age_act.setOnClickListener(new View.OnClickListener() { // слушатель при нажатии yf
             @Override
@@ -258,8 +262,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                 !til_age_act.getText().toString().isEmpty() &
                 !til_contact_et.getText().toString().isEmpty() &
                 !til_gender_you_act.getText().toString().isEmpty() &
-                !til_age_min_et.getText().toString().isEmpty() &
-                !til_age_max_et.getText().toString().isEmpty() &
+                !til_age_min_act.getText().toString().isEmpty() &
+                !til_age_max_act.getText().toString().isEmpty() &
                 !til_region_act.getText().toString().isEmpty() &
                 !til_town_act.getText().toString().isEmpty() &
                 !til_comment_et.getText().toString().isEmpty()
@@ -273,8 +277,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                     meeting.put("age", til_age_act.getText().toString());
                     meeting.put("contact", til_contact_et.getText().toString());
                     meeting.put("gender_you", til_gender_you_act.getEditableText().toString());
-                    meeting.put("age_min", til_age_min_et.getText().toString());
-                    meeting.put("age_max", til_age_max_et.getText().toString());
+                    meeting.put("age_min", til_age_min_act.getText().toString());
+                    meeting.put("age_max", til_age_max_act.getText().toString());
                     meeting.put("region", til_region_act.getEditableText().toString());
                     meeting.put("town", til_town_act.getEditableText().toString());
                     meeting.put("comment", til_comment_et.getText().toString());
@@ -296,8 +300,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                             editorSaveParams.putString("age", til_age_act.getText().toString());
                             editorSaveParams.putString("contact", til_contact_et.getText().toString());
                             editorSaveParams.putString("gender_you", til_gender_you_act.getEditableText().toString());
-                            editorSaveParams.putString("age_min", til_age_min_et.getText().toString());
-                            editorSaveParams.putString("age_max", til_age_max_et.getText().toString());
+                            editorSaveParams.putString("age_min", til_age_min_act.getText().toString());
+                            editorSaveParams.putString("age_max", til_age_max_act.getText().toString());
                             editorSaveParams.putString("region", til_region_act.getEditableText().toString());
                             editorSaveParams.putString("town", til_town_act.getEditableText().toString());
                             editorSaveParams.putString("comment", til_comment_et.getText().toString());

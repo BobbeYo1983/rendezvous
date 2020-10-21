@@ -69,9 +69,11 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_age"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Ваш возраст:"
@@ -87,20 +89,80 @@
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     />
-<!--                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/til_age_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                />-->
 
             </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_phone"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ваш номер телефона:"
+                app:startIconDrawable="@drawable/ic_outline_phone_android_24"
+                app:counterEnabled="true"
+                app:counterMaxLength="20"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_phone_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="phone"
+                    android:maxLength="20"
+                    android:digits="+1234567890"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <CheckBox
+                android:id="@+id/cb_only_write"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checked="false"
+                android:text="Не звонить, только писать, а то заблокирую!"
+                android:textSize="16sp"
+                android:buttonTint="?attr/colorPrimary"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                />
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_soc_net"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Ваша страница в соц. сети:"
+                app:startIconDrawable="@drawable/ic_outline_insert_link_24"
+                app:counterEnabled="true"
+                app:counterMaxLength="300"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                >
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_soc_net_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textUri"
+                    android:maxLength="300"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_contact"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ваши контактные данные:"
+                android:hint="Ваши прочие контактные данные:"
                 app:startIconDrawable="@drawable/ic_outline_contact_phone_24"
                 app:counterEnabled="true"
                 app:counterMaxLength="200"
@@ -146,7 +208,55 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
+
             <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_age_min"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Возраст с:"
+                app:startIconDrawable="@drawable/ic_baseline_child_friendly_24"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp"
+                >
+
+                <AutoCompleteTextView
+                    android:id="@+id/til_age_min_act"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_age_max"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Возраст по:"
+                app:startIconDrawable="@drawable/ic_baseline_child_friendly_24"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp"
+                >
+
+                <AutoCompleteTextView
+                    android:id="@+id/til_age_max_act"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+<!--            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_age_min"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -165,9 +275,9 @@
                     android:inputType="number"
                     android:maxLength="2"/>
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>-->
 
-            <com.google.android.material.textfield.TextInputLayout
+<!--            <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_age_max"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
@@ -186,7 +296,7 @@
                     android:inputType="number"
                     android:maxLength="2"/>
 
-            </com.google.android.material.textfield.TextInputLayout>
+            </com.google.android.material.textfield.TextInputLayout>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_region"

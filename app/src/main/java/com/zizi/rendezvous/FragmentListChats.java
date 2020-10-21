@@ -105,7 +105,7 @@ public class FragmentListChats extends Fragment {
 
 
         topAppBar.setTitle("Чаты"); // заголовок в панельке верхней
-        topAppBar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
+        topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
 
         //добавляем слушателей - НАЧАЛО
