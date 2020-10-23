@@ -26,6 +26,7 @@ import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -43,6 +44,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
     ActivityListMeetingsTb listMeetingsTbActivity; // настоящая активити
     FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
+    ArrayAdapter<String> adapter_towns; //адаптер для списка городов
 
     MaterialToolbar topAppBar; // верхняя панелька
 
@@ -83,6 +85,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
+        //arrayListAges = new ArrayList();
 
 
 
@@ -107,6 +110,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         topAppBar = getActivity().findViewById(R.id.topAppBar);
 
         topAppBar.setTitle("Заявка"); // заголовок в панельке верхней
+        topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
 
         //добавляем слушателей
         getActivity().findViewById(R.id.btn_apply_request).setOnClickListener((View.OnClickListener) this); // добавляем слушателя на кнопку
@@ -124,13 +128,26 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_town_act.setText(saveParams.getString("town", ""));
         til_comment_et.setText(saveParams.getString("comment", ""));
 
+        //инициализация - КОНЕЦ
 
+        //наполняем низпадающий список выбора пола для выбора пола
+        String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
+        ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, gender); // связываем с адаптером
+        til_gender_act.setAdapter(adapter_gender);
 
+        ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
+        til_age_act.setAdapter(arrayAdapterAge);
 
+        // til_contact ////////////////////////////////////////////////////////////////////////////
+        if (til_contact_et.getText().toString().isEmpty()) {
+            til_contact.setHelperText(getString(R.string.til_contact));
+        } else {
+            til_contact.setHelperText(" ");
+        }
         til_contact_et.addTextChangedListener(new TextWatcher() { // при изменении текста в контактных данных
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //til_contact.setHelperText("");
+
 
             }
 
@@ -141,16 +158,60 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
             @Override
             public void afterTextChanged(Editable s) {
-                //String str  =  til_contact_et.getText().toString();
                 if (til_contact_et.getText().toString().isEmpty()) {
                     til_contact.setHelperText(getString(R.string.til_contact));
-                    //til_contact.setHelperText("Напишите как можно с Вами связаться? Например:\n- писать на страницу в соц. сети...;\n- звонить по номеру +7905XXXXXXX.");
                 } else {
                     til_contact.setHelperText(" ");
                 }
             }
         });
+        //////////////////////////////////////////////////////////////////////////////////////////////
 
+        til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act); // низпадающий список выбора пола партнера
+        til_gender_you_act.setAdapter(adapter_gender);
+
+        ArrayAdapter<String> arrayAdapterMinAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
+        til_age_min_act.setAdapter(arrayAdapterMinAge);
+
+        ArrayAdapter<String> arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()),70)); //  связываем адаптер с данными
+        til_age_max_act.setAdapter(arrayAdapterMaxAge);
+
+        // заполняем низпадающий список с регионами
+        ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Data.regionsTmp);
+        til_region_act.setAdapter(adapter_regions);
+
+        //заполняем список с городами
+
+        til_region_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
+
+/*                if (!parent.getItemAtPosition(position).toString().equals(til_region_act.getText().toString())) {// если выбрана другая область, то очистить поле с городом
+                    til_town_act.setText("");
+                }*/
+
+                switch(parent.getItemAtPosition(position).toString()) {
+                    case "Республика Мордовия":
+                        adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_town, Data.theRepublicOfMordovia);
+                        break;
+                    case "Нижегородская область":
+                        adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_town, Data.nizhnyNovgorodRegion);
+                        break;
+                    default:
+                        //оператор;
+                        break;
+                }
+                til_town_act.setAdapter(adapter_towns);
+                //String text = parent.getItemAtPosition(position).toString();
+                //Toast.makeText(Request.this, text, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        // til_comment ///////////////////////////////////////////////////////////////////////////////
+        if (til_comment_et.getText().toString().isEmpty()) {
+            til_comment.setHelperText(getString(R.string.til_comment));
+        } else {
+            til_comment.setHelperText(" ");
+        }
         til_comment_et.addTextChangedListener(new TextWatcher() { // при изменении текста в комментарии к встрече
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -165,77 +226,14 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
             @Override
             public void afterTextChanged(Editable s) {
-                //String str  =  til_contact_et.getText().toString();
                 if (til_comment_et.getText().toString().isEmpty()) {
-                    //til_comment.setHelperText("Если желаете, то напишите здесь дополниельную информацию, например, пожелание к формату встречи...");
                     til_comment.setHelperText(getString(R.string.til_comment));
                 } else {
                     til_comment.setHelperText(" ");
                 }
             }
         });
-
-
-        //инициализация - КОНЕЦ
-
-        //наполняем низпадающий список выбора пола для выбора пола
-        String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
-        ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, gender); // связываем с адаптером
-        til_gender_act.setAdapter(adapter_gender);
-
-        ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.ages); //  связываем адаптер с данными
-        til_age_act.setAdapter(arrayAdapterAge);
-
-/*        til_age_act.setOnClickListener(new View.OnClickListener() { // слушатель при нажатии yf
-            @Override
-            public void onClick(View v) {
-                //Toast.makeText(getContext(), "Пора покормить кота!", Toast.LENGTH_SHORT).show();
-                //til_gender_act.setText("Новый текст");
-
-                //String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
-                new MaterialAlertDialogBuilder(getContext())
-                        .setTitle("Ваш возраст:")
-                        .setItems(Data.ages, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                til_age_act.setText(Data.ages[which]);
-                            }
-                        })
-                        .show();
-
-            }
-        });*/
-
-        til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act); // низпадающий список выбора пола партнера
-        til_gender_you_act.setAdapter(adapter_gender);
-
-
-        // заполняем низпадающий список с регионами
-        ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Data.regions);
-        //final AutoCompleteTextView til_region_act = getActivity().findViewById(R.id.til_region_act);
-        //til_region_act.setThreshold(1); подсказывать при вводе первого символа
-        til_region_act.setAdapter(adapter_regions);
-
-        //заполняем список с городами
-        til_town_act = getActivity().findViewById(R.id.til_town_act);
-        til_region_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-            public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
-                switch(parent.getItemAtPosition(position).toString()) {
-                    case "Республика Мордовия":
-                        ArrayAdapter<String> adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_town, Data.theRepublicOfMordovia);
-                        til_town_act.setAdapter(adapter_towns);
-                        break;
-                    default:
-                        //оператор;
-                        break;
-                }
-
-                //String text = parent.getItemAtPosition(position).toString();
-                //Toast.makeText(Request.this, text, Toast.LENGTH_LONG).show();
-            }
-        });
+        ////////////////////////////////////////////////////////////////////////////////////////////
 
 
     }
@@ -325,6 +323,21 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         }
     }
 
+    /**
+     * Формирование списка возрастов
+     * @param beginAge начальный возраст
+     * @param endAge конечный возраст
+     * @return список возрастов
+     */
+    private ArrayList CreateAges(int beginAge, int endAge)
+    {
+        ArrayList arrayListAges = new ArrayList();
 
+        for (int i=beginAge; i <= endAge; i++ ) {
+            arrayListAges.add(i);
+        }
+
+        return arrayListAges;
+    }
 
 }

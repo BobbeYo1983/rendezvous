@@ -273,12 +273,7 @@ public class FragmentChat extends Fragment {
             }
         });
 
-
-
-
-
         //добавляем слушателей - КОНЕЦ
-
 
         recyclerView.setHasFixedSize(true); // для производительности recyclerView
         linearLayoutManager.setOrientation(linearLayoutManager.VERTICAL); //вертикальная ориентация
@@ -294,16 +289,6 @@ public class FragmentChat extends Fragment {
 
         UpdateMessages(); // событийный метод по обновлению данных из БД, если будут меняться
 
-        //ссылка на данные, формируем информацию о чатах пользователя
-        //databaseReference = firebaseDatabase.getReference("chats/lists/" + currentUser.getUid() + "/" + partnerInfo.getUserID() + "/unReadMsg");
-        //databaseReference.setValue("0");
-        //databaseReference = firebaseDatabase.getReference("chats/lists/" + currentUser.getUid() + "/" + partnerInfo.getUserID() + "/");
-        //partnerInfo.setUnReadMsg("0"); // делаем ноль непрочитанных сообщений
-        //databaseReference.setValue(partnerInfo); // записываем модель данных в БД, чтобы убрать отметку о непрочитанном чате, чтобы видел партнер, что прочитано.
-
-        //делаем, что настоящий чат прочитан
-        //databaseReference = firebaseDatabase.getReference("chats/unreads/" + currentUser.getUid() + "/"); // путь к непрочитанным чатам партнера
-        //databaseReference.child(partnerInfo.getUserID()).removeValue(); // удаляем веточку партнера, тем самым отмечаем, что чат прочитан
 
     }
 

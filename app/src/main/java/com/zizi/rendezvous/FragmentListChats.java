@@ -191,7 +191,7 @@ public class FragmentListChats extends Fragment {
 
             @Override // при изменении сообщения
             public void onChildChanged(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
-                ModelChat modelChat = snapshot.getValue(ModelChat.class);
+                ModelChat modelChat = snapshot.getValue(ModelChat.class); // получаем экземпляр элемента списка чатов
                 int index = GetItemIndex(modelChat); // ищем в коллекции чатов пользователя, тот чат в котором изменилась информация
                 arrayListAllItems.set(index, modelChat); // изменяем в recyclerView по индексу
                 adapter.notifyItemChanged(index); // обновляем адаптер
