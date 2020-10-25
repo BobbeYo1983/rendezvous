@@ -45,6 +45,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     ActivityListMeetingsTb listMeetingsTbActivity; // настоящая активити
     FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     ArrayAdapter<String> adapter_towns; //адаптер для списка городов
+    ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
 
     MaterialToolbar topAppBar; // верхняя панелька
 
@@ -122,8 +123,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_age_act.setText(saveParams.getString("age", ""));
         til_contact_et.setText(saveParams.getString("contact", ""));
         til_gender_you_act.setText(saveParams.getString("gender_you", ""));
-        til_age_min_act.setText(saveParams.getString("age_min", ""));
-        til_age_max_act.setText(saveParams.getString("age_max", ""));
+        til_age_min_act.setText(saveParams.getString("age_min", "18"));
+        til_age_max_act.setText(saveParams.getString("age_max", "70"));
         til_region_act.setText(saveParams.getString("region", ""));
         til_town_act.setText(saveParams.getString("town", ""));
         til_comment_et.setText(saveParams.getString("comment", ""));
@@ -173,8 +174,28 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         ArrayAdapter<String> arrayAdapterMinAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
         til_age_min_act.setAdapter(arrayAdapterMinAge);
 
-        ArrayAdapter<String> arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()),70)); //  связываем адаптер с данными
-        til_age_max_act.setAdapter(arrayAdapterMaxAge);
+        if (til_age_min_act.getText().toString().equals("")) {//если поле с начальным возрастом пустое, то делваем весь диапазон возрастов в максимальном возразте
+            arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
+        } else { // если минимальный возраст выбран, то делаем диапазон макимальных возрастов от минимального
+            arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()),70)); //  связываем адаптер с данными
+        }
+        til_age_max_act.setAdapter(arrayAdapterMaxAge); // применяем данные
+
+        til_age_min_act.setOnItemClickListener(new AdapterView.OnItemClickListener() { // как только выбрали минимальный возраст
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+
+//                if (!til_age_min_act.getText().toString().equals("")) { // если поле не пустое
+                    //если выбранный минимальный возраст больше максимального, то в максимальный подставить минимальный
+                    if (Integer.parseInt(til_age_min_act.getText().toString()) > Integer.parseInt(til_age_max_act.getText().toString())) {
+                        til_age_max_act.setText(til_age_min_act.getText());
+                    }
+                    arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()), 70));
+                    til_age_max_act.setAdapter(arrayAdapterMaxAge); // применяем данные
+//
+            }
+        });
+
 
         // заполняем низпадающий список с регионами
         ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Data.regionsTmp);
@@ -184,10 +205,6 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
         til_region_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
-
-/*                if (!parent.getItemAtPosition(position).toString().equals(til_region_act.getText().toString())) {// если выбрана другая область, то очистить поле с городом
-                    til_town_act.setText("");
-                }*/
 
                 switch(parent.getItemAtPosition(position).toString()) {
                     case "Республика Мордовия":
@@ -201,6 +218,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                         break;
                 }
                 til_town_act.setAdapter(adapter_towns);
+                til_town_act.setText("");
                 //String text = parent.getItemAtPosition(position).toString();
                 //Toast.makeText(Request.this, text, Toast.LENGTH_LONG).show();
             }
