@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".FragmentPlace"
+    android:orientation="vertical">
+
+    <CheckBox
+        android:id="@+id/cb_anyPlace"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Любое место"
+        android:layout_marginStart="10dp"/>
+    <CheckBox
+        android:id="@+id/cb_street"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Прогуляться по улице"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_picnic"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Пикник на свежем воздухе или даче"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_car"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Прокатиться на машине"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_sport"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Заняться спортом"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_film"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Кино, театр, концерт"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_billiards"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Бильярд, боулинг"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_cafe"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Кафе, караоке, ресторан"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_disco"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Клуб, дискотека"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_bath"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Баня"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_myHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="У меня в гостях"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_youHome"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="У тебя в гостях"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_hotel"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Гостиница"
+        android:layout_marginStart="30dp"
+        />
+    <CheckBox
+        android:id="@+id/cb_over"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Прочее"
+        android:layout_marginStart="30dp"
+        />
+
+
+</LinearLayout>

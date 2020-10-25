@@ -44,6 +44,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
     ActivityListMeetingsTb listMeetingsTbActivity; // настоящая активити
     FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
+    FragmentPlace fragmentPlace; // фрагмент с выбором места
     ArrayAdapter<String> adapter_towns; //адаптер для списка городов
     ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
 
@@ -64,6 +65,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     AutoCompleteTextView til_age_max_act; // возраст партнера максимальный
     AutoCompleteTextView til_region_act; // регион
     AutoCompleteTextView til_town_act; // город
+    TextInputLayout til_place; // место встречи
+    TextInputEditText til_place_et; // место встречи
     TextInputLayout til_comment;
     TextInputEditText til_comment_et; // комментарий к встрече
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -86,6 +89,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
+        fragmentPlace = new FragmentPlace();
         //arrayListAges = new ArrayList();
 
 
@@ -106,6 +110,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_age_max_act = getActivity().findViewById(R.id.til_age_max_act);
         til_region_act = getActivity().findViewById(R.id.til_region_act);
         til_town_act = getActivity().findViewById(R.id.til_town_act);
+        til_place = getActivity().findViewById(R.id.til_place);
+        til_place_et = getActivity().findViewById(R.id.til_place_et);
         til_comment = getActivity().findViewById(R.id.til_comment);
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
         topAppBar = getActivity().findViewById(R.id.topAppBar);
@@ -202,7 +208,6 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_region_act.setAdapter(adapter_regions);
 
         //заполняем список с городами
-
         til_region_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
@@ -219,8 +224,14 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                 }
                 til_town_act.setAdapter(adapter_towns);
                 til_town_act.setText("");
-                //String text = parent.getItemAtPosition(position).toString();
-                //Toast.makeText(Request.this, text, Toast.LENGTH_LONG).show();
+            }
+        });
+
+        til_place_et.setOnClickListener(new View.OnClickListener() { // при нажатии на поле
+            @Override
+            public void onClick(View v) {
+                listMeetingsTbActivity.ChangeFragment(fragmentPlace, "fragmentPlace", true);
+                //Toast.makeText(getContext(), "hdbv", Toast.LENGTH_LONG);
             }
         });
 

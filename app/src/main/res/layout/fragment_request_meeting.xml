@@ -228,7 +228,6 @@
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     />
-
             </com.google.android.material.textfield.TextInputLayout>
 
 
@@ -251,52 +250,8 @@
                     android:layout_height="wrap_content"
                     android:inputType="none"
                     />
-
             </com.google.android.material.textfield.TextInputLayout>
 
-
-
-<!--            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_age_min"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Возраст с:"
-                app:startIconDrawable="@drawable/ic_baseline_child_friendly_24"
-                app:counterEnabled="true"
-                app:counterMaxLength="2"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/til_age_min_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:maxLength="2"/>
-
-            </com.google.android.material.textfield.TextInputLayout>-->
-
-<!--            <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_age_max"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:hint="Возраст по:"
-                app:startIconDrawable="@drawable/ic_baseline_child_friendly_24"
-                app:counterEnabled="true"
-                app:counterMaxLength="2"
-                android:layout_marginEnd="10dp"
-                android:layout_marginStart="10dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/til_age_max_et"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="number"
-                    android:maxLength="2"/>
-
-            </com.google.android.material.textfield.TextInputLayout>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_region"
@@ -317,13 +272,15 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+
+
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_town"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:hint="Город:"
-                app:startIconDrawable="@drawable/ic_outline_location_on_24"
+                app:startIconDrawable="@drawable/ic_outline_location_city_24"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="18dp">
@@ -335,6 +292,32 @@
                     android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_place"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Место:"
+                app:startIconDrawable="@drawable/ic_outline_location_on_24"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_place_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="textMultiLine"
+                    android:clickable="true"
+                    android:focusable="false"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_comment"
