@@ -172,6 +172,7 @@ public class FragmentPlace extends Fragment {
             }
         });
 
+
     }
 
     @Override
@@ -188,4 +189,5 @@ public class FragmentPlace extends Fragment {
         //adapter.startListening(); // адаптер начинает слушать БД
 
     }
+
 }

@@ -141,7 +141,7 @@
                 android:id="@+id/cb_bath"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Баня"
+                android:text="Баня, сауна"
                 android:buttonTint="?attr/colorPrimary"
                 android:enabled="false"
                 android:checked="true"
