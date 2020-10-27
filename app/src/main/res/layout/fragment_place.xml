@@ -1,108 +1,236 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".FragmentPlace"
     android:orientation="vertical">
 
-    <CheckBox
-        android:id="@+id/cb_anyPlace"
+
+
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Любое место"
-        android:layout_marginStart="10dp"/>
-    <CheckBox
-        android:id="@+id/cb_street"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Прогуляться по улице"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_picnic"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Пикник на свежем воздухе или даче"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_car"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Прокатиться на машине"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_sport"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Заняться спортом"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_film"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Кино, театр, концерт"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_billiards"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Бильярд, боулинг"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_cafe"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Кафе, караоке, ресторан"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_disco"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Клуб, дискотека"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_bath"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Баня"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_myHome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="У меня в гостях"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_youHome"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="У тебя в гостях"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_hotel"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Гостиница"
-        android:layout_marginStart="30dp"
-        />
-    <CheckBox
-        android:id="@+id/cb_over"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="Прочее"
-        android:layout_marginStart="30dp"
-        />
+        android:layout_height="match_parent">
+
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" >
+
+
+
+            <CheckBox
+                android:id="@+id/cb_anyPlace"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Любое место"
+                android:buttonTint="?attr/colorPrimary"
+                android:checked="true"
+                android:layout_marginStart="10dp"/>
+
+
+
+            <CheckBox
+                android:id="@+id/cb_street"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Прогуляться по улице"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_picnic"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Пикник на свежем воздухе или даче"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_car"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Прокатиться на машине"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_sport"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Заняться спортом"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_film"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Кино, театр, концерт"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_billiards"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Бильярд, боулинг"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_cafe"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Кафе, караоке, ресторан"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_disco"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Клуб, дискотека"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_bath"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Баня"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_myHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="У меня в гостях"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_youHome"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="У тебя в гостях"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_hotel"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Гостиница"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+
+
+            <CheckBox
+                android:id="@+id/cb_other"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Прочее"
+                android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
+                android:checked="true"
+                android:layout_marginStart="30dp"
+                />
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_other"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Введите прочее место:"
+                app:startIconDrawable="@drawable/ic_outline_location_on_24"
+                app:counterEnabled="true"
+                app:counterMaxLength="200"
+                app:helperTextEnabled="true"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="30dp">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/til_other_et"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:maxLength="200"
+                    android:inputType="textMultiLine"
+                    />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+        </LinearLayout>
+
+
+
+    </ScrollView>
+
 
 
 </LinearLayout>
