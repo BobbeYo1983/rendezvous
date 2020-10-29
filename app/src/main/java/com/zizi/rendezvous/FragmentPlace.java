@@ -1,6 +1,7 @@
 package com.zizi.rendezvous;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.Nullable;
@@ -17,6 +18,8 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import static android.content.Context.MODE_PRIVATE;
+
 
 public class FragmentPlace extends Fragment {
 
@@ -24,6 +27,8 @@ public class FragmentPlace extends Fragment {
     FirebaseAuth mAuth; // для работы с FireBase
     FirebaseUser currentUser; //текущий пользователь
     MaterialToolbar topAppBar; // верхняя панелька
+    SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
+    SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
 
     CheckBox cb_anyPlace; // чекбокс любое место
     CheckBox cb_street; // Прогуляться на улице
@@ -55,6 +60,7 @@ public class FragmentPlace extends Fragment {
 
         //ИНИЦИАЛИЗАЦИЯ//////////////////////////////////////////////////////////////////////////////
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
+        saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
 
         //ИЩЕМ ВЬЮХИ
         topAppBar = getActivity().findViewById(R.id.topAppBar);
@@ -186,8 +192,57 @@ public class FragmentPlace extends Fragment {
             getActivity().finish(); // убиваем активити
         }
 
-        //adapter.startListening(); // адаптер начинает слушать БД
-
     }
 
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // сохраняем выбранные места встреч
+        editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память для входа
+
+        if (cb_anyPlace.isChecked())    { editorSaveParams.putString("placeAnyPlace",   cb_anyPlace.getText().toString()); } else {editorSaveParams.putString("placeAnyPlace", ""); }
+        if (cb_street.isChecked())      { editorSaveParams.putString("placeStreet",     cb_street.getText().toString()); } else {editorSaveParams.putString("placeStreet", ""); }
+        if (cb_picnic.isChecked())      { editorSaveParams.putString("placePicnic",     cb_picnic.getText().toString()); } else {editorSaveParams.putString("placePicnic", ""); }
+        if (cb_car.isChecked())         { editorSaveParams.putString("placeCar",        cb_car.getText().toString()); } else {editorSaveParams.putString("placeCar", ""); }
+        if (cb_sport.isChecked())       { editorSaveParams.putString("placeSport",      cb_sport.getText().toString()); } else {editorSaveParams.putString("placeSport", ""); }
+        if (cb_film.isChecked())        { editorSaveParams.putString("placeFilm",       cb_film.getText().toString()); } else {editorSaveParams.putString("placeFilm", ""); }
+        if (cb_billiards.isChecked())   { editorSaveParams.putString("placeBilliards",  cb_billiards.getText().toString()); } else {editorSaveParams.putString("placeBilliards", ""); }
+        if (cb_cafe.isChecked())        { editorSaveParams.putString("placeCafe",       cb_cafe.getText().toString()); } else {editorSaveParams.putString("placeCafe", ""); }
+        if (cb_disco.isChecked())       { editorSaveParams.putString("placeDisco",      cb_disco.getText().toString()); } else {editorSaveParams.putString("placeDisco", ""); }
+        if (cb_bath.isChecked())        { editorSaveParams.putString("placeBath",       cb_bath.getText().toString()); } else {editorSaveParams.putString("placeBath", ""); }
+        if (cb_myHome.isChecked())      { editorSaveParams.putString("placeMyHome",     cb_myHome.getText().toString()); } else {editorSaveParams.putString("placeMyHome", ""); }
+        if (cb_youHome.isChecked())     { editorSaveParams.putString("placeYouHome",    cb_youHome.getText().toString()); } else {editorSaveParams.putString("placeYouHome", ""); }
+        if (cb_hotel.isChecked())       { editorSaveParams.putString("placeHotel",      cb_hotel.getText().toString()); } else {editorSaveParams.putString("placeHotel", ""); }
+        if (cb_other.isChecked())       { editorSaveParams.putString("placeOther",      cb_other.getText().toString()); } else {editorSaveParams.putString("placeOther", ""); }
+        editorSaveParams.putString("placeOtherDescription", til_other_et.getText().toString());
+
+        editorSaveParams.apply();
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        // восстанавливаем места встречь из памяти телефона
+        if (saveParams.getString("placeAnyPlace",   cb_anyPlace.getText().toString())   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);} else {cb_anyPlace.setChecked(false);};
+        if (saveParams.getString("placeStreet",     cb_street.getText().toString())     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);} else {cb_street.setChecked(false);};
+        if (saveParams.getString("placePicnic",     cb_picnic.getText().toString())     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);} else {cb_picnic.setChecked(false);};
+        if (saveParams.getString("placeCar",        cb_car.getText().toString())        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);} else {cb_car.setChecked(false);};
+        if (saveParams.getString("placeSport",      cb_sport.getText().toString())      .equals(cb_sport.getText().toString()))     {cb_sport.setChecked(true);} else {cb_sport.setChecked(false);};
+        if (saveParams.getString("placeFilm",       cb_film.getText().toString())       .equals(cb_film.getText().toString()))      {cb_film.setChecked(true);} else {cb_film.setChecked(false);};
+        if (saveParams.getString("placeBilliards",  cb_billiards.getText().toString())  .equals(cb_billiards.getText().toString())) {cb_billiards.setChecked(true);} else {cb_billiards.setChecked(false);};
+        if (saveParams.getString("placeCafe",       cb_cafe.getText().toString())       .equals(cb_cafe.getText().toString()))      {cb_cafe.setChecked(true);} else {cb_cafe.setChecked(false);};
+        if (saveParams.getString("placeDisco",      cb_disco.getText().toString())      .equals(cb_disco.getText().toString()))     {cb_disco.setChecked(true);} else {cb_disco.setChecked(false);};
+        if (saveParams.getString("placeBath",       cb_bath.getText().toString())       .equals(cb_bath.getText().toString()))      {cb_bath.setChecked(true);} else {cb_bath.setChecked(false);};
+        if (saveParams.getString("placeMyHome",     cb_myHome.getText().toString())     .equals(cb_myHome.getText().toString()))    {cb_myHome.setChecked(true);} else {cb_myHome.setChecked(false);};
+        if (saveParams.getString("placeYouHome",    cb_youHome.getText().toString())    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);} else {cb_youHome.setChecked(false);};
+        if (saveParams.getString("placeHotel",      cb_hotel.getText().toString())      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);} else {cb_hotel.setChecked(false);};
+        if (saveParams.getString("placeOther",      cb_other.getText().toString())      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);} else {cb_other.setChecked(false);};
+        til_other_et.setText(saveParams.getString("placeOtherDescription", ""));
+
+
+
+    }
 }

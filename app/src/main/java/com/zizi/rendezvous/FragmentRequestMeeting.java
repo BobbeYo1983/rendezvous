@@ -47,6 +47,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     FragmentPlace fragmentPlace; // фрагмент с выбором места
     ArrayAdapter<String> adapter_towns; //адаптер для списка городов
     ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
+    String tmp_str; // временный буфер
 
     MaterialToolbar topAppBar; // верхняя панелька
 
@@ -133,8 +134,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_age_max_act.setText(saveParams.getString("age_max", "70"));
         til_region_act.setText(saveParams.getString("region", ""));
         til_town_act.setText(saveParams.getString("town", ""));
+        //til_place_et.setText(saveParams.getString("place", ""));
         til_comment_et.setText(saveParams.getString("comment", ""));
-
         //инициализация - КОНЕЦ
 
         //наполняем низпадающий список выбора пола для выбора пола
@@ -174,9 +175,16 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         });
         //////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+        //til_gender_you_act//////////////////////////////////////////////////////////////////////////
         til_gender_you_act = getActivity().findViewById(R.id.til_gender_you_act); // низпадающий список выбора пола партнера
         til_gender_you_act.setAdapter(adapter_gender);
+        //////////////////////////////////////////////////////////////////////////////////////////////
 
+
+
+        //til_age_min_act,  til_age_max_act///////////////////////////////////////////////////////////////////////////
         ArrayAdapter<String> arrayAdapterMinAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
         til_age_min_act.setAdapter(arrayAdapterMinAge);
 
@@ -201,13 +209,19 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 //
             }
         });
+        /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-        // заполняем низпадающий список с регионами
+
+        // til_region_act //////////////////////////////////////////////////////////////////////////////////////
         ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Data.regionsTmp);
         til_region_act.setAdapter(adapter_regions);
+        //////////////////////////////////////////////////////////////////////////////////////////////
 
-        //заполняем список с городами
+
+
+
+        //til_town_act заполняем список с городами///////////////////////////////////////////////////
         til_region_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
@@ -226,14 +240,37 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                 til_town_act.setText("");
             }
         });
+        /////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+        //til_place_et //////////////////////////////////////////////////////////////////////////////
+        til_place_et.setText(""); //очищаем на всякий текст
+        tmp_str = "";
+        // если любое место, то так и пишем, если нет, то перечисляем все выбранные
+        if(!saveParams.getString("placeAnyPlace", "").equals("")){
+            tmp_str = "Любое место";
+        } else { // не выбрано, что встреча в любом месте
+            if (!saveParams.getString("placeStreet", "").equals("")){ //если выбрано это место, до добавляем его описание к общему списку
+                tmp_str = tmp_str + saveParams.getString("placeStreet", "");
+            }
+
+            if (!saveParams.getString("placePicnic", "").equals("")){
+                tmp_str = tmp_str + saveParams.getString("placePicnic", "");
+            }
+        }
+        til_place_et.setText(tmp_str);
+
 
         til_place_et.setOnClickListener(new View.OnClickListener() { // при нажатии на поле
             @Override
             public void onClick(View v) {
                 listMeetingsTbActivity.ChangeFragment(fragmentPlace, "fragmentPlace", true);
-                //Toast.makeText(getContext(), "hdbv", Toast.LENGTH_LONG);
             }
         });
+        //////////////////////////////////////////////////////////////////////////////////////////////
+
+
 
         // til_comment ///////////////////////////////////////////////////////////////////////////////
         if (til_comment_et.getText().toString().isEmpty()) {
