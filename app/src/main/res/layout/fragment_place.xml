@@ -50,7 +50,7 @@
                 android:id="@+id/cb_picnic"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Пикник на свежем воздухе или даче"
+                android:text="Пикник на даче или природе"
                 android:buttonTint="?attr/colorPrimary"
                 android:enabled="false"
                 android:checked="true"

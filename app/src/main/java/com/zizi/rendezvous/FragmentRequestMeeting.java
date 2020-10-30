@@ -47,7 +47,8 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     FragmentPlace fragmentPlace; // фрагмент с выбором места
     ArrayAdapter<String> adapter_towns; //адаптер для списка городов
     ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
-    String tmp_str; // временный буфер
+    String tmpStr; // временный буфер
+    String requestNotFilled; // заявка не заполнялась
 
     MaterialToolbar topAppBar; // верхняя панелька
 
@@ -117,8 +118,6 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
         topAppBar = getActivity().findViewById(R.id.topAppBar);
 
-        topAppBar.setTitle("Заявка"); // заголовок в панельке верхней
-        topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
 
         //добавляем слушателей
         getActivity().findViewById(R.id.btn_apply_request).setOnClickListener((View.OnClickListener) this); // добавляем слушателя на кнопку
@@ -136,7 +135,27 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_town_act.setText(saveParams.getString("town", ""));
         //til_place_et.setText(saveParams.getString("place", ""));
         til_comment_et.setText(saveParams.getString("comment", ""));
+        requestNotFilled = saveParams.getString("requestNotFilled", "true");
+
         //инициализация - КОНЕЦ
+
+        topAppBar.setTitle("Заявка"); // заголовок в панельке верхней
+        topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
+        if(requestNotFilled.equals("true")) {// если заявка не заполнялась/не сохранялась
+            topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
+        } else {
+            topAppBar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
+        }
+
+
+
+        // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
+        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                getActivity().onBackPressed();
+            }
+        });
 
         //наполняем низпадающий список выбора пола для выбора пола
         String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
@@ -245,24 +264,9 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
 
         //til_place_et //////////////////////////////////////////////////////////////////////////////
-        til_place_et.setText(""); //очищаем на всякий текст
-        tmp_str = "";
-        // если любое место, то так и пишем, если нет, то перечисляем все выбранные
-        if(!saveParams.getString("placeAnyPlace", "").equals("")){
-            tmp_str = "Любое место";
-        } else { // не выбрано, что встреча в любом месте
-            if (!saveParams.getString("placeStreet", "").equals("")){ //если выбрано это место, до добавляем его описание к общему списку
-                tmp_str = tmp_str + saveParams.getString("placeStreet", "");
-            }
-
-            if (!saveParams.getString("placePicnic", "").equals("")){
-                tmp_str = tmp_str + saveParams.getString("placePicnic", "");
-            }
-        }
-        til_place_et.setText(tmp_str);
-
-
-        til_place_et.setOnClickListener(new View.OnClickListener() { // при нажатии на поле
+        //Обновление значения поля в onResume()
+        // Слушатель при нажатии на поле
+        til_place_et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 listMeetingsTbActivity.ChangeFragment(fragmentPlace, "fragmentPlace", true);
@@ -318,6 +322,75 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     }
 
     @Override
+    public void onResume() {
+        super.onResume();
+        til_place_et.setText(""); //очищаем на всякий текст
+        tmpStr = "";
+        // если любое место, то так и пишем, если нет, то перечисляем все выбранные
+        if(!saveParams.getString("placeAnyPlace", "").equals("")){
+            tmpStr = "Любое место";
+        } else { // не выбрано, что встреча в любом месте
+
+            tmpStr = "Выбранные места:";
+
+            if (!saveParams.getString("placeStreet", "").equals("")){ //если выбрано это место, то добавляем его описание к общему списку
+                tmpStr += "\n- " + saveParams.getString("placeStreet", "");
+            }
+
+            if (!saveParams.getString("placePicnic", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placePicnic", "");
+            }
+
+            if (!saveParams.getString("placeCar", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeCar", "");
+            }
+
+            if (!saveParams.getString("placeSport", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeSport", "");
+            }
+
+            if (!saveParams.getString("placeFilm", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeFilm", "");
+            }
+
+            if (!saveParams.getString("placeBilliards", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeBilliards", "");
+            }
+
+            if (!saveParams.getString("placeCafe", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeCafe", "");
+            }
+
+            if (!saveParams.getString("placeDisco", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeDisco", "");
+            }
+
+            if (!saveParams.getString("placeBath", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeBath", "");
+            }
+
+            if (!saveParams.getString("placeMyHome", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeMyHome", "");
+            }
+
+            if (!saveParams.getString("placeYouHome", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeYouHome", "");
+            }
+
+            if (!saveParams.getString("placeHotel", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeHotel", "");
+            }
+
+            if (!saveParams.getString("placeOther", "").equals("")){
+                tmpStr += "\n- " + saveParams.getString("placeOther", "") + ": " + saveParams.getString("placeOtherDescription", "");
+            }
+
+        }
+        til_place_et.setText(tmpStr);
+
+    }
+
+    @Override
     public void onClick(View v) { //чтобы метод заработал, в объявлении класса добавить implements View.OnClickListener
         if (v.getId() == R.id.btn_apply_request) { // если нажали на кнопку "Подать заявку", не забыть найти кнопку по id заранее и добавить на нее слушателя
             // Если поля все введены корректно
@@ -369,6 +442,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
                             editorSaveParams.putString("region", til_region_act.getEditableText().toString());
                             editorSaveParams.putString("town", til_town_act.getEditableText().toString());
                             editorSaveParams.putString("comment", til_comment_et.getText().toString());
+                            editorSaveParams.putString("requestNotFilled", "false");
                             editorSaveParams.apply();
 
                             //Если лимит не исчерпан грузим фрагмент с заявками
