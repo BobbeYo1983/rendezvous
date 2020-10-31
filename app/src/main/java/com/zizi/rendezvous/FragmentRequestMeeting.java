@@ -69,6 +69,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
     AutoCompleteTextView til_town_act; // город
     TextInputLayout til_place; // место встречи
     TextInputEditText til_place_et; // место встречи
+    AutoCompleteTextView til_time_act; // время
     TextInputLayout til_comment;
     TextInputEditText til_comment_et; // комментарий к встрече
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -114,6 +115,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_town_act = getActivity().findViewById(R.id.til_town_act);
         til_place = getActivity().findViewById(R.id.til_place);
         til_place_et = getActivity().findViewById(R.id.til_place_et);
+        til_time_act = getActivity().findViewById(R.id.til_time_act);
         til_comment = getActivity().findViewById(R.id.til_comment);
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
         topAppBar = getActivity().findViewById(R.id.topAppBar);
@@ -133,7 +135,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
         til_age_max_act.setText(saveParams.getString("age_max", "70"));
         til_region_act.setText(saveParams.getString("region", ""));
         til_town_act.setText(saveParams.getString("town", ""));
-        //til_place_et.setText(saveParams.getString("place", ""));
+        //til_place_et.setText(saveParams.getString("placeAnyPlace", "Любое место"));
         til_comment_et.setText(saveParams.getString("comment", ""));
         requestNotFilled = saveParams.getString("requestNotFilled", "true");
 
@@ -233,7 +235,7 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
 
         // til_region_act //////////////////////////////////////////////////////////////////////////////////////
-        ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_region, Data.regionsTmp);
+        ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.regionsTmp);
         til_region_act.setAdapter(adapter_regions);
         //////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -246,16 +248,17 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
 
                 switch(parent.getItemAtPosition(position).toString()) {
                     case "Республика Мордовия":
-                        adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_town, Data.theRepublicOfMordovia);
+                        adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfMordovia);
                         break;
                     case "Нижегородская область":
-                        adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_town, Data.nizhnyNovgorodRegion);
+                        adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.nizhnyNovgorodRegion);
                         break;
                     default:
                         //оператор;
                         break;
                 }
                 til_town_act.setAdapter(adapter_towns);
+                til_town_act.setEnabled(true);
                 til_town_act.setText("");
             }
         });
@@ -273,6 +276,13 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
             }
         });
         //////////////////////////////////////////////////////////////////////////////////////////////
+
+
+
+        // til_time_act /////////////////////////////////////////////////////////////////////////////
+        ArrayAdapter<String> adapter_time = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.times);
+        til_time_act.setAdapter(adapter_time);
+        /////////////////////////////////////////////////////////////////////////////////////////////
 
 
 
@@ -384,6 +394,11 @@ public class FragmentRequestMeeting extends Fragment implements View.OnClickList
             if (!saveParams.getString("placeOther", "").equals("")){
                 tmpStr += "\n- " + saveParams.getString("placeOther", "") + ": " + saveParams.getString("placeOtherDescription", "");
             }
+
+            if (tmpStr.equals("Выбранные места:")){
+                tmpStr = "";
+            }
+
 
         }
         til_place_et.setText(tmpStr);

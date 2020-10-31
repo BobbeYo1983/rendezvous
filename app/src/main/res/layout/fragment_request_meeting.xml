@@ -289,7 +289,9 @@
                     android:id="@+id/til_town_act"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="none" />
+                    android:inputType="none"
+                    android:enabled="false"
+                    />
 
             </com.google.android.material.textfield.TextInputLayout>
 
@@ -314,6 +316,27 @@
                     android:clickable="true"
                     android:focusable="false"
                     />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/til_time"
+                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:hint="Время:"
+                app:startIconDrawable="@drawable/ic_outline_access_time_24"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="10dp"
+                android:layout_marginBottom="18dp">
+
+                <AutoCompleteTextView
+                    android:id="@+id/til_time_act"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:inputType="none" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
