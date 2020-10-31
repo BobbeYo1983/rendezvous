@@ -1,8 +1,8 @@
 <resources>
     <string name="app_name">Рандеву</string>
-    <string name="til_contact">Укажите любою дополнительную информацию для связи с Вами.</string>
+    <string name="til_contact">Можете указать любою дополнительную информацию для связи с Вами</string>
     <string name="til_comment">Если желаете, то напишите здесь дополниельную информацию, например, пожелание к формату встречи...</string>
-    <string name="til_password">Не менее 8-ми символов без пробелов, обязательны: буква, цифра, заглавная буква.</string>
+    <string name="til_password">Не менее 8-ми символов без пробелов, обязательны: буква, цифра, заглавная буква</string>
     <string name="page_title">Встречи</string>
     <string name="favorite">Избранное</string>
     <string name="request">Запрос</string>

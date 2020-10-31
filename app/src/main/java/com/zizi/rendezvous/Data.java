@@ -140,7 +140,7 @@ class Data {
     };
 
     public static String[] times = new String[]{
-            "Любое",
+            "Любое время",
             "Сейчас",
             "00:00",
             "01:00",

@@ -101,6 +101,8 @@
                 app:startIconDrawable="@drawable/ic_outline_phone_android_24"
                 app:counterEnabled="true"
                 app:counterMaxLength="20"
+                app:helperTextEnabled="true"
+                app:helperText="Указывать не обязательно"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 >
@@ -126,6 +128,7 @@
                 android:text="Не звонить, только писать, а то заблокирую!"
                 android:textSize="16sp"
                 android:buttonTint="?attr/colorPrimary"
+                android:enabled="false"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 />
@@ -141,6 +144,8 @@
                 app:startIconDrawable="@drawable/ic_outline_insert_link_24"
                 app:counterEnabled="true"
                 app:counterMaxLength="300"
+                app:helperTextEnabled="true"
+                app:helperText="Указывать не обязательно"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 >
@@ -190,7 +195,7 @@
                 android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/til_gender_you"
+                android:id="@+id/til_gender_partner"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -201,7 +206,7 @@
                 android:layout_marginBottom="18dp">
 
                 <AutoCompleteTextView
-                    android:id="@+id/til_gender_you_act"
+                    android:id="@+id/til_gender_partner_act"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="none"/>
