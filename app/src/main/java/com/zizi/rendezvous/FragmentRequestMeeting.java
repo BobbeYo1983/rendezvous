@@ -166,6 +166,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_gender_act /////////////////////////////////////////////////////////////////////////
+        til_gender_act.setThreshold(100); // чтобы при установлении текста отображался весь список, иначе будет предлагать только найденные строки по введенному тексту
         til_gender_act.setText(saveParams.getString("gender", ""));
         //наполняем низпадающий список выбора пола для выбора пола
         String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
@@ -176,10 +177,11 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_age_act /////////////////////////////////////////////////////////////////////////////
+        til_age_act.setThreshold(100);
         til_age_act.setText(saveParams.getString("age", "")); // восстанавливаем выбранное значение из памяти
         // набиваем список для выбора
         ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
-        til_age_act.setAdapter(arrayAdapterAge);
+        til_age_act.setAdapter(arrayAdapterAge); // связываем представление с адаптером
         // =========================================================================================
 
 
@@ -259,6 +261,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         //til_gender_partner_act//////////////////////////////////////////////////////////////////////////
+        til_gender_partner_act.setThreshold(100);
         til_gender_partner_act.setText(saveParams.getString("gender_partner", "")); // восстанавливаем выбранное значение из памяти
 
         til_gender_partner_act.setAdapter(adapter_gender); //список для выбора
@@ -267,6 +270,8 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         //til_age_min_act,  til_age_max_act///////////////////////////////////////////////////////////////////////////
+        til_age_min_act.setThreshold(100);
+        til_age_max_act.setThreshold(100);
         til_age_min_act.setText(saveParams.getString("age_min", "18")); // восстанавливаем выбранное значение из памяти
         til_age_max_act.setText(saveParams.getString("age_max", "70"));
 
@@ -298,6 +303,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_region_act //////////////////////////////////////////////////////////////////////////////////////
+        til_region_act.setThreshold(100);
         til_region_act.setText(saveParams.getString("region", ""));  // восстанавливаем выбранное значение из памяти
 
         //формируем список для выбора
@@ -308,6 +314,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         //til_town_act заполняем список с городами///////////////////////////////////////////////////
+        til_town_act.setThreshold(100);
         if (saveParams.getString("town", "").equals("")) {//если в памяти поле с городом пустое, то
             til_town_act.setEnabled(false); // то делаем не активным
         } else {
@@ -343,6 +350,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_time_act /////////////////////////////////////////////////////////////////////////////
+        til_time_act.setThreshold(100);
         til_time_act.setText(saveParams.getString("time", "")); // восстанавливаем выбранное значение из памяти
 
         //формируем список для сохранения времени
