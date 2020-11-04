@@ -479,21 +479,21 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.clear();
 
                     //добавляем параметры для подачи заявки
-                    meeting.put("name", til_name_et.getText().toString());
-                    meeting.put("gender", til_gender_act.getEditableText().toString());
-                    meeting.put("age", til_age_act.getText().toString());
-                    meeting.put("phone", til_phone_et.getText().toString());
+                    meeting.put("name", til_name_et.getText().toString().trim());
+                    meeting.put("gender", til_gender_act.getEditableText().toString().trim());
+                    meeting.put("age", til_age_act.getText().toString().trim());
+                    meeting.put("phone", til_phone_et.getText().toString().trim());
                     meeting.put("onlyWrite", cb_only_write.isChecked());
-                    meeting.put("socNet", til_soc_net_et.getText().toString());
-                    meeting.put("contact", til_contact_et.getText().toString());
-                    meeting.put("gender_partner", til_gender_partner_act.getEditableText().toString());
-                    meeting.put("age_min", til_age_min_act.getText().toString());
-                    meeting.put("age_max", til_age_max_act.getText().toString());
-                    meeting.put("region", til_region_act.getEditableText().toString());
-                    meeting.put("town", til_town_act.getEditableText().toString());
-                    meeting.put("place", til_place_et.getEditableText().toString());
-                    meeting.put("time", til_time_act.getEditableText().toString());
-                    meeting.put("comment", til_comment_et.getText().toString());
+                    meeting.put("socNet", til_soc_net_et.getText().toString().trim());
+                    meeting.put("contact", til_contact_et.getText().toString().trim());
+                    meeting.put("gender_partner", til_gender_partner_act.getEditableText().toString().trim());
+                    meeting.put("age_min", til_age_min_act.getText().toString().trim());
+                    meeting.put("age_max", til_age_max_act.getText().toString().trim());
+                    meeting.put("region", til_region_act.getEditableText().toString().trim());
+                    meeting.put("town", til_town_act.getEditableText().toString().trim());
+                    meeting.put("place", til_place_et.getEditableText().toString().trim());
+                    meeting.put("time", til_time_act.getEditableText().toString().trim());
+                    meeting.put("comment", til_comment_et.getText().toString().trim());
 
                     //добавляем прочие служебные параметры для подачи заявки
                     meeting.put("userID", currentUser.getUid().toString());
