@@ -739,10 +739,10 @@ public class FragmentRequestMeeting extends Fragment {
         editorSaveParams.putString("name", til_name_et.getText().toString());
         editorSaveParams.putString("gender", til_gender_act.getEditableText().toString());
         editorSaveParams.putString("age", til_age_act.getText().toString());
-        editorSaveParams.putString("phone", til_phone_et.getText().toString());
+        editorSaveParams.putString("phone", til_phone_et.getText().toString().trim());
         editorSaveParams.putString("onlyWrite", String.valueOf(cb_only_write.isChecked()));
-        editorSaveParams.putString("socNet", til_soc_net_et.getText().toString());
-        editorSaveParams.putString("contact", til_contact_et.getText().toString());
+        editorSaveParams.putString("socNet", til_soc_net_et.getText().toString().trim());
+        editorSaveParams.putString("contact", til_contact_et.getText().toString().trim());
         editorSaveParams.putString("gender_partner", til_gender_partner_act.getEditableText().toString());
         editorSaveParams.putString("age_min", til_age_min_act.getText().toString());
         editorSaveParams.putString("age_max", til_age_max_act.getText().toString());
@@ -750,7 +750,7 @@ public class FragmentRequestMeeting extends Fragment {
         editorSaveParams.putString("town", til_town_act.getEditableText().toString());
         editorSaveParams.putString("place", til_place_et.getEditableText().toString());
         editorSaveParams.putString("time", til_time_act.getEditableText().toString());
-        editorSaveParams.putString("comment", til_comment_et.getText().toString());
+        editorSaveParams.putString("comment", til_comment_et.getText().toString().trim());
 
         editorSaveParams.apply();
     }

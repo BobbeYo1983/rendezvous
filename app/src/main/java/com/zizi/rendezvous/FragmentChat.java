@@ -180,7 +180,7 @@ public class FragmentChat extends Fragment {
 
                     //отправляем сообщение
                     modelMessage.userID = currentUser.getUid(); // формируем ID пользователя
-                    modelMessage.textMessage = til_message_et.getText().toString(); // текст сообщения
+                    modelMessage.textMessage = til_message_et.getText().toString().trim(); // текст сообщения без пробелов в начале и конце строки
                     modelMessage.dateTimeDevice = formatForDateNow.format(new Date()); // формируем даты на девайсе, не на сервере
                     databaseReference.push().setValue(modelMessage); // записываем сообщение в базу на сервак
 
