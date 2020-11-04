@@ -64,16 +64,19 @@ public class FragmentRequestMeeting extends Fragment {
     TextInputEditText til_soc_net_et; // страничка в соц сети
     TextInputLayout til_contact;
     TextInputEditText til_contact_et;
+    TextInputLayout til_gender_partner;
     AutoCompleteTextView til_gender_partner_act; // пол партнера
     TextInputLayout til_age_min;
     AutoCompleteTextView til_age_min_act; // возраст партнера минимальный
     TextInputLayout til_age_max;
     AutoCompleteTextView til_age_max_act; // возраст партнера максимальный
+    TextInputLayout til_region;
     AutoCompleteTextView til_region_act; // регион
     TextInputLayout til_town; // город
     AutoCompleteTextView til_town_act; // город
     TextInputLayout til_place; // место встречи
     TextInputEditText til_place_et; // место встречи
+    TextInputLayout til_time;
     AutoCompleteTextView til_time_act; // время
     TextInputLayout til_comment;
     TextInputEditText til_comment_et; // комментарий к встрече
@@ -114,16 +117,19 @@ public class FragmentRequestMeeting extends Fragment {
         til_soc_net_et = getActivity().findViewById(R.id.til_soc_net_et);
         til_contact = getActivity().findViewById(R.id.til_contact);
         til_contact_et = getActivity().findViewById(R.id.til_contact_et);
+        til_gender_partner = getActivity().findViewById(R.id.til_gender_partner);
         til_gender_partner_act = getActivity().findViewById(R.id.til_gender_partner_act); // низпадающий список выбора пола партнера
         til_age_min = getActivity().findViewById(R.id.til_age_min);
         til_age_min_act = getActivity().findViewById(R.id.til_age_min_act);
         til_age_max = getActivity().findViewById(R.id.til_age_max);
         til_age_max_act = getActivity().findViewById(R.id.til_age_max_act);
+        til_region = getActivity().findViewById(R.id.til_region);
         til_region_act = getActivity().findViewById(R.id.til_region_act);
         til_town = getActivity().findViewById(R.id.til_town);
         til_town_act = getActivity().findViewById(R.id.til_town_act);
         til_place = getActivity().findViewById(R.id.til_place);
         til_place_et = getActivity().findViewById(R.id.til_place_et);
+        til_time = getActivity().findViewById(R.id.til_time);
         til_time_act = getActivity().findViewById(R.id.til_time_act);
         til_comment = getActivity().findViewById(R.id.til_comment);
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
@@ -161,8 +167,21 @@ public class FragmentRequestMeeting extends Fragment {
 
 
 
-        // til_name_et ////////////////////////////////////////////////////////////////////////////
-        til_name_et.setText(saveParams.getString("name", ""));
+        // til_name_et //////////////////////////////////////////////////////////////////////////////
+        til_name_et.setText(saveParams.getString("name", "")); // восстанавливаем текст из памяти
+        // слушатель изменения текста
+        til_name_et.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            @Override
+            public void afterTextChanged(Editable s) {
+                if (!til_name_et.getText().toString().isEmpty()){
+                    til_name.setErrorEnabled(false); // убираем отображение ошибки
+                }
+            }
+        });
         //==========================================================================================
 
 
@@ -174,6 +193,14 @@ public class FragmentRequestMeeting extends Fragment {
         String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
         ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, gender); // связываем с адаптером
         til_gender_act.setAdapter(adapter_gender);
+
+        til_gender_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                til_gender.setErrorEnabled(false); // убираем описание ошибки
+            }
+        });
+
         //==========================================================================================
 
 
@@ -184,6 +211,13 @@ public class FragmentRequestMeeting extends Fragment {
         // набиваем список для выбора
         ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
         til_age_act.setAdapter(arrayAdapterAge); // связываем представление с адаптером
+
+        til_age_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                til_age.setErrorEnabled(false); // убираем описание ошибки
+            }
+        });
         // =========================================================================================
 
 
@@ -224,6 +258,11 @@ public class FragmentRequestMeeting extends Fragment {
 
 
 
+        // til_soc_net_et ////////////////////////////////////////////////////////////////////////////////
+        til_soc_net_et.setText(saveParams.getString("socNet", "")); // восстанавливаем выбранное значение из памяти);
+        // =============================================================================================
+
+
         // til_contact ////////////////////////////////////////////////////////////////////////////
         til_contact_et.setText(saveParams.getString("contact", "")); // восстанавливаем выбранное значение из памяти
 
@@ -257,6 +296,14 @@ public class FragmentRequestMeeting extends Fragment {
         til_gender_partner_act.setText(saveParams.getString("gender_partner", "")); // восстанавливаем выбранное значение из памяти
 
         til_gender_partner_act.setAdapter(adapter_gender); //список для выбора
+
+        //слушатель при выборе любого элемента
+        til_gender_partner_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                til_gender_partner.setErrorEnabled(false);
+            }
+        });
         //=============================================================================================
 
 
@@ -311,6 +358,8 @@ public class FragmentRequestMeeting extends Fragment {
                 til_town.setEnabled(true);
                 til_town_act.setEnabled(true);
                 til_town_act.setText("");
+
+                til_region.setErrorEnabled(false); //сбрасываем ошибку
             }
         });
         //=====================================================================================================
@@ -330,6 +379,13 @@ public class FragmentRequestMeeting extends Fragment {
             til_town_act.setText(saveParams.getString("town", "")); // подгружаем имя города из памяти
             til_town_act.setAdapter(CreateAdapterTowns(saveParams.getString("region", "")));//тут нужно дернуть лушатель, чтобы подгрузил города
         }
+
+        til_town_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                til_town.setErrorEnabled(false); // сбрасываем описание ошибки
+            }
+        });
         //===========================================================================================
 
 
@@ -340,10 +396,13 @@ public class FragmentRequestMeeting extends Fragment {
         til_place_et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                til_place.setErrorEnabled(false);
                 SaveParams(); // сохраняем значения полей в память
                 listMeetingsTbActivity.ChangeFragment(fragmentPlace, "fragmentPlace", true);
             }
         });
+
+
         //===========================================================================================
 
 
@@ -355,6 +414,13 @@ public class FragmentRequestMeeting extends Fragment {
         //формируем список для сохранения времени
         ArrayAdapter<String> adapter_time = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.times);
         til_time_act.setAdapter(adapter_time);
+
+        til_time_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                til_time.setErrorEnabled(false);
+            }
+        });
         //==========================================================================================
 
 
@@ -389,7 +455,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // btn_apply_request /////////////////////////////////////////////////////////////////////////
-        //слушатель нажатия на кнопку подучи заявки
+        //слушатель нажатия на кнопку подачи заявки
         btn_apply_request.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -455,8 +521,49 @@ public class FragmentRequestMeeting extends Fragment {
                     });
 
 
-                } else {// если одно из полей не заполнено
-                    Toast.makeText(getActivity().getApplicationContext(), "Заполните все поля", Toast.LENGTH_LONG).show();
+                } else {// если одно из обязательных полей не заполнено в заявке
+
+                    if (til_name_et.getText().toString().isEmpty()) {          // если имя не пустое
+                        til_name.setError("Введите Ваше имя");
+                    }
+
+                    if (til_gender_act.getText().toString().isEmpty()) {       // если пол не выбран
+                        til_gender.setError("Выберите Ваш пол");
+                    }
+
+                    if (til_age_act.getText().toString().isEmpty()) {       //если возраст не выбран
+                        til_age.setError("Выберите Ваш возраст");
+                    }
+
+                    if (til_gender_partner_act.getText().toString().isEmpty()) {       //если пол партнера не выбран
+                        til_gender_partner.setError("Выберите пол");
+                    }
+
+                    if (til_age_min_act.getText().toString().isEmpty()) {       //если возраст минимальный партнера не выбран
+                        til_age_min.setError("Выберите минимальный возраст");
+                    }
+
+                    if (til_age_max_act.getText().toString().isEmpty()) {       //если возраст максимальный партнера не выбран
+                        til_age_max.setError("Выберите максимальный возраст");
+                    }
+
+                    if (til_region_act.getText().toString().isEmpty()) {       //если регион не выбран
+                        til_region.setError("Выберите регион");
+                    }
+
+                    if (til_town_act.getText().toString().isEmpty()) {       //если город не выбран
+                        til_town.setError("Выберите город");
+                    }
+
+                    if (til_place_et.getText().toString().isEmpty()) {       //если место не выбрано
+                        til_place.setError("Выберите место встречи");
+                    }
+
+                    if (til_time_act.getText().toString().isEmpty()) {      //если время не выбрано
+                        til_time.setError("Выберите время встречи");
+                    }
+
+                    Toast.makeText(getActivity().getApplicationContext(), "Заполните обязательные поля выделенные красным цветом", Toast.LENGTH_LONG).show();
                 }
 
 
@@ -481,6 +588,32 @@ public class FragmentRequestMeeting extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+
+        til_name_et.setText(saveParams.getString("name", "")); // восстанавливаем текст из памяти
+        til_gender_act.setText(saveParams.getString("gender", ""));
+        til_age_act.setText(saveParams.getString("age", "")); // восстанавливаем выбранное значение из памяти
+        til_phone_et.setText(saveParams.getString("phone", "")); // восстанавливаем выбранное значение из памяти
+
+        // cb_only_write ////////////////////////////////////////////////////////////////////////////////
+        //восстанавливаем из памяти
+        if (saveParams.getString("onlyWrite", "false").equals("false")){ // если галка не сохранена
+            cb_only_write.setChecked(false);// то не ставим галку
+        } else {
+            cb_only_write.setChecked(true);
+        }
+        // ==============================================================================================
+
+        til_soc_net_et.setText(saveParams.getString("socNet", "")); // восстанавливаем выбранное значение из памяти);
+        til_contact_et.setText(saveParams.getString("contact", "")); // восстанавливаем выбранное значение из памяти
+        til_gender_partner_act.setText(saveParams.getString("gender_partner", "")); // восстанавливаем выбранное значение из памяти
+        til_age_min_act.setText(saveParams.getString("age_min", "18")); // восстанавливаем выбранное значение из памяти
+        til_age_max_act.setText(saveParams.getString("age_max", "70"));
+        til_region_act.setText(saveParams.getString("region", ""));  // восстанавливаем выбранное значение из памяти
+        til_town_act.setText(saveParams.getString("town", "")); // подгружаем имя города из памяти
+
+
+
+        //til_place_et /////////////////////////////////////////////////////////////////////////////////////
         til_place_et.setText(""); //очищаем на всякий текст
         tmpStr = "";
         // если любое место, то так и пишем, если нет, то перечисляем все выбранные
@@ -549,6 +682,10 @@ public class FragmentRequestMeeting extends Fragment {
 
         }
         til_place_et.setText(tmpStr);
+        //==================================================================================================
+
+        til_time_act.setText(saveParams.getString("time", "")); // восстанавливаем выбранное значение из памяти
+        til_comment_et.setText(saveParams.getString("comment", "")); // восстанавливаем выбранное значение из памяти1233333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333331
 
     }
 
@@ -596,7 +733,7 @@ public class FragmentRequestMeeting extends Fragment {
     /**
      * Сохраняет значения введенных полей в энергонезависимую память
      */
-    void SaveParams () {
+    private void SaveParams () {
         editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память
 
         editorSaveParams.putString("name", til_name_et.getText().toString());
