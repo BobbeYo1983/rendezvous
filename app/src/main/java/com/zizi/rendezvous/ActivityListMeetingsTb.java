@@ -38,7 +38,8 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
     Fragment currentFragment; // текущий фрагмент
     DatabaseReference databaseReference; //ссылка на данные
     FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
-    //SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
+    SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
+    String requestNotFilled; // заявка не заполнялась
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,9 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
         fragmentRequestMeeting = new FragmentRequestMeeting();
         fragmentManager = getSupportFragmentManager();
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД
+        saveParams = getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
+        requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
+
 
         //ищем нужные элементы
         topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar); // верхняя панель с кнопками
@@ -61,10 +65,7 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели
                 if(item.getItemId() == R.id.request) // если нажата кнопка показать заявку
                 {
-                    //if (fragmentManager.findFragmentByTag(FragmentListMeetings.TAG) == null) { // если фрагмент с заявкой не показан, то показываем иначе бездействуем, чтобы в стек навигации не добавлялся
-                        ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", true); // грузим фрагмент с заявкой на встречу
-                    //}
-
+                    ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", true); // грузим фрагмент с заявкой на встречу
                 }
                 return false;
             }
@@ -91,7 +92,11 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
         //}
         //intent.getEx
 
-        ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем встречи
+        if (requestNotFilled.equals("true")) {// если заявка никогда не заполнялась
+            ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+        } else {
+            ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+        }
     }
 
 /*    @Override //метод когда принимается новое намерение

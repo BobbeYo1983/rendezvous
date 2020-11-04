@@ -70,6 +70,7 @@ public class FragmentRequestMeeting extends Fragment {
     TextInputLayout til_age_max;
     AutoCompleteTextView til_age_max_act; // возраст партнера максимальный
     AutoCompleteTextView til_region_act; // регион
+    TextInputLayout til_town; // город
     AutoCompleteTextView til_town_act; // город
     TextInputLayout til_place; // место встречи
     TextInputEditText til_place_et; // место встречи
@@ -77,8 +78,7 @@ public class FragmentRequestMeeting extends Fragment {
     TextInputLayout til_comment;
     TextInputEditText til_comment_et; // комментарий к встрече
     Button btn_apply_request; // кнопка подачи заявки
-
-    //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Объявление - КОНЕЦ =============================================================================
 
 
     @Override
@@ -92,15 +92,14 @@ public class FragmentRequestMeeting extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //инициализация - НАЧАЛО
+        //инициализация - НАЧАЛО////////////////////////////////////////////////////////////////////
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         fbStore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
-        //arrayListAges = new ArrayList();
-
+        saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
 
 
         // находим все вьюхи на активити
@@ -121,6 +120,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_age_max = getActivity().findViewById(R.id.til_age_max);
         til_age_max_act = getActivity().findViewById(R.id.til_age_max_act);
         til_region_act = getActivity().findViewById(R.id.til_region_act);
+        til_town = getActivity().findViewById(R.id.til_town);
         til_town_act = getActivity().findViewById(R.id.til_town_act);
         til_place = getActivity().findViewById(R.id.til_place);
         til_place_et = getActivity().findViewById(R.id.til_place_et);
@@ -129,12 +129,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
         topAppBar = getActivity().findViewById(R.id.topAppBar);
         btn_apply_request = getActivity().findViewById(R.id.btn_apply_request);
-
-        saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
-
-        requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет
-
-        //инициализация - КОНЕЦ
+        //инициализация - КОНЕЦ ========================================================================
 
 
 
@@ -142,19 +137,26 @@ public class FragmentRequestMeeting extends Fragment {
         topAppBar.setTitle("Заявка"); // заголовок в панельке верхней
         topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
 
+        requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
+
         if(requestNotFilled.equals("true")) {// если заявка не заполнялась/не сохранялась
             topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
+            topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    //getActivity().onBackPressed();
+                }
+            });
         } else {
             topAppBar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
+            // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
+            topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    getActivity().onBackPressed();
+                }
+            });
         }
-
-        // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
-        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                getActivity().onBackPressed();
-            }
-        });
         //==========================================================================================
 
 
@@ -192,19 +194,15 @@ public class FragmentRequestMeeting extends Fragment {
         //слушатель введенного текста, нужен для показать или спрятать подсказку
         til_phone_et.addTextChangedListener(new TextWatcher() {
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
                 if (til_phone_et.getText().toString().isEmpty()){ // если телефон не указан, то галку "не звонить" делаем неактивной
-                    cb_only_write.setEnabled(false);
+                    cb_only_write.setEnabled(false); //то галку "не звонить" делаем неактивной
+                    cb_only_write.setChecked(false); // то галку убираем
                 } else {
                     cb_only_write.setEnabled(true);
                 }
@@ -237,15 +235,9 @@ public class FragmentRequestMeeting extends Fragment {
         }
         til_contact_et.addTextChangedListener(new TextWatcher() { // при изменении текста в контактных данных
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-
-
-            }
-
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
 
             @Override
             public void afterTextChanged(Editable s) {
@@ -309,29 +301,35 @@ public class FragmentRequestMeeting extends Fragment {
         //формируем список для выбора
         ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.regionsTmp);
         til_region_act.setAdapter(adapter_regions);
-        //////////////////////////////////////////////////////////////////////////////////////////////
-
-
-
-        //til_town_act заполняем список с городами///////////////////////////////////////////////////
-        til_town_act.setThreshold(100);
-        if (saveParams.getString("town", "").equals("")) {//если в памяти поле с городом пустое, то
-            til_town_act.setEnabled(false); // то делаем не активным
-        } else {
-            til_town_act.setEnabled(true); // то делаем активным
-            til_town_act.setText(saveParams.getString("town", "")); // подгружаем имя города из памяти
-            til_town_act.setAdapter(CreateAdapterTowns(saveParams.getString("region", "")));//тут нужно дернуть лушатель, чтобы подгрузил города
-        }
 
         //слушатель - если меняется выбор региона
         til_region_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v, int position, long id) {
 
-                til_town_act.setAdapter(CreateAdapterTowns(parent.getItemAtPosition(position).toString())); // в зависимости от выбранного региона формируем список городов
+                // в зависимости от выбранного региона формируем список городов
+                til_town_act.setAdapter(CreateAdapterTowns(parent.getItemAtPosition(position).toString()));
+                til_town.setEnabled(true);
                 til_town_act.setEnabled(true);
                 til_town_act.setText("");
             }
         });
+        //=====================================================================================================
+
+
+
+        //til_town_act заполняем список с городами///////////////////////////////////////////////////
+        til_town_act.setThreshold(100);
+        //if (saveParams.getString("town", "").equals("")) {//если в памяти поле с городом пустое, то
+        //String str = til_region_act.getText().toString();
+        if (til_region_act.getText().toString().equals("")) { // если поле с регионом пустое, то блокируем выбор города
+            til_town.setEnabled(false); // то делаем не активным
+            til_town_act.setEnabled(false); // то делаем не активным
+        } else {
+            til_town.setEnabled(true);
+            til_town_act.setEnabled(true); // то делаем активным
+            til_town_act.setText(saveParams.getString("town", "")); // подгружаем имя города из памяти
+            til_town_act.setAdapter(CreateAdapterTowns(saveParams.getString("region", "")));//тут нужно дернуть лушатель, чтобы подгрузил города
+        }
         //===========================================================================================
 
 
@@ -342,6 +340,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_place_et.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                SaveParams(); // сохраняем значения полей в память
                 listMeetingsTbActivity.ChangeFragment(fragmentPlace, "fragmentPlace", true);
             }
         });
@@ -439,25 +438,10 @@ public class FragmentRequestMeeting extends Fragment {
                         @Override
                         public void onSuccess(Void aVoid) {
 
+                            SaveParams(); // запоминаем поля
+
                             editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память
-
-                            editorSaveParams.putString("name", til_name_et.getText().toString());
-                            editorSaveParams.putString("gender", til_gender_act.getEditableText().toString());
-                            editorSaveParams.putString("age", til_age_act.getText().toString());
-                            editorSaveParams.putString("phone", til_phone_et.getText().toString());
-                            editorSaveParams.putString("onlyWrite", String.valueOf(cb_only_write.isChecked()));
-                            editorSaveParams.putString("socNet", til_soc_net_et.getText().toString());
-                            editorSaveParams.putString("contact", til_contact_et.getText().toString());
-                            editorSaveParams.putString("gender_partner", til_gender_partner_act.getEditableText().toString());
-                            editorSaveParams.putString("age_min", til_age_min_act.getText().toString());
-                            editorSaveParams.putString("age_max", til_age_max_act.getText().toString());
-                            editorSaveParams.putString("region", til_region_act.getEditableText().toString());
-                            editorSaveParams.putString("town", til_town_act.getEditableText().toString());
-                            editorSaveParams.putString("place", til_place_et.getEditableText().toString());
-                            editorSaveParams.putString("time", til_time_act.getEditableText().toString());
-                            editorSaveParams.putString("comment", til_comment_et.getText().toString());
-                            editorSaveParams.putString("requestNotFilled", "false");
-
+                            editorSaveParams.putString("requestNotFilled", "false"); //делаем отметочку, что заявка хоть раз заполнялась
                             editorSaveParams.apply();
 
                             //Если лимит не исчерпан грузим фрагмент с заявками
@@ -607,6 +591,31 @@ public class FragmentRequestMeeting extends Fragment {
                 break;
         }
         return adapter_towns;
+    }
+
+    /**
+     * Сохраняет значения введенных полей в энергонезависимую память
+     */
+    void SaveParams () {
+        editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память
+
+        editorSaveParams.putString("name", til_name_et.getText().toString());
+        editorSaveParams.putString("gender", til_gender_act.getEditableText().toString());
+        editorSaveParams.putString("age", til_age_act.getText().toString());
+        editorSaveParams.putString("phone", til_phone_et.getText().toString());
+        editorSaveParams.putString("onlyWrite", String.valueOf(cb_only_write.isChecked()));
+        editorSaveParams.putString("socNet", til_soc_net_et.getText().toString());
+        editorSaveParams.putString("contact", til_contact_et.getText().toString());
+        editorSaveParams.putString("gender_partner", til_gender_partner_act.getEditableText().toString());
+        editorSaveParams.putString("age_min", til_age_min_act.getText().toString());
+        editorSaveParams.putString("age_max", til_age_max_act.getText().toString());
+        editorSaveParams.putString("region", til_region_act.getEditableText().toString());
+        editorSaveParams.putString("town", til_town_act.getEditableText().toString());
+        editorSaveParams.putString("place", til_place_et.getEditableText().toString());
+        editorSaveParams.putString("time", til_time_act.getEditableText().toString());
+        editorSaveParams.putString("comment", til_comment_et.getText().toString());
+
+        editorSaveParams.apply();
     }
 
 }

@@ -81,11 +81,11 @@ public class FragmentPlace extends Fragment {
         cb_other = getActivity().findViewById(R.id.cb_other);
 
         til_other_et = getActivity().findViewById(R.id.til_other_et);
+        // ==========================================================================================
 
 
 
-
-
+        // topAppBar /////////////////////////////////////////////////////////////////////////////////
         topAppBar.setTitle("Место встречи"); // заголовок панельки
         topAppBar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
 
@@ -96,6 +96,7 @@ public class FragmentPlace extends Fragment {
                 getActivity().onBackPressed();
             }
         });
+        //===========================================================================================
 
         //Слушатель изменения общей галки Любое место
         cb_anyPlace.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
