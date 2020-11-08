@@ -9,6 +9,8 @@ public class ModelSingleMeeting {
     //!!!!!!!!!!!! Переменные с нижним подчеркиванием из БД почему то не выбираются
     private String userID;
     private String token;
+    private String email;
+
     private String name;
     private String age;
     private String comment;
@@ -32,6 +34,10 @@ public class ModelSingleMeeting {
         return token;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
     public String getName() {
         return name;
     }
@@ -44,12 +50,19 @@ public class ModelSingleMeeting {
         return comment;
     }
 
+
+
+    //Setters
     public void setUserID(String userID) {
         this.userID = userID;
     }
 
     public void setToken(String token) {
         this.token = token;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
     }
 
     public void setName(String name) {

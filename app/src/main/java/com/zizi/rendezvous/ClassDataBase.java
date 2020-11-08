@@ -77,6 +77,7 @@ public class ClassDataBase {
                     if (document.exists()) { // если документ такой есть, не null
 
                         mapDocument = document.getData(); // получаем данные из документа БД
+
                         // если нужно получить поле document.getString("names"));
 
                     } else { // если документа не существует
@@ -92,6 +93,7 @@ public class ClassDataBase {
         });
 
         return mapDocument;
+
 
     }
 

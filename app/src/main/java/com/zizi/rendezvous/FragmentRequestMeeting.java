@@ -496,8 +496,9 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("comment", til_comment_et.getText().toString().trim());
 
                     //добавляем прочие служебные параметры для подачи заявки
-                    meeting.put("userID", currentUser.getUid().toString());
+                    meeting.put("userID", currentUser.getUid());
                     meeting.put("token", ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext()));
+                    meeting.put("email", currentUser.getEmail());
 
                     // если запись в БД успешна
                     documentReference.set(meeting).addOnSuccessListener(new OnSuccessListener<Void>() { //
@@ -751,6 +752,8 @@ public class FragmentRequestMeeting extends Fragment {
         editorSaveParams.putString("place", til_place_et.getEditableText().toString());
         editorSaveParams.putString("time", til_time_act.getEditableText().toString());
         editorSaveParams.putString("comment", til_comment_et.getText().toString().trim());
+
+        //editorSaveParams.putString("email", currentUser.getEmail());
 
         editorSaveParams.apply();
     }

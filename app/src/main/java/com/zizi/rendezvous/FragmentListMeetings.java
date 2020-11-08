@@ -118,15 +118,10 @@ public class FragmentListMeetings extends Fragment {
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         activityMeetings = (ActivityMeetings)getActivity();
         topAppBar = getActivity().findViewById(R.id.topAppBar);
-
         //инициализация - КОНЕЦ
 
+        // bottomNavigationView ////////////////////////////////////////////////////////////////////
         bottomNavigationView.setSelectedItemId(R.id.meetings); // делаем нужный пункт нижней панели по умолчанию
-        topAppBar.setTitle("Встречи");
-        topAppBar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
-        topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации стрелочкой назад в верхней панельке
-
-        //добавляем слушателей - НАЧАЛО
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
@@ -139,6 +134,16 @@ public class FragmentListMeetings extends Fragment {
             }
         });
 
+        ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
+        //==========================================================================================
+
+
+
+        // topAppBar ////////////////////////////////////////////////////////////////////////////////
+        topAppBar.setTitle("Встречи");
+        topAppBar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
+        topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации стрелочкой назад в верхней панельке
+
         // событие при клике на кнопку навигации на верхней панельке
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -146,11 +151,11 @@ public class FragmentListMeetings extends Fragment {
                 //getActivity().onBackPressed();
             }
         });
-        //добавляем слушателей - КОНЕЦ
+        //==========================================================================================
 
 
-        ArrayList<ModelSingleMeeting> a1 = new ArrayList<>();
 
+        // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         query = fB_fStore.collection("meetings"); // запрос к БД
         options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч
         adapter = new FirestoreRecyclerAdapter<ModelSingleMeeting, FragmentListMeetings.SingleMeetingViewHolder>(options) { //показываем адаптеру класс одной встречи, вид встречи и подсовываем выборку из БД
@@ -162,8 +167,9 @@ public class FragmentListMeetings extends Fragment {
 
             }
 
+            // метод при обновлении данных
             @Override
-            protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) { // метод при обновлении данных
+            protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) {
 
                 DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД
                 //String id = snapshot.getId(); // имя докумета, которое видится в FireBase console
@@ -197,12 +203,9 @@ public class FragmentListMeetings extends Fragment {
         rv_meeting.setHasFixedSize(true); // говорят для производительности RecyclerView
         rv_meeting.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext())); // ориентацию RecyclerView делаем вертикальной, еще бывает мозаикой помоему или горизонтальной
         rv_meeting.setAdapter(adapter); // ну и связываем вьюху с адаптером железно и навсегда
-
-        ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
+        //==========================================================================================
 
     }
-
-
 
     class SingleMeetingViewHolder extends RecyclerView.ViewHolder { // класс одной ячейки
 
@@ -228,6 +231,11 @@ public class FragmentListMeetings extends Fragment {
                 @Override
                 public void onClick(View v) {
 
+                    //готовим аргументы для передачи в другой фрагмент
+                    bundleToChat.clear();
+                    bundleToChat.putString("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
+                    fragmentDetailsMeeting.setArguments(bundleToChat); // добавить все аргументы
+
                     activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
 
                 }
@@ -238,15 +246,14 @@ public class FragmentListMeetings extends Fragment {
                 @Override
                 public void onClick(View v) {
 
+                    //готовим аргументы для передачи
+                    bundleToChat.clear();
                     bundleToChat.putString("partnerID", usersInfoAll.get(getAdapterPosition()).getUserID()); // добавляем аргумент для передачи в другой фрагмент
                     bundleToChat.putString("partnerToken", usersInfoAll.get(getAdapterPosition()).getToken()); // добавляем аргумент для передачи в другой фрагмент
                     bundleToChat.putString("partnerName", usersInfoAll.get(getAdapterPosition()).getName()); // добавляем аргумент для передачи в другой фрагмент
                     bundleToChat.putString("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge()); // добавляем аргумент для передачи в другой фрагмент
-
-                    //bundleToChat.putString("currentUserID", currentUser.getUid()); // ID текущего пользователя
-                    //bundleToChat.putString("currentUserToken", ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext())); // Токен текущего пользователя
-
                     fragmentChat.setArguments(bundleToChat); // добавить все аргументы
+
                     activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
                 }
             });
