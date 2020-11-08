@@ -29,9 +29,6 @@
         </activity>
 
         <activity
-            android:name=".ActivityDetailsMeeting"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".ActivityLogin"
             android:screenOrientation="portrait">
             <intent-filter>
