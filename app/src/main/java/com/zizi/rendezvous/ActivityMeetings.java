@@ -1,6 +1,5 @@
 package com.zizi.rendezvous;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -10,23 +9,15 @@ import androidx.fragment.app.FragmentTransaction;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.view.Menu;
-import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
-import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 
-public class ActivityListMeetingsTb extends AppCompatActivity {
+public class ActivityMeetings extends AppCompatActivity {
 
     //ИНИЦИАЛИЗАЦИЯ
     FirebaseAuth mAuth; // для работы с авторизацией FireBase
@@ -45,7 +36,7 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_list_meetings_tb);
+        setContentView(R.layout.activity_meetings);
 
         //инициализация - НАЧАЛО
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
@@ -149,7 +140,7 @@ public class ActivityListMeetingsTb extends AppCompatActivity {
         FirebaseUser currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) { // если пользователь пустой, не авторизирован
-            startActivity(new Intent(ActivityListMeetingsTb.this, ActivityLogin.class)); // отправляем к началу на авторизацию
+            startActivity(new Intent(ActivityMeetings.this, ActivityLogin.class)); // отправляем к началу на авторизацию
             finish(); // убиваем активити
         }
     }

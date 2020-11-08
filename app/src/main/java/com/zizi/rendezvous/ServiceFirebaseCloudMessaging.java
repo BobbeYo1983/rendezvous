@@ -1,37 +1,19 @@
 package com.zizi.rendezvous;
 
-import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
 import android.content.Context;
 import android.content.Intent;
-import android.content.SharedPreferences;
-import android.graphics.BitmapFactory;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
-import android.util.Log;
 //import android.support.v4.app.NotificationCompat;
 
-import androidx.annotation.NonNull;
 import androidx.core.app.NotificationCompat;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.iid.FirebaseInstanceId;
-import com.google.firebase.iid.InstanceIdResult;
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
-
-import java.util.Map;
-
-import static android.content.ContentValues.TAG;
 
 
 public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
@@ -41,7 +23,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
     public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление
         super.onMessageReceived(remoteMessage);
 
-        Intent intent = new Intent(getApplicationContext(), ActivityListMeetingsTb.class);
+        Intent intent = new Intent(getApplicationContext(), ActivityMeetings.class);
         //intent.putExtra("fragmentName", "fragmentListChats");
         //intent.putExtra("1", "1");
 
@@ -59,7 +41,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
 
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(ActivityListMeetingsTb.class); // добавляем в стек с активити, родительскую активити. В манифесте у дочерних активити можно прописать типа android:parentActivityName=".MainActivity", тогда  откроется дочерне активити.
+        stackBuilder.addParentStack(ActivityMeetings.class); // добавляем в стек с активити, родительскую активити. В манифесте у дочерних активити можно прописать типа android:parentActivityName=".MainActivity", тогда  откроется дочерне активити.
 
         // Adds the Intent that starts the Activity to the top of the stack
         stackBuilder.addNextIntent(intent); // добавляем в стек интент

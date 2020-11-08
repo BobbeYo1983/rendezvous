@@ -21,7 +21,7 @@
                 tools:node="remove" />
 
         </activity>
-        <activity android:name=".ActivityListMeetingsTb" android:launchMode="singleInstance" >
+        <activity android:name=".ActivityMeetings" android:launchMode="singleInstance" >
                 <intent-filter>
                     <action android:name="Open_ActivityListMeetingsTb" />
                     <category android:name="android.intent.category.DEFAULT" />

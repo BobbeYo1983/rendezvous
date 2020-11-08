@@ -295,7 +295,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 //Intent intent = new Intent(ActivityLogin.this, ActivityListMeetingsTb.class);
                 //intent.putExtra("1", "1");
                 //startActivity(intent);
-                startActivity(new Intent(ActivityLogin.this, ActivityListMeetingsTb.class));// переходим на след активити ко встречам
+                startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
                 finish(); // убиваем активити
             }
         });

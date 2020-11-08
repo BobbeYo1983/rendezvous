@@ -44,7 +44,7 @@ public class FragmentRequestMeeting extends Fragment {
     Map<String, Object> meeting; // коллекция ключ-значение для описания встречи
     SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
     SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
-    ActivityListMeetingsTb listMeetingsTbActivity; // настоящая активити
+    ActivityMeetings listMeetingsTbActivity; // настоящая активити
     FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     FragmentPlace fragmentPlace; // фрагмент с выбором места
     ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
@@ -99,7 +99,7 @@ public class FragmentRequestMeeting extends Fragment {
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         fbStore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
-        listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
+        listMeetingsTbActivity = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
         saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения

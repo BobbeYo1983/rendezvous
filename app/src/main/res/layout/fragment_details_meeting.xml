@@ -23,7 +23,7 @@
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="18sp"
-                android:text="Заполните заявку на встречу"
+                android:text="Подробности встречи"
                 android:layout_marginBottom="10dp"/>
 
             <com.google.android.material.textfield.TextInputLayout
@@ -31,7 +31,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:hint="Ваше имя:"
+                android:hint="Имя:"
                 app:startIconDrawable="@drawable/ic_outline_account_box_24"
                 app:counterEnabled="true"
                 app:counterMaxLength="25"

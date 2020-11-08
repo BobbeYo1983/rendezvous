@@ -1,7 +1,6 @@
 package com.zizi.rendezvous;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -24,16 +21,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -56,8 +47,7 @@ public class FragmentListMeetings extends Fragment {
     FirestoreRecyclerAdapter adapter; //связывает вьюху и БД
     //ArrayList<String> usersIDs; // айдишники юзеров
     BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
-    ActivityListMeetingsTb listMeetingsTbActivity; // активити для переключения фрагментов из фрагментов
-    //FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
+    ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     FragmentListChats fragmentListChats; //фрагмент с чатами
     FragmentChat fragmentChat; // фрагмент с одним чатом
     Bundle bundleToChat; // параметры для передачи в фрагмент чата
@@ -69,6 +59,7 @@ public class FragmentListMeetings extends Fragment {
     FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
     DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
     int countUnreads;
+    FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -120,11 +111,12 @@ public class FragmentListMeetings extends Fragment {
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         currentUser = mAuth.getCurrentUser(); // получаем текущего пользователя
         countUnreads = 0; // количество непрочитанных переменных
+        fragmentDetailsMeeting = new FragmentDetailsMeeting();
 
         //ищем нужные элементы
         rv_meeting = getActivity().findViewById(R.id.rv_meeting); // список со встречами
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
-        listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
+        activityMeetings = (ActivityMeetings)getActivity();
         topAppBar = getActivity().findViewById(R.id.topAppBar);
 
         //инициализация - КОНЕЦ
@@ -140,7 +132,7 @@ public class FragmentListMeetings extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.chats: // при нажатии на кнопочку Чаты в нижней панели
-                        listMeetingsTbActivity.ChangeFragment(fragmentListChats, "fragmentListChats", false);
+                        activityMeetings.ChangeFragment(fragmentListChats, "fragmentListChats", false);
                         return true;
                 }
                 return false;
@@ -231,15 +223,17 @@ public class FragmentListMeetings extends Fragment {
             btn_write = itemView.findViewById(R.id.btn_write);
 
 
-            //устанавливаем слушателей
+            //Нажати на кнопку ПОДРОБНОСТИ
             btn_details.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку подробности
                 @Override
                 public void onClick(View v) {
-                    // перейти на фрагмент с подробностями
-                    //listMeetingsTbActivity.ChangeFragment(fragmentListMeetings);// переходим к списку со встречами
+
+                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
+
                 }
             });
 
+            //Нажатие на кнопку НАПИСАТЬ
             btn_write.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку написать
                 @Override
                 public void onClick(View v) {
@@ -253,7 +247,7 @@ public class FragmentListMeetings extends Fragment {
                     //bundleToChat.putString("currentUserToken", ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext())); // Токен текущего пользователя
 
                     fragmentChat.setArguments(bundleToChat); // добавить все аргументы
-                    listMeetingsTbActivity.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+                    activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
                 }
             });
 
