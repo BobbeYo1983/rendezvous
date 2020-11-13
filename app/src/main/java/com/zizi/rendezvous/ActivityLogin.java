@@ -288,8 +288,8 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 //Toast.makeText(Login.this, "Регистрация успешна", Toast.LENGTH_LONG).show();
                 if (email_storage.equals("") && password_storage.equals("") ) { // если пользователь и пароль из памяти пустые и ранее не запоминались, то запомним для автовхода
                     editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память для входа
-                    editorSaveParams.putString("email_storage", email);
-                    editorSaveParams.putString("password_storage", password);
+                    editorSaveParams.putString("email_storage", email.toString());
+                    editorSaveParams.putString("password_storage", password.toString());
                     editorSaveParams.apply();
                 }
                 //Intent intent = new Intent(ActivityLogin.this, ActivityListMeetingsTb.class);

@@ -31,7 +31,7 @@ public class ActivityMeetings extends AppCompatActivity {
     FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
     SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
     String requestNotFilled; // заявка не заполнялась
-    ClassDataBase classDataBase; // класс для работы с БД
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,7 +46,7 @@ public class ActivityMeetings extends AppCompatActivity {
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         saveParams = getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
         requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
-        classDataBase = new ClassDataBase();
+
 
         //ищем нужные элементы
         topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar); // верхняя панель с кнопками

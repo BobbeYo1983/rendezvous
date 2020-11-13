@@ -66,7 +66,7 @@ public class ClassDataBase {
      */
     public Map<String, Object> ReadDocument (final String nameCollection, final String nameDocument) {
 
-        mapDocument.clear(); // очищаем коллекцию
+        //mapDocument.clear(); // очищаем коллекцию
 
         documentReference = firebaseFirestore.collection(nameCollection).document(nameDocument); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
@@ -76,6 +76,7 @@ public class ClassDataBase {
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
 
+                        mapDocument.clear(); // очищаем коллекцию
                         mapDocument = document.getData(); // получаем данные из документа БД
 
                         // если нужно получить поле document.getString("names"));
