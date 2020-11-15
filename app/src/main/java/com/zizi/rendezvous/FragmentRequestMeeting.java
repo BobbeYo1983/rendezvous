@@ -249,7 +249,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // cb_only_write ////////////////////////////////////////////////////////////////////////////////
         //восстанавливаем из памяти
-        if (saveParams.getString("onlyWrite", "false").equals("false")){ // если галка не сохранена
+        if (saveParams.getString("onlyWrite", "falseFalse").equals("falseFalse")){ // если галка не сохранена
             cb_only_write.setChecked(false);// то не ставим галку
         } else {
             cb_only_write.setChecked(true);
@@ -483,7 +483,11 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("gender", til_gender_act.getEditableText().toString().trim());
                     meeting.put("age", til_age_act.getText().toString().trim());
                     meeting.put("phone", til_phone_et.getText().toString().trim());
-                    meeting.put("onlyWrite", cb_only_write.isChecked());
+                    if (cb_only_write.isChecked()) {
+                        meeting.put("onlyWrite", "trueTrue");
+                    } else {
+                        meeting.put("onlyWrite", "falseFalse");
+                    }
                     meeting.put("socNet", til_soc_net_et.getText().toString().trim());
                     meeting.put("contact", til_contact_et.getText().toString().trim());
                     meeting.put("gender_partner", til_gender_partner_act.getEditableText().toString().trim());
@@ -597,7 +601,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // cb_only_write ////////////////////////////////////////////////////////////////////////////////
         //восстанавливаем из памяти
-        if (saveParams.getString("onlyWrite", "false").equals("false")){ // если галка не сохранена
+        if (saveParams.getString("onlyWrite", "falseFalse").equals("falseFalse")){ // если галка не сохранена
             cb_only_write.setChecked(false);// то не ставим галку
         } else {
             cb_only_write.setChecked(true);
@@ -741,7 +745,11 @@ public class FragmentRequestMeeting extends Fragment {
         editorSaveParams.putString("gender", til_gender_act.getEditableText().toString());
         editorSaveParams.putString("age", til_age_act.getText().toString());
         editorSaveParams.putString("phone", til_phone_et.getText().toString().trim());
-        editorSaveParams.putString("onlyWrite", String.valueOf(cb_only_write.isChecked()));
+        if (cb_only_write.isChecked()){
+            editorSaveParams.putString("onlyWrite", "trueTrue");
+        } else {
+            editorSaveParams.putString("onlyWrite", "falseFalse");
+        }
         editorSaveParams.putString("socNet", til_soc_net_et.getText().toString().trim());
         editorSaveParams.putString("contact", til_contact_et.getText().toString().trim());
         editorSaveParams.putString("gender_partner", til_gender_partner_act.getEditableText().toString());
