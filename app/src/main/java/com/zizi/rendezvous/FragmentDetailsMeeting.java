@@ -22,6 +22,7 @@ public class FragmentDetailsMeeting extends Fragment {
     private Bundle bundle; // для приема параметров в фрагмент
     private Map<String, Object> mapDocument; //Документ с информацией о встрече
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
+    private ClassDataBase classDataBase; // класс для работы с БД
 
     //виджеты
     private TextInputLayout til_name;
@@ -46,6 +47,7 @@ public class FragmentDetailsMeeting extends Fragment {
         bundle = getArguments();
         mapDocument = new HashMap<String, Object>();
         activityMeetings = (ActivityMeetings)getActivity(); // получаем объект текущей активити
+        //classDataBase = new ClassDataBase();
 
         // находим все вьюхи на активити
         til_name = getActivity().findViewById(R.id.til_name);
@@ -56,8 +58,10 @@ public class FragmentDetailsMeeting extends Fragment {
         if (bundle != null) { // извлекаем аргументы полученные из другого фрагмента
 
             //Читаем документ со встречей партнера из БД
-            mapDocument = activityMeetings.classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
+            //mapDocument = classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
             //mapDocument = activityMeetings.classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
+
+            til_name_et.setText("Text"); //
 
         }
 
