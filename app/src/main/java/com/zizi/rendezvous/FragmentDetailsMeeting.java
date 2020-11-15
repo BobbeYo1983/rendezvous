@@ -47,7 +47,7 @@ public class FragmentDetailsMeeting extends Fragment {
         bundle = getArguments();
         mapDocument = new HashMap<String, Object>();
         activityMeetings = (ActivityMeetings)getActivity(); // получаем объект текущей активити
-        //classDataBase = new ClassDataBase();
+        classDataBase = new ClassDataBase();
 
         // находим все вьюхи на активити
         til_name = getActivity().findViewById(R.id.til_name);
@@ -59,9 +59,11 @@ public class FragmentDetailsMeeting extends Fragment {
 
             //Читаем документ со встречей партнера из БД
             //mapDocument = classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
+            String tmp  = classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
             //mapDocument = activityMeetings.classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
 
-            til_name_et.setText("Text"); //
+
+            til_name_et.setText(tmp); //
 
         }
 

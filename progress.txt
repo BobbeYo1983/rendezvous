@@ -43,6 +43,8 @@
 
 A network error (such as timeout, interrupted connection or unreachable host) has occurred.
 
+data1.put("regions", Arrays.asList("west_coast", "norcal"));
+
 
 
 
