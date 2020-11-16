@@ -43,7 +43,7 @@ public class ClassDataBase {
     private int countUnreads; // количество непрочитанных сообщений
     private BadgeDrawable badgeDrawable; // для изменения количества непрочитанных сообщений
 
-    String tmp;
+    //String tmp;
 
 
     /**
@@ -66,10 +66,9 @@ public class ClassDataBase {
      * @param nameDocument имя документа
      * @return коллекцию "ключ-значение"
      */
-    //public Map<String, Object> ReadDocument (final String nameCollection, final String nameDocument) {
-    public String ReadDocument (final String nameCollection, final String nameDocument) {
+    public Map<String, Object> ReadDocument (final String nameCollection, final String nameDocument) {
 
-        //mapDocument.clear(); // очищаем коллекцию
+        mapDocument.clear(); // очищаем коллекцию
 
         documentReference = firebaseFirestore.collection(nameCollection).document(nameDocument); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
@@ -79,13 +78,7 @@ public class ClassDataBase {
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
 
-                        //mapDocument.clear(); // очищаем коллекцию
-                        mapDocument = new HashMap<String, Object>();
                         mapDocument = document.getData(); // получаем данные из документа БД
-
-                        // если нужно получить поле document.getString("names"));
-                        tmp = "Hello!";
-                        tmp = document.getString("name");
 
                     } else { // если документа не существует
 
@@ -99,10 +92,7 @@ public class ClassDataBase {
             }
         });
 
-        //return mapDocument;
-        return "cdvdvcdcvdcvdcv ";
-
-
+        return mapDocument;
     }
 
     public void Log (String _class, String _method, String _message){

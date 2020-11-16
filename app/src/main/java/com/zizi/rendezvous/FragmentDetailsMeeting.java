@@ -22,7 +22,7 @@ public class FragmentDetailsMeeting extends Fragment {
     private Bundle bundle; // для приема параметров в фрагмент
     private Map<String, Object> mapDocument; //Документ с информацией о встрече
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
-    private ClassDataBase classDataBase; // класс для работы с БД
+    //private ClassDataBase classDataBase; // класс для работы с БД
 
     //виджеты
     private TextInputLayout til_name;
@@ -30,6 +30,17 @@ public class FragmentDetailsMeeting extends Fragment {
 
     public FragmentDetailsMeeting() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        // ИНИЦИАЛИЗАЦИЯ //////////////////////////////////////////////////////////////////////////
+        mapDocument = new HashMap<String, Object>();
+        activityMeetings = (ActivityMeetings)getActivity(); // получаем объект текущей активити
+        //==========================================================================================
+
     }
 
     @Override
@@ -43,32 +54,23 @@ public class FragmentDetailsMeeting extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        // ИНИЦИАЛИЗАЦИЯ //////////////////////////////////////////////////////////////////////////
-        bundle = getArguments();
-        mapDocument = new HashMap<String, Object>();
-        activityMeetings = (ActivityMeetings)getActivity(); // получаем объект текущей активити
-        classDataBase = new ClassDataBase();
-
         // находим все вьюхи на активити
         til_name = getActivity().findViewById(R.id.til_name);
         til_name_et = getActivity().findViewById(R.id.til_name_et);
-        //==========================================================================================
 
+    }
 
-        if (bundle != null) { // извлекаем аргументы полученные из другого фрагмента
+    @Override //когда фрагмент становится видимым, но не интерактивным/ не нажимаемым
+    public void onStart() {
+        super.onStart();
 
-            //Читаем документ со встречей партнера из БД
-            //mapDocument = classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
-            String tmp  = classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
-            //mapDocument = activityMeetings.classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
+        bundle = getArguments(); // получаем аргументы
 
+        //Читаем документ со встречей партнера из БД
+        mapDocument = activityMeetings.classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
+        //mapDocument = activityMeetings.classDataBase.ReadDocument("meetings", bundle.getString("partnerEmail", ""));
 
-            til_name_et.setText(tmp); //
-
-        }
-
-        //til_name_et.setText(mapDocument.get("email"));
-
+        til_name_et.setText("edrfgdg");
 
     }
 }

@@ -62,6 +62,17 @@ public class FragmentListMeetings extends Fragment {
     FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public FragmentListMeetings() {
+        // Required empty public constructor
+        String str = "";
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //fragmentDetailsMeeting = new FragmentDetailsMeeting();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
