@@ -27,8 +27,6 @@ import java.util.Map;
 
 public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
 
-    Button btn_signin; // кнопка для входа...
-    Button btn_reg; // кнопка для регистрации
     String currentUserID; // ID текущего пользователя
     FirebaseFirestore fbStore; // база данных
     FirebaseAuth mAuth; // объект для работы с авторизацией в FireBase
@@ -41,11 +39,13 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
     String email_storage; // для запоминания почты для автовхода
     String password_storage; // для запоминания пароля для автовхода
 
-    // для Material Design Components (MDC)
+    //Вьюхи
     TextInputLayout til_email;
     TextInputEditText til_email_et;
     TextInputLayout til_password; //элемент целиком
     TextInputEditText til_password_et; // это внутри til_password работать с текстом
+    Button btn_signin; // кнопка для входа...
+    Button btn_reg; // кнопка для регистрации
     ProgressBar progressBar; // крутилка для показа, когда выполняется длительная операция
 
 
@@ -56,13 +56,17 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        //инициализация - НАЧАЛО
+        // Инициализация ////////////////////////////////////////////////////////////////////////////
         mAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         fbStore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         saveParams = getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
         email_storage = saveParams.getString("email_storage", ""); // читаем их энергонезависимой памяти
         password_storage = saveParams.getString("password_storage", ""); // читаем их энергонезависимой памяти
-        // находим все вьюхи на активити
+        //==========================================================================================
+
+
+
+        // Находим все вьюхи ///////////////////////////////////////////////////////////////////////
         btn_signin = (Button) findViewById(R.id.btn_signin);
         btn_reg = (Button) findViewById(R.id.btn_reg);
         til_email = (TextInputLayout) findViewById(R.id.til_email);
@@ -70,6 +74,10 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         til_password = (TextInputLayout) findViewById(R.id.til_password);
         til_password_et = (TextInputEditText) findViewById(R.id.til_password_et);
         progressBar = findViewById(R.id.progressBar);
+        //==========================================================================================
+
+
+
         //добавляем на кнопки слушателя
         btn_signin.setOnClickListener(this);
         btn_reg.setOnClickListener(this);
