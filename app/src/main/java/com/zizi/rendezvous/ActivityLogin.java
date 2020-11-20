@@ -29,7 +29,7 @@ public class ActivityLogin extends AppCompatActivity {
 
     private ClassGlobalApp classGlobalApp; // класс для сервисных функций приложения, описание внутри класса
     private FirebaseFirestore fbStore; // база данных
-    private FirebaseAuth mAuth; // объект для работы с авторизацией в FireBase
+    private FirebaseAuth mAuth; // объект для работы с авторизацией в Firebase
     private FirebaseUser currentUser; //текущий пользователь
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private String email; // почта пользователя
