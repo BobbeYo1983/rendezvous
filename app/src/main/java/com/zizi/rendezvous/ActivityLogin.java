@@ -25,30 +25,24 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ActivityLogin extends AppCompatActivity implements View.OnClickListener {
+public class ActivityLogin extends AppCompatActivity {
 
-    String currentUserID; // ID текущего пользователя
-    FirebaseFirestore fbStore; // база данных
-    FirebaseAuth mAuth; // объект для работы с авторизацией в FireBase
-    FirebaseUser currentUser; //текущий пользователь
-    DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
-    SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
-    SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
-    String email; // почта пользователя
-    String password; // пароль пользователя
-    String email_storage; // для запоминания почты для автовхода
-    String password_storage; // для запоминания пароля для автовхода
+    private ClassGlobalApp classGlobalApp; // класс для сервисных функций приложения, описание внутри класса
+    private FirebaseFirestore fbStore; // база данных
+    private FirebaseAuth mAuth; // объект для работы с авторизацией в FireBase
+    private FirebaseUser currentUser; //текущий пользователь
+    private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
+    private String email; // почта пользователя
+    private String password; // пароль пользователя
 
     //Вьюхи
-    TextInputLayout til_email;
-    TextInputEditText til_email_et;
-    TextInputLayout til_password; //элемент целиком
-    TextInputEditText til_password_et; // это внутри til_password работать с текстом
-    Button btn_signin; // кнопка для входа...
-    Button btn_reg; // кнопка для регистрации
-    ProgressBar progressBar; // крутилка для показа, когда выполняется длительная операция
-
-
+    private TextInputLayout til_email; //поле для ввода
+    private TextInputEditText til_email_et;
+    private TextInputLayout til_password; //элемент целиком
+    private TextInputEditText til_password_et; // это внутри til_password работать с текстом
+    private Button btn_signin; // кнопка для входа...
+    private Button btn_reg; // кнопка для регистрации
+    private ProgressBar progressBar; // крутилка для показа, когда выполняется длительная операция
 
 
     @Override
@@ -57,75 +51,113 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         setContentView(R.layout.activity_login);
 
         // Инициализация ////////////////////////////////////////////////////////////////////////////
+        classGlobalApp = (ClassGlobalApp) getApplicationContext();
         mAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         fbStore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
-        saveParams = getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
-        email_storage = saveParams.getString("email_storage", ""); // читаем их энергонезависимой памяти
-        password_storage = saveParams.getString("password_storage", ""); // читаем их энергонезависимой памяти
         //==========================================================================================
 
 
 
         // Находим все вьюхи ///////////////////////////////////////////////////////////////////////
-        btn_signin = (Button) findViewById(R.id.btn_signin);
-        btn_reg = (Button) findViewById(R.id.btn_reg);
-        til_email = (TextInputLayout) findViewById(R.id.til_email);
-        til_email_et = (TextInputEditText) findViewById(R.id.til_email_et);
-        til_password = (TextInputLayout) findViewById(R.id.til_password);
-        til_password_et = (TextInputEditText) findViewById(R.id.til_password_et);
+        til_email = findViewById(R.id.til_email);
+        til_email_et = findViewById(R.id.til_email_et);
+        til_password = findViewById(R.id.til_password);
+        til_password_et = findViewById(R.id.til_password_et);
+        btn_signin = findViewById(R.id.btn_signin);
+        btn_reg = findViewById(R.id.btn_reg);
         progressBar = findViewById(R.id.progressBar);
         //==========================================================================================
 
 
 
-        //добавляем на кнопки слушателя
-        btn_signin.setOnClickListener(this);
-        btn_reg.setOnClickListener(this);
-        //слушатели полей ввода
+        //til_email_et /////////////////////////////////////////////////////////////////////////////
         til_email_et.addTextChangedListener(new TextWatcher() { // при изменении текста
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
                 til_email.setError(null);
                 til_password.setError(null);  // убираем сообщение об ошибке
             }
-
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void afterTextChanged(Editable s) {
-
-            }
+            public void afterTextChanged(Editable s) { }
         });
+        //==========================================================================================
+
+
+
+        // til_password_et ///////////////////////////////////////////////////////////////////////////
         til_password_et.addTextChangedListener(new TextWatcher() { // добавим слушателя, если редактируем пароль
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                //Toast.makeText(Login.this, "Текст изменен", Toast.LENGTH_LONG).show();
                 til_email.setError(null);
                 til_password.setError(null);  // убираем сообщение об ошибке
             }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {
-
-            }
-
+            public void onTextChanged(CharSequence s, int start, int before, int count) { }
             @Override
-            public void afterTextChanged(Editable s) {
+            public void afterTextChanged(Editable s) { }
+        });
+        //===========================================================================================
 
+
+
+        // btn_signin ////////////////////////////////////////////////////////////////////////////////
+        btn_signin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                email = til_email_et.getText().toString(); // при клике формируем почту
+                password = til_password_et.getText().toString(); // при клике на любую кнопку формируем пароль
+                Signin();
             }
         });
-        //инициализация - КОНЕЦ
+        // ===========================================================================================
 
-        VisibilityViews(false); // делаем вьюхи видимыми
+
+
+
+        // btn_reg /////////////////////////////////////////////////////////////////////////////////
+
+        btn_reg.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                email = til_email_et.getText().toString(); // при клике формируем почту
+                password = til_password_et.getText().toString(); // при клике на любую кнопку формируем пароль
+                Registration();
+            }
+        });
+        //===========================================================================================
+
+
+
+        SetVisibilityViews(false); // делаем вьюхи невидимыми
 
     }
 
-    // показывает или скрывает вьюхи
-    public void VisibilityViews (boolean visibility) {
-        if (visibility == true){
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
+        if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
+            SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
+        } else { // если раньше заполнял пользователь логин и пароль, то автовход
+            email = classGlobalApp.GetParam("email");
+            password = classGlobalApp.GetParam("password");
+            Signin();
+        }
+    }
+
+
+    /**
+     * Показывает или скрывает вьюхи, когда автовход
+     * @param isVisibility сделать видимым или не видимым
+     */
+    public void SetVisibilityViews (boolean isVisibility) {
+        if (isVisibility == true){
             til_email.setVisibility(View.VISIBLE); // делаем вьюхи видимыми для регистрации
             til_password.setVisibility(View.VISIBLE);
             btn_signin.setVisibility(View.VISIBLE);
@@ -144,57 +176,23 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
 
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        if (!email_storage.equals("") && !password_storage.equals("") ) { // если поля из памяти не пустые и ранее запоминались, то автовход
-            email = email_storage; // то присваиваем почту из памяти
-            password = password_storage; // то присваиваем пароль из памяти
-            Signin();
-        } else { // нужно показать поля и кнопки для входа и регистрации
-
-            VisibilityViews(true); // делаем вьюхи видимыми
-        }
-
-    }
-
-
-    @Override
-    public void onClick(View v) { // при нажатии на кнопки, метод сгенерировалмя при добавлении к объявлению класса implements View.OnClickListener
-
-        email = til_email_et.getText().toString(); // при клике формируем почту
-        password = til_password_et.getText().toString(); // при клике на любую кнопку формируем пароль
-
-        if (v.getId() == R.id.btn_signin) { // если нажали на кнопку входа
-            //Toast.makeText(MainActivity.this, "Нажата кнопка входа", Toast.LENGTH_LONG).show();
-            //Signin(til_email_et.getText().toString(), til_password_et.getText().toString());
-            Signin();
-        }
-        if (v.getId() == R.id.btn_reg) { // если нажали на кнопку регистрации
-            //Toast.makeText(MainActivity.this, "Нажата кнопка регистрации", Toast.LENGTH_LONG).show();
-            //Registration(til_email_et.getText().toString(), til_password_et.getText().toString());
-            Registration();
-        }
-
-    }
 
     public void Signin (){ // вход в систему
-        //email = "9@9.com"; password = "111111";// заглушка для отладки
+
         if (!email.equals("") ){ // если поле почты не пустое, то  переходим к проверке пароля пытаемся войти
             if (!password.equals("")) { // если пароль не пустой, то пытаемся войти
                 mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() { // пробуем войти по email и паролю
                     @Override // как попытка войти завершится
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        VisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
+                        SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача входы выполнится успешно
                             //Toast.makeText(Login.this, "Авторизация успешна", Toast.LENGTH_LONG).show();
                             SaveProfileAndEnter();
                         } else { // если вход не успешен
 
-                            VisibilityViews(true); //показываем вьюхи
+                            SetVisibilityViews(true); //показываем вьюхи
 
                             switch (task.getException().getMessage()) { // переводим ошибки
                                 case "We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts. Please try again later. ]":
@@ -214,8 +212,7 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                                     task.getException().printStackTrace();
                                     break;
                             }
-                            //Toast.makeText(Login.this, "Авторизация не успешна", Toast.LENGTH_LONG).show();
-                            //Toast.makeText(Login.this, task.getException().getMessage(), Toast.LENGTH_LONG).show();
+
                         }
                     }
                 });
@@ -223,7 +220,6 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                 til_password.setError(getString(R.string.til_password));
             }
         } else { // если поле почты пустое, то просим заполнить
-            //Toast.makeText(Login.this, "Введите Email и пароль", Toast.LENGTH_LONG).show();
             til_email.setError("Введите email");
         }
     }
@@ -244,13 +240,13 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
-                        VisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
+                        SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача регистрации выполнена успешно, то юзер автоматои и авторизируется
                             SaveProfileAndEnter();
                         } else { // если регистрация не успешна
 
-                            VisibilityViews(true); //показываем вьюхи
+                            SetVisibilityViews(true); //показываем вьюхи
 
                             switch (task.getException().getMessage()) { // переводим ошибки
                                 case "The email address is badly formatted.":
@@ -266,18 +262,15 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
                                     task.getException().printStackTrace();
                                     break;
                             }
-                            //Toast.makeText(MainActivity.this, "Регистрация не успешна", Toast.LENGTH_LONG).show();
-                            //Toast.makeText(Login.this, task.getException().toString(), Toast.LENGTH_LONG).show();
+
                         }
                     }
                 });
             } else {
                 // если пароль не соответствует политике
-                //til_password.setError("Не менее 8-ми символов без пробелов, обязательны: буква, цифра, заглавная буква.");
                 til_password.setError(getString(R.string.til_password));
             }
         } else { // если поля почты и пароля пустые, то просим заполнить
-            //Toast.makeText(Login.this, "Введите Email и пароль", Toast.LENGTH_LONG).show();
             til_email.setError("Введите email.");
         }
     }
@@ -293,16 +286,14 @@ public class ActivityLogin extends AppCompatActivity implements View.OnClickList
         documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() { //
             @Override
             public void onSuccess(Void aVoid) {// если профайл пользователя записался успешно
-                //Toast.makeText(Login.this, "Регистрация успешна", Toast.LENGTH_LONG).show();
-                if (email_storage.equals("") && password_storage.equals("") ) { // если пользователь и пароль из памяти пустые и ранее не запоминались, то запомним для автовхода
-                    editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память для входа
-                    editorSaveParams.putString("email_storage", email.toString());
-                    editorSaveParams.putString("password_storage", password.toString());
-                    editorSaveParams.apply();
+
+                // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
+                if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
+                    classGlobalApp.PreparingToSave("email", email.toString());
+                    classGlobalApp.PreparingToSave("password", password.toString());
+                    classGlobalApp.SaveParams(); // сохраним для автовхода
                 }
-                //Intent intent = new Intent(ActivityLogin.this, ActivityListMeetingsTb.class);
-                //intent.putExtra("1", "1");
-                //startActivity(intent);
+
                 startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
                 finish(); // убиваем активити
             }

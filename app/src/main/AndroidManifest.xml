@@ -12,7 +12,11 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_rendezvous_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApp">
+        android:theme="@style/Theme.MyApp"
+        android:name=".ClassGlobalApp"
+        >
+
+
         <activity android:name=".Activity_Yandex_Pay">
 
             <!--Для Яндекс.Кассы-->
