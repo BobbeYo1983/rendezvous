@@ -237,22 +237,27 @@ public class FragmentListMeetings extends Fragment {
             btn_write = itemView.findViewById(R.id.btn_write);
 
 
-            //Нажати на кнопку ПОДРОБНОСТИ
+            //Нажати на кнопку ПОДРОБНОСТИ/////////////////////////////////////////////////////////////
             btn_details.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку подробности
                 @Override
                 public void onClick(View v) {
 
                     //готовим аргументы для передачи в другой фрагмент
-                    bundleToChat.clear();
-                    bundleToChat.putString("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
-                    fragmentDetailsMeeting.setArguments(bundleToChat); // добавить все аргументы
+                    activityMeetings.classGlobalApp.ClearBundle();
+                    activityMeetings.classGlobalApp.AddBundle("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
+                    //bundleToChat.clear();
+                    //bundleToChat.putString("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
+                    //fragmentDetailsMeeting.setArguments(bundleToChat); // добавить все аргументы
 
                     activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
 
                 }
             });
+            //========================================================================================
 
-            //Нажатие на кнопку НАПИСАТЬ
+
+
+            //Нажатие на кнопку НАПИСАТЬ //////////////////////////////////////////////////////////////
             btn_write.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку написать
                 @Override
                 public void onClick(View v) {
@@ -268,7 +273,7 @@ public class FragmentListMeetings extends Fragment {
                     activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
                 }
             });
-
+            //=======================================================================================
 
 
             itemView.setOnClickListener(new View.OnClickListener() { // делаем слушателя нажатия по элементу списка на всю карточку

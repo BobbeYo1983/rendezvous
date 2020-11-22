@@ -32,6 +32,7 @@ public class ActivityMeetings extends AppCompatActivity {
     SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
     String requestNotFilled; // заявка не заполнялась
     ClassDataBase classDataBase; // класс по работе с БД
+    ClassGlobalApp classGlobalApp; //класс для работы с функциями общими для всех активити, фрагментов, сервисов
 
 
     @Override
@@ -48,6 +49,7 @@ public class ActivityMeetings extends AppCompatActivity {
         saveParams = getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
         requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
         classDataBase = new ClassDataBase();
+        classGlobalApp = (ClassGlobalApp) getApplicationContext();
 
 
 
