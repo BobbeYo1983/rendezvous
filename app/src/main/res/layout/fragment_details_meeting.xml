@@ -17,13 +17,13 @@
             android:layout_height="wrap_content"
             android:orientation="vertical" >
 
-            <TextView
+<!--            <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:gravity="center"
                 android:textSize="18sp"
                 android:text="Подробности встречи"
-                android:layout_marginBottom="10dp"/>
+                android:layout_marginBottom="10dp"/>-->
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/til_name"
@@ -32,6 +32,7 @@
                 android:layout_height="wrap_content"
                 android:hint="Имя:"
                 app:startIconDrawable="@drawable/ic_outline_account_box_24"
+                android:layout_marginTop="18dp"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="18dp"
@@ -41,7 +42,8 @@
                     android:id="@+id/til_name_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -64,7 +66,8 @@
                     android:id="@+id/til_age_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -85,7 +88,8 @@
                     android:id="@+id/til_phone_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -99,12 +103,13 @@
                 android:checked="false"
                 android:text="Не звонить, только писать, а то заблокирую!"
                 android:textSize="16sp"
-                android:buttonTint="?attr/colorPrimary"
                 android:enabled="false"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="6dp"
                 android:layout_marginBottom="5dp"
                 />
+
+            <!--android:buttonTint="?attr/colorPrimary"-->
 
 
 
@@ -124,7 +129,8 @@
                     android:id="@+id/til_soc_net_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -148,7 +154,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -171,7 +178,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -193,7 +201,8 @@
                     android:id="@+id/til_time_et"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -215,7 +224,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="textMultiLine"
-                    android:enabled="false"
+                    android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>

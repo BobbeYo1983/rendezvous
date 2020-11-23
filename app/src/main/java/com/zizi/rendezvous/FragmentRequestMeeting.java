@@ -44,7 +44,7 @@ public class FragmentRequestMeeting extends Fragment {
     Map<String, Object> meeting; // коллекция ключ-значение для описания встречи
     SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
     SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
-    ActivityMeetings listMeetingsTbActivity; // настоящая активити
+    ActivityMeetings activityMeetings; // настоящая активити
     FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     FragmentPlace fragmentPlace; // фрагмент с выбором места
     ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
@@ -99,7 +99,7 @@ public class FragmentRequestMeeting extends Fragment {
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         fbStore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
-        listMeetingsTbActivity = (ActivityMeetings)getActivity();
+        activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
         saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
@@ -398,7 +398,7 @@ public class FragmentRequestMeeting extends Fragment {
             public void onClick(View v) {
                 til_place.setErrorEnabled(false);
                 SaveParams(); // сохраняем значения полей в память
-                listMeetingsTbActivity.ChangeFragment(fragmentPlace, "fragmentPlace", true);
+                activityMeetings.ChangeFragment(fragmentPlace, "fragmentPlace", true);
             }
         });
 
@@ -517,7 +517,7 @@ public class FragmentRequestMeeting extends Fragment {
 
                             //Если лимит не исчерпан грузим фрагмент с заявками
                             //ActivityListMeetingsTb listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
-                            listMeetingsTbActivity.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
+                            activityMeetings.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
                             //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_place, fragmentListMeetings, null).addToBackStack(null).commit();
 
                             //если лимит исчерпан, то переходим к оплате
@@ -581,7 +581,7 @@ public class FragmentRequestMeeting extends Fragment {
     public void onStart() {
         super.onStart();
 
-        currentUser = mAuth.getCurrentUser();
+/*        currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) { // если пользователь пустой, не авторизирован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
@@ -592,7 +592,12 @@ public class FragmentRequestMeeting extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
+        super.onResume();*/
+
+        if (!activityMeetings.classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
+            getActivity().finish(); // убиваем активити
+        }
 
         til_name_et.setText(saveParams.getString("name", "")); // восстанавливаем текст из памяти
         til_gender_act.setText(saveParams.getString("gender", ""));
@@ -690,7 +695,7 @@ public class FragmentRequestMeeting extends Fragment {
         //==================================================================================================
 
         til_time_act.setText(saveParams.getString("time", "")); // восстанавливаем выбранное значение из памяти
-        til_comment_et.setText(saveParams.getString("comment", "")); // восстанавливаем выбранное значение из памяти1233333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333331
+        til_comment_et.setText(saveParams.getString("comment", "")); // восстанавливаем выбранное значение из памяти
 
     }
 
