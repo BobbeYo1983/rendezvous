@@ -1,33 +1,24 @@
 package com.zizi.rendezvous;
 
 import android.content.Intent;
-import android.graphics.Point;
 import android.os.Bundle;
 
-import androidx.annotation.IntegerRes;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.view.Display;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
-import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.ChildEventListener;
@@ -35,15 +26,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.Query;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Date;
-
-import static com.yandex.metrica.impl.s.a.v;
 
 public class FragmentListChats extends Fragment {
 
@@ -59,7 +43,7 @@ public class FragmentListChats extends Fragment {
     ModelChat modelChat; // модель сущности одного чата
     LinearLayoutManager linearLayoutManager; // для вертикальной ориентации recyclerView
     BottomNavigationView bottomNavigationView; // нижняя панелька
-    ActivityListMeetingsTb listMeetingsTbActivity; // активити для переключения фрагментов из фрагментов
+    ActivityMeetings listMeetingsTbActivity; // активити для переключения фрагментов из фрагментов
     FragmentListMeetings fragmentListMeetings; // фрагмент со встречами
     Bundle bundleToChat; // параметры для передачи в фрагмент чата
     FragmentChat fragmentChat; // фрагмент с одним чатом
@@ -97,7 +81,7 @@ public class FragmentListChats extends Fragment {
         //Ищем нужные вьюхи - НАЧАЛО
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         recyclerView = getActivity().findViewById(R.id.recycler_view);
-        listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
+        listMeetingsTbActivity = (ActivityMeetings)getActivity();
         topAppBar = getActivity().findViewById(R.id.topAppBar);
         //Ищем нужные вьюхи - КОНЕЦ
 

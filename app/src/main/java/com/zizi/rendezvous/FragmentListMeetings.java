@@ -1,7 +1,6 @@
 package com.zizi.rendezvous;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -14,8 +13,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AutoCompleteTextView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -24,16 +21,10 @@ import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
-import com.google.android.material.textfield.TextInputEditText;
-import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -56,8 +47,7 @@ public class FragmentListMeetings extends Fragment {
     FirestoreRecyclerAdapter adapter; //связывает вьюху и БД
     //ArrayList<String> usersIDs; // айдишники юзеров
     BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
-    ActivityListMeetingsTb listMeetingsTbActivity; // активити для переключения фрагментов из фрагментов
-    //FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
+    ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     FragmentListChats fragmentListChats; //фрагмент с чатами
     FragmentChat fragmentChat; // фрагмент с одним чатом
     Bundle bundleToChat; // параметры для передачи в фрагмент чата
@@ -69,8 +59,20 @@ public class FragmentListMeetings extends Fragment {
     FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
     DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
     int countUnreads;
+    FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+    public FragmentListMeetings() {
+        // Required empty public constructor
+        String str = "";
+    }
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        //fragmentDetailsMeeting = new FragmentDetailsMeeting();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -120,32 +122,38 @@ public class FragmentListMeetings extends Fragment {
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         currentUser = mAuth.getCurrentUser(); // получаем текущего пользователя
         countUnreads = 0; // количество непрочитанных переменных
+        fragmentDetailsMeeting = new FragmentDetailsMeeting();
 
         //ищем нужные элементы
         rv_meeting = getActivity().findViewById(R.id.rv_meeting); // список со встречами
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
-        listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
+        activityMeetings = (ActivityMeetings)getActivity();
         topAppBar = getActivity().findViewById(R.id.topAppBar);
-
         //инициализация - КОНЕЦ
 
+        // bottomNavigationView ////////////////////////////////////////////////////////////////////
         bottomNavigationView.setSelectedItemId(R.id.meetings); // делаем нужный пункт нижней панели по умолчанию
-        topAppBar.setTitle("Встречи");
-        topAppBar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
-        topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации стрелочкой назад в верхней панельке
-
-        //добавляем слушателей - НАЧАЛО
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.chats: // при нажатии на кнопочку Чаты в нижней панели
-                        listMeetingsTbActivity.ChangeFragment(fragmentListChats, "fragmentListChats", false);
+                        activityMeetings.ChangeFragment(fragmentListChats, "fragmentListChats", false);
                         return true;
                 }
                 return false;
             }
         });
+
+        ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
+        //==========================================================================================
+
+
+
+        // topAppBar ////////////////////////////////////////////////////////////////////////////////
+        topAppBar.setTitle("Встречи");
+        topAppBar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
+        topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации стрелочкой назад в верхней панельке
 
         // событие при клике на кнопку навигации на верхней панельке
         topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -154,11 +162,11 @@ public class FragmentListMeetings extends Fragment {
                 //getActivity().onBackPressed();
             }
         });
-        //добавляем слушателей - КОНЕЦ
+        //==========================================================================================
 
 
-        ArrayList<ModelSingleMeeting> a1 = new ArrayList<>();
 
+        // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         query = fB_fStore.collection("meetings"); // запрос к БД
         options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч
         adapter = new FirestoreRecyclerAdapter<ModelSingleMeeting, FragmentListMeetings.SingleMeetingViewHolder>(options) { //показываем адаптеру класс одной встречи, вид встречи и подсовываем выборку из БД
@@ -170,8 +178,9 @@ public class FragmentListMeetings extends Fragment {
 
             }
 
+            // метод при обновлении данных
             @Override
-            protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) { // метод при обновлении данных
+            protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) {
 
                 DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД
                 //String id = snapshot.getId(); // имя докумета, которое видится в FireBase console
@@ -205,12 +214,9 @@ public class FragmentListMeetings extends Fragment {
         rv_meeting.setHasFixedSize(true); // говорят для производительности RecyclerView
         rv_meeting.setLayoutManager(new LinearLayoutManager(getActivity().getApplicationContext())); // ориентацию RecyclerView делаем вертикальной, еще бывает мозаикой помоему или горизонтальной
         rv_meeting.setAdapter(adapter); // ну и связываем вьюху с адаптером железно и навсегда
-
-        ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
+        //==========================================================================================
 
     }
-
-
 
     class SingleMeetingViewHolder extends RecyclerView.ViewHolder { // класс одной ячейки
 
@@ -231,32 +237,43 @@ public class FragmentListMeetings extends Fragment {
             btn_write = itemView.findViewById(R.id.btn_write);
 
 
-            //устанавливаем слушателей
+            //Нажати на кнопку ПОДРОБНОСТИ/////////////////////////////////////////////////////////////
             btn_details.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку подробности
                 @Override
                 public void onClick(View v) {
-                    // перейти на фрагмент с подробностями
-                    //listMeetingsTbActivity.ChangeFragment(fragmentListMeetings);// переходим к списку со встречами
+
+                    //готовим аргументы для передачи в другой фрагмент
+                    activityMeetings.classGlobalApp.ClearBundle();
+                    activityMeetings.classGlobalApp.AddBundle("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
+                    //bundleToChat.clear();
+                    //bundleToChat.putString("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
+                    //fragmentDetailsMeeting.setArguments(bundleToChat); // добавить все аргументы
+
+                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
+
                 }
             });
+            //========================================================================================
 
+
+
+            //Нажатие на кнопку НАПИСАТЬ //////////////////////////////////////////////////////////////
             btn_write.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку написать
                 @Override
                 public void onClick(View v) {
 
+                    //готовим аргументы для передачи
+                    bundleToChat.clear();
                     bundleToChat.putString("partnerID", usersInfoAll.get(getAdapterPosition()).getUserID()); // добавляем аргумент для передачи в другой фрагмент
                     bundleToChat.putString("partnerToken", usersInfoAll.get(getAdapterPosition()).getToken()); // добавляем аргумент для передачи в другой фрагмент
                     bundleToChat.putString("partnerName", usersInfoAll.get(getAdapterPosition()).getName()); // добавляем аргумент для передачи в другой фрагмент
                     bundleToChat.putString("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge()); // добавляем аргумент для передачи в другой фрагмент
-
-                    //bundleToChat.putString("currentUserID", currentUser.getUid()); // ID текущего пользователя
-                    //bundleToChat.putString("currentUserToken", ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext())); // Токен текущего пользователя
-
                     fragmentChat.setArguments(bundleToChat); // добавить все аргументы
-                    listMeetingsTbActivity.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+
+                    activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
                 }
             });
-
+            //=======================================================================================
 
 
             itemView.setOnClickListener(new View.OnClickListener() { // делаем слушателя нажатия по элементу списка на всю карточку

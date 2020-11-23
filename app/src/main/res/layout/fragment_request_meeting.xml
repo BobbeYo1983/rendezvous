@@ -320,6 +320,7 @@
                     android:inputType="textMultiLine"
                     android:clickable="true"
                     android:focusable="false"
+                    android:cursorVisible="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>

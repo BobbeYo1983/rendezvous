@@ -44,7 +44,7 @@ public class FragmentRequestMeeting extends Fragment {
     Map<String, Object> meeting; // коллекция ключ-значение для описания встречи
     SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
     SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
-    ActivityListMeetingsTb listMeetingsTbActivity; // настоящая активити
+    ActivityMeetings activityMeetings; // настоящая активити
     FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     FragmentPlace fragmentPlace; // фрагмент с выбором места
     ArrayAdapter<String> arrayAdapterMaxAge; // адаптер для формирование максимального возраста партнера
@@ -99,7 +99,7 @@ public class FragmentRequestMeeting extends Fragment {
         mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         fbStore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
-        listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
+        activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
         saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
@@ -249,7 +249,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // cb_only_write ////////////////////////////////////////////////////////////////////////////////
         //восстанавливаем из памяти
-        if (saveParams.getString("onlyWrite", "false").equals("false")){ // если галка не сохранена
+        if (saveParams.getString("onlyWrite", "falseFalse").equals("falseFalse")){ // если галка не сохранена
             cb_only_write.setChecked(false);// то не ставим галку
         } else {
             cb_only_write.setChecked(true);
@@ -398,7 +398,7 @@ public class FragmentRequestMeeting extends Fragment {
             public void onClick(View v) {
                 til_place.setErrorEnabled(false);
                 SaveParams(); // сохраняем значения полей в память
-                listMeetingsTbActivity.ChangeFragment(fragmentPlace, "fragmentPlace", true);
+                activityMeetings.ChangeFragment(fragmentPlace, "fragmentPlace", true);
             }
         });
 
@@ -483,7 +483,11 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("gender", til_gender_act.getEditableText().toString().trim());
                     meeting.put("age", til_age_act.getText().toString().trim());
                     meeting.put("phone", til_phone_et.getText().toString().trim());
-                    meeting.put("onlyWrite", cb_only_write.isChecked());
+                    if (cb_only_write.isChecked()) {
+                        meeting.put("onlyWrite", "trueTrue");
+                    } else {
+                        meeting.put("onlyWrite", "falseFalse");
+                    }
                     meeting.put("socNet", til_soc_net_et.getText().toString().trim());
                     meeting.put("contact", til_contact_et.getText().toString().trim());
                     meeting.put("gender_partner", til_gender_partner_act.getEditableText().toString().trim());
@@ -496,8 +500,9 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("comment", til_comment_et.getText().toString().trim());
 
                     //добавляем прочие служебные параметры для подачи заявки
-                    meeting.put("userID", currentUser.getUid().toString());
+                    meeting.put("userID", currentUser.getUid());
                     meeting.put("token", ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext()));
+                    meeting.put("email", currentUser.getEmail());
 
                     // если запись в БД успешна
                     documentReference.set(meeting).addOnSuccessListener(new OnSuccessListener<Void>() { //
@@ -512,7 +517,7 @@ public class FragmentRequestMeeting extends Fragment {
 
                             //Если лимит не исчерпан грузим фрагмент с заявками
                             //ActivityListMeetingsTb listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
-                            listMeetingsTbActivity.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
+                            activityMeetings.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
                             //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_place, fragmentListMeetings, null).addToBackStack(null).commit();
 
                             //если лимит исчерпан, то переходим к оплате
@@ -576,7 +581,7 @@ public class FragmentRequestMeeting extends Fragment {
     public void onStart() {
         super.onStart();
 
-        currentUser = mAuth.getCurrentUser();
+/*        currentUser = mAuth.getCurrentUser();
 
         if (currentUser == null) { // если пользователь пустой, не авторизирован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
@@ -587,7 +592,12 @@ public class FragmentRequestMeeting extends Fragment {
 
     @Override
     public void onResume() {
-        super.onResume();
+        super.onResume();*/
+
+        if (!activityMeetings.classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
+            getActivity().finish(); // убиваем активити
+        }
 
         til_name_et.setText(saveParams.getString("name", "")); // восстанавливаем текст из памяти
         til_gender_act.setText(saveParams.getString("gender", ""));
@@ -596,7 +606,7 @@ public class FragmentRequestMeeting extends Fragment {
 
         // cb_only_write ////////////////////////////////////////////////////////////////////////////////
         //восстанавливаем из памяти
-        if (saveParams.getString("onlyWrite", "false").equals("false")){ // если галка не сохранена
+        if (saveParams.getString("onlyWrite", "falseFalse").equals("falseFalse")){ // если галка не сохранена
             cb_only_write.setChecked(false);// то не ставим галку
         } else {
             cb_only_write.setChecked(true);
@@ -685,7 +695,7 @@ public class FragmentRequestMeeting extends Fragment {
         //==================================================================================================
 
         til_time_act.setText(saveParams.getString("time", "")); // восстанавливаем выбранное значение из памяти
-        til_comment_et.setText(saveParams.getString("comment", "")); // восстанавливаем выбранное значение из памяти1233333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333331
+        til_comment_et.setText(saveParams.getString("comment", "")); // восстанавливаем выбранное значение из памяти
 
     }
 
@@ -740,7 +750,11 @@ public class FragmentRequestMeeting extends Fragment {
         editorSaveParams.putString("gender", til_gender_act.getEditableText().toString());
         editorSaveParams.putString("age", til_age_act.getText().toString());
         editorSaveParams.putString("phone", til_phone_et.getText().toString().trim());
-        editorSaveParams.putString("onlyWrite", String.valueOf(cb_only_write.isChecked()));
+        if (cb_only_write.isChecked()){
+            editorSaveParams.putString("onlyWrite", "trueTrue");
+        } else {
+            editorSaveParams.putString("onlyWrite", "falseFalse");
+        }
         editorSaveParams.putString("socNet", til_soc_net_et.getText().toString().trim());
         editorSaveParams.putString("contact", til_contact_et.getText().toString().trim());
         editorSaveParams.putString("gender_partner", til_gender_partner_act.getEditableText().toString());
@@ -751,6 +765,8 @@ public class FragmentRequestMeeting extends Fragment {
         editorSaveParams.putString("place", til_place_et.getEditableText().toString());
         editorSaveParams.putString("time", til_time_act.getEditableText().toString());
         editorSaveParams.putString("comment", til_comment_et.getText().toString().trim());
+
+        //editorSaveParams.putString("email", currentUser.getEmail());
 
         editorSaveParams.apply();
     }
