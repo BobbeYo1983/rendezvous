@@ -70,10 +70,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class FragmentChat extends Fragment {
 
     //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //FirebaseAuth mAuth; // для работы с FireBase
+    FirebaseAuth mAuth; // для работы с FireBase
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     private ClassGlobalApp classGlobalApp; // глобальный класс для всего приложения
-    //FirebaseUser currentUser; //текущий пользователь
+    FirebaseUser currentUser; //текущий пользователь
     FloatingActionButton floatingActionButton; //кнопка отправить сообщение
     RecyclerView recyclerView; // список с сообщениями
     ArrayList<ModelMessage> arrayListAllMessages; // коллекция с сообщениями
