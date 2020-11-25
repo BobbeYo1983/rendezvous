@@ -18,6 +18,11 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 {
+    ClassGlobalApp classGlobalApp; // класс для работы с общими для всех компонентов функциями приложения
+
+    ServiceFirebaseCloudMessaging(){
+        classGlobalApp = (ClassGlobalApp) getApplicationContext();
+    }
 
     @Override // при получении сообщения
     public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление
@@ -92,12 +97,14 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         //sendRegistrationToServer(token);
 
         //сохраняем в память телефона
-        getSharedPreferences("saveParams", MODE_PRIVATE).edit().putString("token", token).apply();
+        //getSharedPreferences("saveParams", MODE_PRIVATE).edit().putString("token", token).apply();
+        classGlobalApp.SetTokenDevice(token);
+
     }
 
-    public static String GetToken(Context context) { // получить текущий токен, запрашиваем сразу после логина
+/*    public static String GetToken(Context context) { // получить текущий токен, запрашиваем сразу после логина
         return context.getSharedPreferences("saveParams", MODE_PRIVATE).getString("token", "");
-    }
+    }*/
 
 }
 

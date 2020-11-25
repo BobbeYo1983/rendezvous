@@ -134,26 +134,26 @@ public class FragmentDetailsMeeting extends Fragment {
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
-                activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Method is run");
+                activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Method is run", false);
                 if (task.isSuccessful()) { // если выполнилась успешно
-                    activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Task is Successful");
+                    activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Task is Successful", false);
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
 
-                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Document is exists");
+                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Document is exists", false);
                         mapDocument = document.getData(); // получаем данные из документа БД
-                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()));
+                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
 
                         UpdateUI(); // обновляем данные в полях
 
                     } else { // если документа не существует
 
-                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД");
+                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", false);
                     }
 
                 } else { // если ошибка чтения БД
 
-                    activityMeetings.classGlobalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException());
+                    activityMeetings.classGlobalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
                 }
             }
         });

@@ -11,6 +11,9 @@ import androidx.annotation.NonNull;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -35,10 +38,23 @@ public class ClassGlobalApp extends Application {
 
     private FirebaseAuth firebaseAuth;
 
+    private FirebaseDatabase firebaseDatabase; // БД Realtime Database
+    private DatabaseReference databaseReference; //ссылка на данные в базе
+    private Map<String, Object> msg; // сообщение в БД
+
+    //private String currentUserEmail; // почта текущего пользователя
+    //private String currentUserUid; //идентификатор текущего пользователя
+    private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
+
+
+    /**
+     * Конструктор, тут еще контекст приложения не создан, не вся инициализация может проходить, поэтому можно инициализировать позже в onCreate()
+     */
     public ClassGlobalApp(){
 
         paramsToSave = new HashMap<>(); // коллекция ключ-значение
         paramsToBundle = new HashMap<>(); // коллекция ключ-значение
+        msg = new HashMap<>();
 
     }
 
@@ -53,6 +69,9 @@ public class ClassGlobalApp extends Application {
         sharedPreferences = getSharedPreferences("saveParams", MODE_PRIVATE);
         editorSharedPreferences = sharedPreferences.edit(); // подготавливаем редактор работы с памятью перед записью'
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
+        firebaseDatabase = FirebaseDatabase.getInstance(); // БД RealTime DataBase
+
+        tokenDevice = GetParam("tokenDevice");
 
     }
 
@@ -62,11 +81,22 @@ public class ClassGlobalApp extends Application {
      * @param method метод класса
      * @param message сообщение
      */
-    public void Log (String _class, String method, String message) {
+    public void Log (String _class, String method, String message, boolean inDB) {
 
         if (BuildConfig.DEBUG) { // если режим отладки, то ведем ЛОГ
             //символы !@# достаточно уникальны для фильтровки и быстро набираются на клавиатуре
             Log.v("!@#", "[" + _class + "/" + method + "]: " +  message);
+
+        }
+
+        if (inDB) {
+            databaseReference = firebaseDatabase.getReference("logs");
+            msg.clear();
+            msg.put("timestamp", ServerValue.TIMESTAMP);
+            msg.put("class", _class);
+            msg.put("method", method);
+            msg.put("message", message);
+            databaseReference.push().setValue(msg);
         }
 
     }
@@ -153,6 +183,46 @@ public class ClassGlobalApp extends Application {
 
 
     }
+
+    /**
+     * Получить Email текущего пользователя
+     * @return Email текущего пользователя
+     */
+    public String GetCurrentUserEmail() {
+        return firebaseAuth.getCurrentUser().getEmail();
+    }
+
+    /**
+     * Получить индентификатор текущего пользователя
+     * @return индентификатор текущего пользователя
+     */
+    public String GetCurrentUserUid() {
+        return firebaseAuth.getCurrentUser().getUid();
+    }
+
+    /**
+     * Возвращает идентификатор (токен) устройства
+     * @return идентификатор (токен) устройства
+     */
+    public String GetTokenDevice() {
+
+        if (tokenDevice.isEmpty()) { // если токен пустой
+            tokenDevice = GetParam("tokenDevice"); // прочитаем его из памяти телефона
+        }
+        return tokenDevice;
+    }
+
+    /**
+     * Изменяет токен устройства и сразу его сохраняет в память устройства,
+     * так как он меняется редко (когда смотреть интернет) и при авторизации его, например, не запросить
+     * @param tokenDevice новый идентификатор устройства
+     */
+    public void SetTokenDevice(String tokenDevice) {
+        this.tokenDevice = tokenDevice;
+        PreparingToSave("tokenDevice", tokenDevice);
+        SaveParams();
+    }
+
 
 
 }

@@ -83,7 +83,6 @@ public class FragmentRequestMeeting extends Fragment {
     Button btn_apply_request; // кнопка подачи заявки
     //Объявление - КОНЕЦ =============================================================================
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -475,7 +474,7 @@ public class FragmentRequestMeeting extends Fragment {
                 ) {
 
                     // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля для подачи заявки
-                    documentReference = fbStore.collection("meetings").document(currentUser.getEmail());
+                    documentReference = fbStore.collection("meetings").document(activityMeetings.classGlobalApp.GetCurrentUserEmail());
                     meeting.clear();
 
                     //добавляем параметры для подачи заявки
@@ -500,9 +499,9 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("comment", til_comment_et.getText().toString().trim());
 
                     //добавляем прочие служебные параметры для подачи заявки
-                    meeting.put("userID", currentUser.getUid());
-                    meeting.put("token", ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext()));
-                    meeting.put("email", currentUser.getEmail());
+                    meeting.put("userID", activityMeetings.classGlobalApp.GetCurrentUserUid());
+                    meeting.put("tokenDevice", activityMeetings.classGlobalApp.GetTokenDevice());
+                    meeting.put("email", activityMeetings.classGlobalApp.GetCurrentUserEmail());
 
                     // если запись в БД успешна
                     documentReference.set(meeting).addOnSuccessListener(new OnSuccessListener<Void>() { //
@@ -580,19 +579,6 @@ public class FragmentRequestMeeting extends Fragment {
     @Override
     public void onStart() {
         super.onStart();
-
-/*        currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) { // если пользователь пустой, не авторизирован
-            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
-            getActivity().finish(); // убиваем активити
-        }
-
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();*/
 
         if (!activityMeetings.classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
@@ -765,8 +751,6 @@ public class FragmentRequestMeeting extends Fragment {
         editorSaveParams.putString("place", til_place_et.getEditableText().toString());
         editorSaveParams.putString("time", til_time_act.getEditableText().toString());
         editorSaveParams.putString("comment", til_comment_et.getText().toString().trim());
-
-        //editorSaveParams.putString("email", currentUser.getEmail());
 
         editorSaveParams.apply();
     }

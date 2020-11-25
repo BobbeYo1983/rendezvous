@@ -2,6 +2,11 @@ package com.zizi.rendezvous;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.appcompat.app.AppCompatDialogFragment;
+import androidx.constraintlayout.widget.ConstraintLayout;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.fragment.app.FragmentManager;
+
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
@@ -14,6 +19,7 @@ import android.widget.ProgressBar;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
@@ -28,14 +34,15 @@ import java.util.Map;
 public class ActivityLogin extends AppCompatActivity {
 
     private ClassGlobalApp classGlobalApp; // класс для сервисных функций приложения, описание внутри класса
-    private FirebaseFirestore fbStore; // база данных
-    private FirebaseAuth mAuth; // объект для работы с авторизацией в Firebase
-    private FirebaseUser currentUser; //текущий пользователь
+    private FirebaseFirestore firebaseFirestore; // база данных
+    private FirebaseAuth firebaseAuth; // объект для работы с авторизацией в Firebase
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private String email; // почта пользователя
     private String password; // пароль пользователя
 
+
     //Вьюхи
+    private ConstraintLayout mainLayout; // для показа снекбаров
     private TextInputLayout til_email; //поле для ввода
     private TextInputEditText til_email_et;
     private TextInputLayout til_password; //элемент целиком
@@ -45,6 +52,7 @@ public class ActivityLogin extends AppCompatActivity {
     private ProgressBar progressBar; // крутилка для показа, когда выполняется длительная операция
 
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) { //когда создается активити
         super.onCreate(savedInstanceState);
@@ -52,13 +60,14 @@ public class ActivityLogin extends AppCompatActivity {
 
         // Инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
-        mAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
-        fbStore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
+        firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
+        firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         //==========================================================================================
 
 
 
         // Находим все вьюхи ///////////////////////////////////////////////////////////////////////
+        mainLayout = findViewById(R.id.mainLayout);
         til_email = findViewById(R.id.til_email);
         til_email_et = findViewById(R.id.til_email_et);
         til_password = findViewById(R.id.til_password);
@@ -118,7 +127,6 @@ public class ActivityLogin extends AppCompatActivity {
 
 
         // btn_reg /////////////////////////////////////////////////////////////////////////////////
-
         btn_reg.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -163,6 +171,10 @@ public class ActivityLogin extends AppCompatActivity {
             btn_signin.setVisibility(View.VISIBLE);
             btn_reg.setVisibility(View.VISIBLE);
 
+            //подставляем почту и пароль в поля для входа, чтобы дальше пользователь пробовал войти без автовхода путем нажатия на кнопку входа
+            til_email_et.setText(email);
+            til_password_et.setText(password);
+
             progressBar.setVisibility(View.INVISIBLE);
         } else {
             til_email.setVisibility(View.INVISIBLE); // делаем вьюхи невидимыми
@@ -181,14 +193,13 @@ public class ActivityLogin extends AppCompatActivity {
 
         if (!email.equals("") ){ // если поле почты не пустое, то  переходим к проверке пароля пытаемся войти
             if (!password.equals("")) { // если пароль не пустой, то пытаемся войти
-                mAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() { // пробуем войти по email и паролю
+                firebaseAuth.signInWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() { // пробуем войти по email и паролю
                     @Override // как попытка войти завершится
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
                         SetVisibilityViews(false); // скрывам вьюхи и крутим прогрессбар бублик
 
                         if (task.isSuccessful()) {// если задача входы выполнится успешно
-                            //Toast.makeText(Login.this, "Авторизация успешна", Toast.LENGTH_LONG).show();
                             SaveProfileAndEnter();
                         } else { // если вход не успешен
 
@@ -236,7 +247,7 @@ public class ActivityLogin extends AppCompatActivity {
                 //.{8,}             # anything, at least eight places though
                 //$                 # end-of-string
                 //(?=\S+$) обратите внимание в коде стоит двойной обратный слеш \\
-                mAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                firebaseAuth.createUserWithEmailAndPassword(email, password).addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
 
@@ -276,28 +287,57 @@ public class ActivityLogin extends AppCompatActivity {
     }
 
     public void SaveProfileAndEnter (){
-        currentUser = mAuth.getCurrentUser(); //получаем текущего пользователя
-        documentReference = fbStore.collection("users").document(currentUser.getEmail().toString()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
+
+        documentReference = firebaseFirestore.collection("users").document(classGlobalApp.GetCurrentUserEmail()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
         Map<String, Object> user = new HashMap<>(); // коллекция ключ-значение
-        user.put("email", currentUser.getEmail());
-        user.put("userID", currentUser.getUid());
-        user.put("token", ServiceFirebaseCloudMessaging.GetToken(this)); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+        user.put("email", classGlobalApp.GetCurrentUserEmail());
+        user.put("userID", classGlobalApp.GetCurrentUserUid());
+        user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+        //user.put("token", ServiceFirebaseCloudMessaging.GetToken(this)); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
 
-        documentReference.set(user).addOnSuccessListener(new OnSuccessListener<Void>() { //
+        //сохраняем профайл пользователя в БД
+        documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
-            public void onSuccess(Void aVoid) {// если профайл пользователя записался успешно
+            public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась
+                if (task.isSuccessful()) { //если сохранение успешно
 
-                // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
-                if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
-                    classGlobalApp.PreparingToSave("email", email.toString());
-                    classGlobalApp.PreparingToSave("password", password.toString());
-                    classGlobalApp.SaveParams(); // сохраним для автовхода
+                    // если раньше не входили в приложение, то есть логин и пароль не запоминались в память и пустые
+                    if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
+                        classGlobalApp.PreparingToSave("email", email);
+                        classGlobalApp.PreparingToSave("password", password);
+                        classGlobalApp.SaveParams(); // сохраним на устройство для автовхода
+                    }
+
+                    //FragmentManager manager = getSupportFragmentManager();
+                    //ClassDialog classDialog = new ClassDialog();
+                    //classDialog.show(manager, "classDialog");
+
+                    //переходим на другую активити, то есть фактически входим в приложение
+                    startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
+                    finish(); // убиваем активити
+
+                } else { // если сохранение не успешно
+
+                    classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter/onComplete", "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), true);
+                    //показываем пользователю ошибку
+                    Snackbar.make(mainLayout, "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), Snackbar.LENGTH_INDEFINITE)
+                            .setAction("ОК", new View.OnClickListener() {
+                                @Override
+                                public void onClick(View view) {
+
+                                }
+                            })
+                            .show();
+                    //делаем вьюхи видимыми
+                    SetVisibilityViews(true);
+
                 }
-
-                startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
-                finish(); // убиваем активити
             }
         });
+
+
     }
 }
+
+
 

@@ -71,6 +71,7 @@ public class FragmentChat extends Fragment {
 
     //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     FirebaseAuth mAuth; // для работы с FireBase
+    private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     FirebaseUser currentUser; //текущий пользователь
     FloatingActionButton floatingActionButton; //кнопка отправить сообщение
     RecyclerView recyclerView; // список с сообщениями
@@ -100,6 +101,13 @@ public class FragmentChat extends Fragment {
     boolean fragmentIsActive;
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        activityMeetings = (ActivityMeetings)getActivity(); // получаем объект текущей активити
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -157,7 +165,7 @@ public class FragmentChat extends Fragment {
 
         // заготовим информацию о текущем пользователе при загрузке фрагмента
         currentUserInfo.setUserID(currentUser.getUid());
-        currentUserInfo.setToken(ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext()));
+        currentUserInfo.setToken(activityMeetings.classGlobalApp.GetTokenDevice());
         currentUserInfo.setName(saveParams.getString("name", "")); // подгружаем из памяти девайса
         currentUserInfo.setAge(saveParams.getString("age", ""));
 
@@ -296,14 +304,12 @@ public class FragmentChat extends Fragment {
     public void onStart() {
         super.onStart();
 
-        currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) { // если пользователь пустой, не авторизирован
+        if (!activityMeetings.classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
 
-        //adapter.startListening(); // адаптер начинает слушать БД
+        currentUser = mAuth.getCurrentUser();
 
     }
 
