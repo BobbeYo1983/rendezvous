@@ -8,6 +8,9 @@ import android.os.Bundle;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatDialogFragment;
 
+/**
+ * Класс формирования вкплывающего диалогового окна
+ */
 public class ClassDialog extends AppCompatDialogFragment {
 
     //Java

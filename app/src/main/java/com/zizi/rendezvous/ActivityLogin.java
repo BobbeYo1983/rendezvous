@@ -286,6 +286,9 @@ public class ActivityLogin extends AppCompatActivity {
         }
     }
 
+    /**
+     * Сохраняет профайл пользователя в БД и входит в приложение
+     */
     public void SaveProfileAndEnter (){
 
         documentReference = firebaseFirestore.collection("users").document(classGlobalApp.GetCurrentUserEmail()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
@@ -308,13 +311,13 @@ public class ActivityLogin extends AppCompatActivity {
                         classGlobalApp.SaveParams(); // сохраним на устройство для автовхода
                     }
 
-                    //FragmentManager manager = getSupportFragmentManager();
-                    //ClassDialog classDialog = new ClassDialog();
-                    //classDialog.show(manager, "classDialog");
+                    FragmentManager manager = getSupportFragmentManager();
+                    ClassDialog classDialog = new ClassDialog();
+                    classDialog.show(manager, "classDialog");
 
                     //переходим на другую активити, то есть фактически входим в приложение
-                    startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
-                    finish(); // убиваем активити
+                    //startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
+                    //finish(); // убиваем активити
 
                 } else { // если сохранение не успешно
 
