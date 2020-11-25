@@ -70,9 +70,10 @@ import static android.content.Context.MODE_PRIVATE;
 public class FragmentChat extends Fragment {
 
     //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    FirebaseAuth mAuth; // для работы с FireBase
+    //FirebaseAuth mAuth; // для работы с FireBase
     private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
-    FirebaseUser currentUser; //текущий пользователь
+    private ClassGlobalApp classGlobalApp; // глобальный класс для всего приложения
+    //FirebaseUser currentUser; //текущий пользователь
     FloatingActionButton floatingActionButton; //кнопка отправить сообщение
     RecyclerView recyclerView; // список с сообщениями
     ArrayList<ModelMessage> arrayListAllMessages; // коллекция с сообщениями
@@ -89,7 +90,6 @@ public class FragmentChat extends Fragment {
     int height; // высота экрана
     ModelMessage modelMessage; // одно сообщение
     float dp; //плотность экрана на 1 dp
-    ClassLogsAllApp classLogsAllApp;  // объект для записи логов на сервак
     LinearLayoutManager linearLayoutManager; // для вертикальной ориентации recyclerView
     SimpleDateFormat formatForDateNow; // для формата вывода даты
     ModelChat partnerInfo; // информация о партнере
@@ -129,7 +129,6 @@ public class FragmentChat extends Fragment {
         layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         modelMessage = new ModelMessage();
         dp = getActivity().getResources().getDisplayMetrics().density; // получаем плотность экрана на 1 dp
-        classLogsAllApp = new ClassLogsAllApp(); // объект для записи логов на сервак
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
         adapter = new Adapter(arrayListAllMessages);
         size = new Point();
@@ -476,7 +475,7 @@ public class FragmentChat extends Fragment {
     }
 
     /**
-     * Отправка уведомления
+     * Класс отправки уведомления
      */
     public class Notify extends AsyncTask<Void,Void,Void>
     {
@@ -519,7 +518,11 @@ public class FragmentChat extends Fragment {
                 wr.close();
 
                 if (conn.getResponseCode() != 200) { // если код ошибки от сервера не равен нормальному значению 200
-                    classLogsAllApp.Log("FragmentChat, Ошибка отправки уведомления, код: " + conn.getResponseCode() + ", сообщение от сервера: " +conn.getResponseMessage());
+                    activityMeetings.classGlobalApp.Log("Notify",
+                            "doInBackground",
+                            "Ошибка отправки уведомления, код: " + conn.getResponseCode() + ", сообщение от сервера: " + conn.getResponseMessage(),
+                            true
+                            );
 
                     // тут закоментирован способ получения полного ответа
                     /*
@@ -539,7 +542,13 @@ public class FragmentChat extends Fragment {
             }
             catch (Exception e)
             {
-                classLogsAllApp.Log("FragmentChat, Исключение при отправке уведомления: " + e.getMessage());
+                activityMeetings.classGlobalApp.Log("Notify",
+                        "doInBackground",
+                        "Исключение при отправке уведомления: " + e.getMessage(),
+                        true
+                );
+
+
             }
             return null;
         }

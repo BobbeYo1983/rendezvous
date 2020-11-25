@@ -20,7 +20,14 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 {
     ClassGlobalApp classGlobalApp; // класс для работы с общими для всех компонентов функциями приложения
 
-    ServiceFirebaseCloudMessaging(){
+    //ServiceFirebaseCloudMessaging(){
+    //    classGlobalApp = (ClassGlobalApp) getApplicationContext();
+    //}
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
     }
 

@@ -333,6 +333,7 @@ public class ActivityLogin extends AppCompatActivity {
         user.put("email", classGlobalApp.GetCurrentUserEmail());
         user.put("userID", classGlobalApp.GetCurrentUserUid());
         user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+        //user.put("email1", classGlobalApp.GetCurrentUserEmail());
         //user.put("token", ServiceFirebaseCloudMessaging.GetToken(this)); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
 
         //сохраняем профайл пользователя в БД
