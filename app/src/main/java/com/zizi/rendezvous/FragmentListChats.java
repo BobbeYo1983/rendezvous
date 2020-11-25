@@ -32,6 +32,7 @@ import java.util.ArrayList;
 public class FragmentListChats extends Fragment {
 
     //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    ClassGlobalApp classGlobalApp; //гобальный класс по работе с приложением
     FirebaseAuth mAuth; // для работы с FireBase
     FirebaseUser currentUser; //текущий пользователь
     RecyclerView recyclerView; // список с сообщениями
@@ -43,14 +44,21 @@ public class FragmentListChats extends Fragment {
     ModelChat modelChat; // модель сущности одного чата
     LinearLayoutManager linearLayoutManager; // для вертикальной ориентации recyclerView
     BottomNavigationView bottomNavigationView; // нижняя панелька
-    ActivityMeetings listMeetingsTbActivity; // активити для переключения фрагментов из фрагментов
+    ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     FragmentListMeetings fragmentListMeetings; // фрагмент со встречами
-    Bundle bundleToChat; // параметры для передачи в фрагмент чата
+    //Bundle bundleToChat; // параметры для передачи в фрагмент чата
     FragmentChat fragmentChat; // фрагмент с одним чатом
     MaterialToolbar topAppBar; // верхняя панелька
     //ArrayList<ModelSingleMeeting> infoAllItems; // информация по всем пользователям
     //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -73,15 +81,15 @@ public class FragmentListChats extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
         adapter = new Adapter(arrayListAllItems);
         fragmentListMeetings = new FragmentListMeetings();
-        bundleToChat = new Bundle(); // аргументы для передачи на другой фрагмент
+        //bundleToChat = new Bundle(); // аргументы для передачи на другой фрагмент
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         //infoAllItems = new ArrayList<>(); // информация по всем пользователям
+        activityMeetings = (ActivityMeetings)getActivity();
         //инициализация - КОНЕЦ
 
         //Ищем нужные вьюхи - НАЧАЛО
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         recyclerView = getActivity().findViewById(R.id.recycler_view);
-        listMeetingsTbActivity = (ActivityMeetings)getActivity();
         topAppBar = getActivity().findViewById(R.id.topAppBar);
         //Ищем нужные вьюхи - КОНЕЦ
 
@@ -98,7 +106,7 @@ public class FragmentListChats extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.meetings: // при нажатии на кнопочку Встречи в нижней панели
-                        listMeetingsTbActivity.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
+                        activityMeetings.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
                         return true;
                 }
                 return false;
@@ -280,14 +288,14 @@ public class FragmentListChats extends Fragment {
                     @Override
                     public void onClick(View v) {
 
+                        // добавляем аргументы для передачи в другой фрагмент
+                        classGlobalApp.ClearBundle();
+                        classGlobalApp.AddBundle("partnerID", arrayListItems.get(getAdapterPosition()).getUserID());
+                        classGlobalApp.AddBundle("partnerToken", arrayListItems.get(getAdapterPosition()).getToken());
+                        classGlobalApp.AddBundle("partnerName", arrayListItems.get(getAdapterPosition()).getName());
+                        classGlobalApp.AddBundle("partnerAge", arrayListItems.get(getAdapterPosition()).getAge());
 
-                    bundleToChat.putString("partnerID", arrayListItems.get(getAdapterPosition()).getUserID()); // добавляем аргумент для передачи в другой фрагмент
-                    bundleToChat.putString("partnerToken", arrayListItems.get(getAdapterPosition()).getToken()); // добавляем аргумент для передачи в другой фрагмент
-                    bundleToChat.putString("partnerName", arrayListItems.get(getAdapterPosition()).getName()); // добавляем аргумент для передачи в другой фрагмент
-                    bundleToChat.putString("partnerAge", arrayListItems.get(getAdapterPosition()).getAge()); // добавляем аргумент для передачи в другой фрагмент
-
-                    fragmentChat.setArguments(bundleToChat); // добавить все аргументы
-                    listMeetingsTbActivity.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+                        activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
 
                     }
                 });
