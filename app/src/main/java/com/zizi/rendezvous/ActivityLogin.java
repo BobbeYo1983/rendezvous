@@ -2,32 +2,23 @@ package com.zizi.rendezvous;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.app.AppCompatDialogFragment;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.FragmentManager;
-
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-
 import java.util.HashMap;
 import java.util.Map;
 
@@ -39,6 +30,8 @@ public class ActivityLogin extends AppCompatActivity {
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private String email; // почта пользователя
     private String password; // пароль пользователя
+    private FragmentManager manager; //менеджер фрагментов
+    private ClassDialog classDialog; //класс для показа всплывающих окон
 
 
     //Вьюхи
@@ -62,6 +55,8 @@ public class ActivityLogin extends AppCompatActivity {
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
+        manager = getSupportFragmentManager();
+        classDialog = new ClassDialog(); // класс для показа всплывающих окон
         //==========================================================================================
 
 
@@ -207,7 +202,13 @@ public class ActivityLogin extends AppCompatActivity {
 
                             switch (task.getException().getMessage()) { // переводим ошибки
                                 case "We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts. Please try again later. ]":
-                                    til_password.setError("Много неуспешных попыток входа. Повторите вход позже.");
+
+                                    //показываем всплывающее окно
+                                    classDialog.setTitle("Ошибка входа");
+                                    classDialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
+                                    classDialog.show(manager, "classDialog");
+                                    //til_password.setError("Много неуспешных попыток входа. Повторите вход позже.");
+
                                     break;
                                 case "The password is invalid or the user does not have a password.":
                                     til_password.setError("Неверный пароль.");
@@ -218,9 +219,33 @@ public class ActivityLogin extends AppCompatActivity {
                                 case "There is no user record corresponding to this identifier. The user may have been deleted.":
                                     til_email.setError("Нет пользователя с таким email. Возможно он был удален.");
                                     break;
+
+                                case "An internal error has occurred. [ Unable to resolve host \"www.googleapis.com\":No address associated with hostname ]":
+                                    //показываем всплывающее окно
+                                    classDialog.setTitle("Ошибка входа");
+                                    classDialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
+                                    classDialog.show(manager, "classDialog");
+                                    break;
+
+                                case "A network error (such as timeout, interrupted connection or unreachable host) has occurred.":
+                                    //показываем всплывающее окно
+                                    classDialog.setTitle("Ошибка входа");
+                                    classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
+                                    classDialog.show(manager, "classDialog");
+                                    break;
+
                                 default:
-                                    til_password.setError(task.getException().getMessage());
-                                    task.getException().printStackTrace();
+                                    //показываем пользователю
+                                    classDialog.setTitle("Ошибка входа");
+                                    classDialog.setMessage("Ошибка при входе пользователя: " + task.getException().getMessage());
+                                    classDialog.show(manager, "classDialog");
+
+                                    //добавляем в лог и в БД
+                                    classGlobalApp.Log("ActivityLogin",
+                                            "Signin/onComplete",
+                                            "Ошибка при входе пользователя: " + task.getException().getMessage(),
+                                            true
+                                    );
                                     break;
                             }
 
@@ -269,8 +294,20 @@ public class ActivityLogin extends AppCompatActivity {
                                     break;
 
                                 default:
-                                    til_password.setError(task.getException().getMessage());
-                                    task.getException().printStackTrace();
+
+                                    //показываем пользователю
+                                    classDialog.setTitle("Ошибка регистрации");
+                                    classDialog.setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage());
+                                    classDialog.show(manager, "classDialog");
+
+                                    //добавляем в лог и в БД
+                                    classGlobalApp.Log("ActivityLogin",
+                                                        "Registration/onComplete",
+                                                    "Ошибка при регистрации пользователя: "
+                                                                + task.getException().getMessage(),
+                                                                true
+                                                    );
+
                                     break;
                             }
 
@@ -311,26 +348,21 @@ public class ActivityLogin extends AppCompatActivity {
                         classGlobalApp.SaveParams(); // сохраним на устройство для автовхода
                     }
 
-                    FragmentManager manager = getSupportFragmentManager();
-                    ClassDialog classDialog = new ClassDialog();
-                    classDialog.show(manager, "classDialog");
+
 
                     //переходим на другую активити, то есть фактически входим в приложение
-                    //startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
-                    //finish(); // убиваем активити
+                    startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
+                    finish(); // убиваем активити
 
                 } else { // если сохранение не успешно
 
                     classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter/onComplete", "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), true);
-                    //показываем пользователю ошибку
-                    Snackbar.make(mainLayout, "Ошибка при сохранении профайла пользователя в БД: " + task.getException(), Snackbar.LENGTH_INDEFINITE)
-                            .setAction("ОК", new View.OnClickListener() {
-                                @Override
-                                public void onClick(View view) {
 
-                                }
-                            })
-                            .show();
+                    //показываем всплывающее окно
+                    classDialog.setTitle("Ошибка входа");
+                    classDialog.setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException());
+                    classDialog.show(manager, "classDialog");
+
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);
 
@@ -340,6 +372,8 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     }
+
+
 }
 
 

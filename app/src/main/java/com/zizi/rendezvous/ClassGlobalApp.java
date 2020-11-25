@@ -7,6 +7,7 @@ import android.content.SharedPreferences;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -222,7 +223,6 @@ public class ClassGlobalApp extends Application {
         PreparingToSave("tokenDevice", tokenDevice);
         SaveParams();
     }
-
 
 
 }

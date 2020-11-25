@@ -13,21 +13,30 @@ import androidx.appcompat.app.AppCompatDialogFragment;
  */
 public class ClassDialog extends AppCompatDialogFragment {
 
-    //Java
-// Показан только метод, без предыдущего кода для фрагмента
+    private String title;
+    private String message;
+
     @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
-        builder.setTitle("Важное сообщение!")
-                .setMessage("Покормите кота!")
-                .setPositiveButton("ОК, иду на кухню", new DialogInterface.OnClickListener() {
+        builder.setTitle(title)
+                .setMessage(message)
+                .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
                         // Закрываем окно
                         dialog.cancel();
                     }
                 });
         return builder.create();
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public void setMessage(String message) {
+        this.message = message;
     }
 
 }
