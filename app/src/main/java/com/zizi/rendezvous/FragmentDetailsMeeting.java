@@ -78,7 +78,7 @@ public class FragmentDetailsMeeting extends Fragment {
 
 
         // находим все вьюхи на активити
-        materialToolbar = getActivity().findViewById(R.id.topAppBar);
+        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
 
         til_name = getActivity().findViewById(R.id.til_name);
         til_name_et = getActivity().findViewById(R.id.til_name_et);

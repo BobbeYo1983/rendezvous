@@ -147,7 +147,7 @@ public class FragmentChat extends Fragment {
         floatingActionButton = getActivity().findViewById(R.id.fab);
         recyclerView = getActivity().findViewById(R.id.recyclerView);
         til_message_et = getActivity().findViewById(R.id.til_message_et);
-        materialToolbar = getActivity().findViewById(R.id.topAppBar);
+        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
         tv_unread = getActivity().findViewById(R.id.tv_unread);
         //=============================================================================================
 

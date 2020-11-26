@@ -63,7 +63,7 @@ public class FragmentPlace extends Fragment {
         saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
 
         //ИЩЕМ ВЬЮХИ
-        topAppBar = getActivity().findViewById(R.id.topAppBar);
+        topAppBar = getActivity().findViewById(R.id.materialToolbar);
 
         cb_anyPlace = getActivity().findViewById(R.id.cb_anyPlace);
         cb_street = getActivity().findViewById(R.id.cb_street);

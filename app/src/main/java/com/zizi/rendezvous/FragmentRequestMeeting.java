@@ -41,8 +41,6 @@ public class FragmentRequestMeeting extends Fragment {
     private FirebaseFirestore firebaseFirestore; // база данных
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private Map<String, Object> meeting; // коллекция ключ-значение для описания встречи
-    //private SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
-    //private SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
     private ActivityMeetings activityMeetings; // настоящая активити
     private FragmentListMeetings fragmentListMeetings; //фрагмент со встречами
     private FragmentPlace fragmentPlace; // фрагмент с выбором места
@@ -129,7 +127,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_time_act = getActivity().findViewById(R.id.til_time_act);
         til_comment = getActivity().findViewById(R.id.til_comment);
         til_comment_et = getActivity().findViewById(R.id.til_comment_et);
-        materialToolbar = getActivity().findViewById(R.id.topAppBar);
+        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
         btn_apply_request = getActivity().findViewById(R.id.btn_apply_request);
         //=========================================================================================
 
@@ -162,7 +160,6 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_name_et //////////////////////////////////////////////////////////////////////////////
-        //til_name_et.setText(saveParams.getString("name", "")); // восстанавливаем текст из памяти
         til_name_et.setText(classGlobalApp.GetParam("name")); // восстанавливаем текст из памяти
         // слушатель изменения текста
         til_name_et.addTextChangedListener(new TextWatcher() {
@@ -202,7 +199,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         // til_age_act /////////////////////////////////////////////////////////////////////////////
         til_age_act.setThreshold(100);
-        //til_age_act.setText(saveParams.getString("age", "")); // восстанавливаем выбранное значение из памяти
         til_age_act.setText(classGlobalApp.GetParam("age")); // восстанавливаем выбранное значение из памяти
         // набиваем список для выбора
         ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
@@ -246,7 +242,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         // cb_only_write ////////////////////////////////////////////////////////////////////////////////
         //восстанавливаем из памяти
-        //if (saveParams.getString("onlyWrite", "falseFalse").equals("falseFalse")){ // если галка не сохранена
         if (classGlobalApp.GetParam("onlyWrite").equals("trueTrue")){ // если галка отмечена и сохранена
             cb_only_write.setChecked(true);
         } else {
@@ -257,13 +252,11 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_soc_net_et ////////////////////////////////////////////////////////////////////////////////
-        //til_soc_net_et.setText(saveParams.getString("socNet", "")); // восстанавливаем выбранное значение из памяти);
         til_soc_net_et.setText(classGlobalApp.GetParam("socNet")); // восстанавливаем выбранное значение из памяти);
         // =============================================================================================
 
 
         // til_contact ////////////////////////////////////////////////////////////////////////////
-        //til_contact_et.setText(saveParams.getString("contact", "")); // восстанавливаем выбранное значение из памяти
         til_contact_et.setText(classGlobalApp.GetParam("contact")); // восстанавливаем выбранное значение из памяти
 
         //слушатель введенного текста, нужен для показать или спрятать подсказку
@@ -293,7 +286,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         //til_gender_partner_act//////////////////////////////////////////////////////////////////////////
         til_gender_partner_act.setThreshold(100);
-        //til_gender_partner_act.setText(saveParams.getString("gender_partner", "")); // восстанавливаем выбранное значение из памяти
         til_gender_partner_act.setText(classGlobalApp.GetParam("gender_partner")); // восстанавливаем выбранное значение из памяти
 
         til_gender_partner_act.setAdapter(adapter_gender); //список для выбора
@@ -312,8 +304,6 @@ public class FragmentRequestMeeting extends Fragment {
         //til_age_min_act,  til_age_max_act///////////////////////////////////////////////////////////////////////////
         til_age_min_act.setThreshold(100);
         til_age_max_act.setThreshold(100);
-        //til_age_min_act.setText(saveParams.getString("age_min", "18")); // восстанавливаем выбранное значение из памяти
-        //til_age_max_act.setText(saveParams.getString("age_max", "70"));
         til_age_min_act.setText(classGlobalApp.GetParam("age_min")); // восстанавливаем выбранное значение из памяти
         til_age_max_act.setText(classGlobalApp.GetParam("age_max")); // восстанавливаем выбранное значение из памяти
         //  связываем адаптер с данными
@@ -345,7 +335,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         // til_region_act //////////////////////////////////////////////////////////////////////////////////////
         til_region_act.setThreshold(100);
-        //til_region_act.setText(saveParams.getString("region", ""));  // восстанавливаем выбранное значение из памяти
         til_region_act.setText(classGlobalApp.GetParam("region"));  // восстанавливаем выбранное значение из памяти
 
         //формируем список для выбора
@@ -371,8 +360,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         //til_town_act заполняем список с городами///////////////////////////////////////////////////
         til_town_act.setThreshold(100);
-        //if (saveParams.getString("town", "").equals("")) {//если в памяти поле с городом пустое, то
-        //String str = til_region_act.getText().toString();
         if (til_region_act.getText().toString().equals("")) { // если поле с регионом пустое, то блокируем выбор города
             til_town.setEnabled(false); // то делаем не активным
             til_town_act.setEnabled(false); // то делаем не активным
@@ -413,7 +400,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         // til_time_act /////////////////////////////////////////////////////////////////////////////
         til_time_act.setThreshold(100);
-        //til_time_act.setText(saveParams.getString("time", "")); // восстанавливаем выбранное значение из памяти
         til_time_act.setText(classGlobalApp.GetParam("time")); // восстанавливаем выбранное значение из памяти
 
         //формируем список для сохранения времени
@@ -431,7 +417,6 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         // til_comment ///////////////////////////////////////////////////////////////////////////////
-        //til_comment_et.setText(saveParams.getString("comment", "")); // восстанавливаем выбранное значение из памяти
         til_comment_et.setText(classGlobalApp.GetParam("comment")); // восстанавливаем выбранное значение из памяти
 
         // показывать/не показывать подсказку

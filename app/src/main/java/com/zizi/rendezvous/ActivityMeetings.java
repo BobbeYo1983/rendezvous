@@ -41,7 +41,7 @@ public class ActivityMeetings extends AppCompatActivity {
         //requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
 
         //ищем нужные элементы
-        materialToolbar = (MaterialToolbar) findViewById(R.id.topAppBar); // верхняя панель с кнопками
+        materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
         //============================================================================================
 
 

@@ -83,7 +83,7 @@ public class FragmentListChats extends Fragment {
         //Ищем вьюхи /////////////////////////////////////////////////////////////////////////////////
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         recyclerView = getActivity().findViewById(R.id.recycler_view);
-        materialToolbar = getActivity().findViewById(R.id.topAppBar);
+        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
         //===========================================================================================
 
 
