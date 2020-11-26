@@ -28,8 +28,8 @@ import java.util.Map;
 public class FragmentDetailsMeeting extends Fragment {
 
     // ОБЪЯВЛЕНИЕ ///////////////////////////////////////////////////////////////////////////////
+    private ClassGlobalApp classGlobalApp; // глобальный класс приложения
     private Map<String, Object> mapDocument; //Документ с информацией о встрече
-    private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     private FirebaseFirestore firebaseFirestore; // база данных
     private DocumentReference documentReference; // ссылка на документ
 
@@ -58,17 +58,6 @@ public class FragmentDetailsMeeting extends Fragment {
         // Required empty public constructor
     }
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        // ИНИЦИАЛИЗАЦИЯ //////////////////////////////////////////////////////////////////////////
-        mapDocument = new HashMap<String, Object>();
-        activityMeetings = (ActivityMeetings)getActivity(); // получаем объект текущей активити
-        firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
-        //==========================================================================================
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -80,6 +69,13 @@ public class FragmentDetailsMeeting extends Fragment {
     @Override //Вызывается, когда отработает метод активности onCreate(), а значит фрагмент может обратиться к компонентам активности
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+
+        // ИНИЦИАЛИЗАЦИЯ //////////////////////////////////////////////////////////////////////////
+        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        mapDocument = new HashMap<String, Object>();
+        firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
+        //==========================================================================================
+
 
         // находим все вьюхи на активити
         materialToolbar = getActivity().findViewById(R.id.topAppBar);
@@ -122,38 +118,38 @@ public class FragmentDetailsMeeting extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (!activityMeetings.classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
 
 
         //Читаем документ со встречей партнера из БД //////////////////////////////////////////////////
-        documentReference = firebaseFirestore.collection("meetings").document(activityMeetings.classGlobalApp.GetBundle("partnerEmail")); // формируем путь к документу
+        documentReference = firebaseFirestore.collection("meetings").document(classGlobalApp.GetBundle("partnerEmail")); // формируем путь к документу
         //documentReference = firebaseFirestore.collection("meetings").document("999999@1.com"); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
-                activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Method is run", false);
+                classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Method is run", false);
                 if (task.isSuccessful()) { // если выполнилась успешно
-                    activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Task is Successful", false);
+                    classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Task is Successful", false);
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
 
-                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Document is exists", false);
+                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Document is exists", false);
                         mapDocument = document.getData(); // получаем данные из документа БД
-                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
+                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
 
                         UpdateUI(); // обновляем данные в полях
 
                     } else { // если документа не существует
 
-                        activityMeetings.classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", false);
+                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", false);
                     }
 
                 } else { // если ошибка чтения БД
 
-                    activityMeetings.classGlobalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
+                    classGlobalApp.Log ("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
                 }
             }
         });

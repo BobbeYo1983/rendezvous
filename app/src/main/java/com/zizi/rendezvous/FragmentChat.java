@@ -70,7 +70,7 @@ import static android.content.Context.MODE_PRIVATE;
 public class FragmentChat extends Fragment {
 
     //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
+    //private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     private ClassGlobalApp classGlobalApp; // глобальный класс для всего приложения
     private ArrayList<ModelMessage> arrayListAllMessages; // коллекция с сообщениями
     private Adapter adapter; // адаптер с данными для RecyclerView
@@ -131,7 +131,7 @@ public class FragmentChat extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         //инициализация ////////////////////////////////////////////////////////////////////////////
-        activityMeetings = (ActivityMeetings) getActivity(); // получаем объект текущей активити
+        //activityMeetings = (ActivityMeetings) getActivity(); // получаем объект текущей активити
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
         dp = getActivity().getResources().getDisplayMetrics().density; // получаем плотность экрана на 1 dp
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
@@ -155,9 +155,9 @@ public class FragmentChat extends Fragment {
 
         // информация о партнере чата ///////////////////////////////////////////////////////////////
         partnerInfo.setUserID(classGlobalApp.GetBundle("partnerID"));
-        partnerInfo.setUserID(classGlobalApp.GetBundle("partnerToken"));
-        partnerInfo.setUserID(classGlobalApp.GetBundle("partnerName"));
-        partnerInfo.setUserID(classGlobalApp.GetBundle("partnerAge"));
+        partnerInfo.setToken(classGlobalApp.GetBundle("partnerToken"));
+        partnerInfo.setName(classGlobalApp.GetBundle("partnerName"));
+        partnerInfo.setAge(classGlobalApp.GetBundle("partnerAge"));
         partnerInfo.setUnReadMsg("0"); // делаем по умолчанию ноль непрочитанных сообщений
         //===========================================================================================
 
@@ -165,7 +165,7 @@ public class FragmentChat extends Fragment {
 
         // заготовим информацию о текущем пользователе при загрузке фрагмента////////////////////////
         currentUserInfo.setUserID(classGlobalApp.GetCurrentUserUid());
-        currentUserInfo.setToken(activityMeetings.classGlobalApp.GetTokenDevice());
+        currentUserInfo.setToken(classGlobalApp.GetTokenDevice());
         currentUserInfo.setName(classGlobalApp.GetParam("name")); // подгружаем из памяти девайса
         currentUserInfo.setName(classGlobalApp.GetParam("age")); // подгружаем из памяти девайса
         //==========================================================================================
@@ -191,11 +191,15 @@ public class FragmentChat extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Можно сделать, что чат прочитан", false);
                 // если ветка в непрочитанных с ID партнера существует и фрагмет активен/открыт, то ее нужно удалить, тем самым сказать, что чат прочитан
-                if (snapshot.child(partnerInfo.getUserID()).exists() && fragmentIsActive) {
+                //if (snapshot.child(partnerInfo.getUserID()).exists() && fragmentIsActive) {
+                //if (snapshot.child(partnerInfo.getUserID()).exists() && fragmentIsActive) {
+
                     databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
                     databaseReference.removeValue();
-                }
+                    classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Этот чат прочитан", false);
+                //}
 
             }
 
@@ -225,7 +229,7 @@ public class FragmentChat extends Fragment {
 
         //КОНВЕРТ/ИНДИКАТОР В СПИСКЕ ЧАТОВ//////////////////////////////////////////////////////////
         //слушаем, если нам прислали сообщение, то тут же делаем, что нами чат прочитан для правильного показа в списке наших чатов
-        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
+/*        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -246,13 +250,13 @@ public class FragmentChat extends Fragment {
                 );
 
             }
-        });
+        });*/
         //===========================================================================================
 
 
 
         //ИНДИКАТОР В ЧАТЕ слушаем, прочитан чат партнером или нет, чтобы показать//////////////////
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID());
+/*        databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -274,7 +278,7 @@ public class FragmentChat extends Fragment {
                 );
 
             }
-        });
+        });*/
         //============================================================================================
 
 
@@ -326,7 +330,7 @@ public class FragmentChat extends Fragment {
     public void onStart() {
         super.onStart();
 
-        if (!activityMeetings.classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
@@ -361,8 +365,8 @@ public class FragmentChat extends Fragment {
      * Обновление сообщений. Метод вызывается при изменении данных в БД
      */
     private void UpdateMessages(){
-        databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID())); //ссылка на данные
 
+        databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID())); //ссылка на данные
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД сообщения
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
@@ -539,7 +543,7 @@ public class FragmentChat extends Fragment {
                 wr.close();
 
                 if (conn.getResponseCode() != 200) { // если код ошибки от сервера не равен нормальному значению 200
-                    activityMeetings.classGlobalApp.Log("Notify",
+                    classGlobalApp.Log("Notify",
                             "doInBackground",
                             "Ошибка отправки уведомления, код: " + conn.getResponseCode() + ", сообщение от сервера: " + conn.getResponseMessage(),
                             true
@@ -563,7 +567,7 @@ public class FragmentChat extends Fragment {
             }
             catch (Exception e)
             {
-                activityMeetings.classGlobalApp.Log("Notify",
+                classGlobalApp.Log("Notify",
                         "doInBackground",
                         "Исключение при отправке уведомления: " + e.getMessage(),
                         true
@@ -582,7 +586,7 @@ public class FragmentChat extends Fragment {
      * @return - ID канала чата указанных пользователей
      */
     private String CreateChatChanel (String userID1, String userID2)    {
-        //List<String> usersIDs = new ArrayList<String>();
+
         usersIDs.clear(); // чистим список
         usersIDs.add(userID1);
         usersIDs.add(userID2);

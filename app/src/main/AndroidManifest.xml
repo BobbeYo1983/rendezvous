@@ -17,30 +17,46 @@
         >
 
 
-        <activity android:name=".Activity_Yandex_Pay">
 
+        <activity
+            android:name=".ActivityLogin"
+            android:screenOrientation="portrait"
+            >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+
+
+<!--        android:launchMode="singleInstance"-->
+        <activity
+            android:name=".ActivityMeetings"
+            android:screenOrientation="portrait"
+            >
+            <intent-filter>
+                <!--                    <action android:name="Open_ActivityListMeetingsTb" />-->
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+
+
+        <activity
+            android:name=".Activity_Yandex_Pay"
+            android:screenOrientation="portrait"
+            >
             <!--Для Яндекс.Кассы-->
             <meta-data
                 android:name="com.google.android.gms.wallet.api.enabled"
                 tools:node="remove" />
-
-        </activity>
-        <activity android:name=".ActivityMeetings" android:launchMode="singleInstance" >
-                <intent-filter>
-                    <action android:name="Open_ActivityListMeetingsTb" />
-                    <category android:name="android.intent.category.DEFAULT" />
-                </intent-filter>
         </activity>
 
-        <activity
-            android:name=".ActivityLogin"
-            android:screenOrientation="portrait">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+
+
+
+
 
         <!--Сервис для уведомлений-->
         <service
