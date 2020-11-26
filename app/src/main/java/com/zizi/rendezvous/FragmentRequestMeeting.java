@@ -304,8 +304,18 @@ public class FragmentRequestMeeting extends Fragment {
         //til_age_min_act,  til_age_max_act///////////////////////////////////////////////////////////////////////////
         til_age_min_act.setThreshold(100);
         til_age_max_act.setThreshold(100);
-        til_age_min_act.setText(classGlobalApp.GetParam("age_min")); // восстанавливаем выбранное значение из памяти
-        til_age_max_act.setText(classGlobalApp.GetParam("age_max")); // восстанавливаем выбранное значение из памяти
+
+        if (classGlobalApp.GetParam("age_min").equals("")){
+            til_age_min_act.setText("18");
+        } else {
+            til_age_min_act.setText(classGlobalApp.GetParam("age_min")); // восстанавливаем выбранное значение из памяти
+        }
+
+        if (classGlobalApp.GetParam("age_max").equals("")) {
+            til_age_max_act.setText("70");
+        } else {
+            til_age_max_act.setText(classGlobalApp.GetParam("age_max")); // восстанавливаем выбранное значение из памяти
+        }
         //  связываем адаптер с данными
         ArrayAdapter<String> arrayAdapterMinAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70));
         til_age_min_act.setAdapter(arrayAdapterMinAge);
