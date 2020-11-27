@@ -142,6 +142,7 @@ public class FragmentChat extends Fragment {
         // информация о партнере чата ///////////////////////////////////////////////////////////////
         partnerInfo.setUserID(classGlobalApp.GetBundle("partnerID"));
         partnerInfo.setToken(classGlobalApp.GetBundle("partnerToken"));
+        //classGlobalApp.Log ("FragmentChat", "onActivityCreated", "Вычитан из памяти токен партнера: " + classGlobalApp.GetBundle("partnerToken"), false);
         partnerInfo.setName(classGlobalApp.GetBundle("partnerName"));
         partnerInfo.setAge(classGlobalApp.GetBundle("partnerAge"));
         partnerInfo.setUnReadMsg("0"); // делаем по умолчанию ноль непрочитанных сообщений
@@ -269,9 +270,8 @@ public class FragmentChat extends Fragment {
         //============================================================================================
 
 
-        /**
-         * Отправляем сообщение
-         */
+
+        // ОТПРАВКА СООБЩЕНИЯ ////////////////////////////////////////////////////////////////////////
         floatingActionButton.setOnClickListener(new View.OnClickListener() { // при нажатии на кнопку отправить сообщение в чате
             @Override
             public void onClick(View v) {
@@ -307,19 +307,21 @@ public class FragmentChat extends Fragment {
                     databaseReference = firebaseDatabase.getReference("chats/lists/" + partnerInfo.getUserID() + "/" + classGlobalApp.GetCurrentUserUid()  + "/"); // путь к листу чатов партнера
                     currentUserInfo.setUnReadMsg("1"); // записываем отметку, что есть непрочитанные сообщения
                     databaseReference.setValue(currentUserInfo); // записываем модель данных в БД
+                    //===================================================================================
 
 
-                    til_message_et.setText("");
 
-                    /**
-                     * Отправляем уведомление в асинхронной задаче
-                     */
-                    //new Notify().execute();
+                    til_message_et.setText(""); //очищаем поле с текстом
+
+
+                    //Отправляем уведомление в асинхронной задаче
+                    new Notify().execute();
 
                 }
 
             }
         });
+        //===========================================================================================
 
 
     }
@@ -521,11 +523,13 @@ public class FragmentChat extends Fragment {
                 // тут указывается токен устройства на который отправляем
                 //json.put("to", "cMhgmmHISF-_LX7Kppl5YZ:APA91bGshqk6E77kn1soudXiL-s5b4OhTKkJ20JaGPMkIYkVNOaccVPNLT65ibHklqGvynWk_gTsV40-JZfMZ3gOXLHx1RZX7kPL3Lip-flMH6rlqN9zta4XG48Aton8vN626KQu4axQ");
                 json.put("to", partnerInfo.getToken());
+                //classGlobalApp.Log("Notify", "doInBackground", "Токен партнера: " + partnerInfo.getToken(), false);
+
 
                 JSONObject info = new JSONObject();
                 info.put("title", "Сообщение");   // Notification title
                 info.put("body", "У вас есть новое сообщение"); // Notification body
-                info.put("click_action", "Open_ActivityListMeetingsTb");
+                info.put("click_action", "Open_ActivityMeetings"); //типа в манифесте ищется такой фильтр у Активити и типа она вызывается при клике на уведомление
 
                 json.put("notification", info);
                 //json.put("data", info);

@@ -194,24 +194,18 @@ public class FragmentListMeetings extends Fragment {
             protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) {
 
                 DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД
-                //String id = snapshot.getId(); // имя докумета, которое видится в FireBase console
-                //String str = currentUser.getUid();
-                //String str2 = model.getUserID();
+
                 if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail())) { // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
 
                     RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)holder.itemView.getLayoutParams(); // получаем параметры элемента
                     layoutParams.height = 0; // высота ячейки ноль, то есть скрываем ее
                     layoutParams.topMargin = 0; // отступ сверху
                     layoutParams.bottomMargin = 0; // отступ снизу
-                    //param.width = LinearLayout.LayoutParams.MATCH_PARENT;
-                    //holder.itemView.setVisibility(View.VISIBLE);
+
                 } else {
                     holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
                     holder.tv_age.setText(model.getAge());
                     holder.tv_comment.setText(model.getComment());
-                    //String str = model.getUserId();
-                    //usersIDs.add(model.getUserID()); // запоминаем добавленные айдишники юзеров, чтобы потом переходить по клику
-
                 }
 
                 usersInfoAll.add(model); // добавляем в список всех пользователей для передачи в информации в другие фрагменты
@@ -276,7 +270,7 @@ public class FragmentListMeetings extends Fragment {
                     //готовим аргументы для передачи
                     classGlobalApp.ClearBundle();
                     classGlobalApp.AddBundle("partnerID", usersInfoAll.get(getAdapterPosition()).getUserID());
-                    classGlobalApp.AddBundle("partnerToken", usersInfoAll.get(getAdapterPosition()).getToken());
+                    classGlobalApp.AddBundle("partnerToken", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
                     classGlobalApp.AddBundle("partnerName", usersInfoAll.get(getAdapterPosition()).getName());
                     classGlobalApp.AddBundle("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge());
 

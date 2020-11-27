@@ -8,7 +8,7 @@ public class ModelSingleMeeting {
     // везде регистр сделал маленькими, заработало, пока дальше не стал разбираться
     //!!!!!!!!!!!! Переменные с нижним подчеркиванием из БД почему то не выбираются
     private String userID;
-    private String token;
+    private String tokenDevice;
     private String email;
 
     private String name;
@@ -40,8 +40,8 @@ public class ModelSingleMeeting {
         return userID;
     }
 
-    public String getToken() {
-        return token;
+    public String getTokenDevice() {
+        return tokenDevice;
     }
 
     public String getEmail() {
@@ -115,8 +115,8 @@ public class ModelSingleMeeting {
         this.userID = userID;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setTokenDevice(String token) {
+        this.tokenDevice = token;
     }
 
     public void setEmail(String email) {

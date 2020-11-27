@@ -35,7 +35,7 @@
             android:screenOrientation="portrait"
             >
             <intent-filter>
-                <!--                    <action android:name="Open_ActivityListMeetingsTb" />-->
+                <action android:name="Open_ActivityMeetings" />
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
@@ -51,10 +51,6 @@
                 android:name="com.google.android.gms.wallet.api.enabled"
                 tools:node="remove" />
         </activity>
-
-
-
-
 
 
 
