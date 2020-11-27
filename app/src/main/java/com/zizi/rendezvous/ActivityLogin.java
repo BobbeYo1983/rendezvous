@@ -53,6 +53,7 @@ public class ActivityLogin extends AppCompatActivity {
 
         // Инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
+        classGlobalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         manager = getSupportFragmentManager();
@@ -150,6 +151,7 @@ public class ActivityLogin extends AppCompatActivity {
         } else { // если раньше заполнял пользователь логин и пароль, то автовход
             email = classGlobalApp.GetParam("email");
             password = classGlobalApp.GetParam("password");
+            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
             Signin();
         }
     }
@@ -185,6 +187,7 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     public void Signin (){ // вход в систему
+        classGlobalApp.Log("ActivityLogin", "onStart/Signin", "Метод запущен.", false);
 
         if (!email.equals("") ){ // если поле почты не пустое, то  переходим к проверке пароля пытаемся войти
             if (!password.equals("")) { // если пароль не пустой, то пытаемся войти
@@ -253,13 +256,16 @@ public class ActivityLogin extends AppCompatActivity {
                     }
                 });
             } else { // если пароль пустой, то просим заполнить
+                SetVisibilityViews(true);
                 til_password.setError(getString(R.string.til_password));
             }
         } else { // если поле почты пустое, то просим заполнить
+            SetVisibilityViews(true);
             til_email.setError("Введите email");
         }
     }
     public void Registration () { // регистрация
+        classGlobalApp.Log("ActivityLogin", "onStart/Registration", "Метод запущен.", false);
         if (!email.equals("")){ // если поля почты и пароля не пустые, то пытаемся делать регистрацию
             if (password.matches("^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=\\S+$).{8,}$")) {//если пароль соответствует политике
                 //^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\S+$).{8,}$
@@ -327,6 +333,7 @@ public class ActivityLogin extends AppCompatActivity {
      * Сохраняет профайл пользователя в БД и входит в приложение
      */
     public void SaveProfileAndEnter (){
+        classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
         documentReference = firebaseFirestore.collection("users").document(classGlobalApp.GetCurrentUserEmail()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
         Map<String, Object> user = new HashMap<>(); // коллекция ключ-значение

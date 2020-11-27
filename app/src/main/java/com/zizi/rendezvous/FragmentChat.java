@@ -179,16 +179,12 @@ public class FragmentChat extends Fragment {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Можно сделать, что чат прочитан", false);
                 // если ветка в непрочитанных с ID партнера существует и фрагмет активен/открыт, то ее нужно удалить, тем самым сказать, что чат прочитан
-                //if (snapshot.child(partnerInfo.getUserID()).exists() && fragmentIsActive) {
-                //if (snapshot.child(partnerInfo.getUserID()).exists() && fragmentIsActive) {
 
-                    //databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
-                    //databaseReference.removeValue();
-                    if (fragmentIsVisible){
-                        classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Этот чат прочитан", false);
-                    }
-
-                //}
+                if (fragmentIsVisible){
+                    databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
+                    databaseReference.removeValue();
+                    classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Этот чат прочитан", false);
+                }
 
             }
 
@@ -218,12 +214,12 @@ public class FragmentChat extends Fragment {
 
         //КОНВЕРТ/ИНДИКАТОР В СПИСКЕ ЧАТОВ//////////////////////////////////////////////////////////
         //слушаем, если нам прислали сообщение, то тут же делаем, что нами чат прочитан для правильного показа в списке наших чатов
-/*        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
+        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // если непрочитанных сообщений больше нуля и фрагмент чата активен/открыт/показан, то сбросить опять в ноль
-                if (Integer.parseInt(snapshot.getValue(ModelChat.class).getUnReadMsg()) > 0 && fragmentIsActive){
+                if (Integer.parseInt(snapshot.getValue(ModelChat.class).getUnReadMsg()) > 0 && fragmentIsVisible){
                     databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/unReadMsg");
                     databaseReference.setValue("0"); // делаем отметочку, что прочитали чат, чтобы убрать конвертик напротив чата в списке чатов.
                 }
@@ -239,16 +235,18 @@ public class FragmentChat extends Fragment {
                 );
 
             }
-        });*/
+        });
         //===========================================================================================
 
 
 
-        //ИНДИКАТОР В ЧАТЕ слушаем, прочитан чат партнером или нет, чтобы показать//////////////////
-/*        databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID());
+        //ИНДИКАТОР В ЧАТЕ tv_unread слушаем, прочитан чат партнером или нет, чтобы показать//////////////////
+        tv_unread.setVisibility(View.INVISIBLE);
+        databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
+                tv_unread.setVisibility(View.VISIBLE);
                 // если ветка в непрочитанных с ID текущего пользователя в непрочитанных у партнера существует и фрагмент активен, значит непрочитан
                 if (snapshot.child(classGlobalApp.GetCurrentUserUid()).exists()) {
                     tv_unread.setText("Не прочитано...");
@@ -267,7 +265,7 @@ public class FragmentChat extends Fragment {
                 );
 
             }
-        });*/
+        });
         //============================================================================================
 
 
