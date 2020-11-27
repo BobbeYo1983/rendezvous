@@ -20,44 +20,34 @@ import com.google.firebase.database.FirebaseDatabase;
 public class ActivityMeetings extends AppCompatActivity {
 
     //ИНИЦИАЛИЗАЦИЯ
-    FirebaseAuth mAuth; // для работы с авторизацией FireBase
-    MaterialToolbar topAppBar; // верхняя панелька
-    FragmentManager fragmentManager; // для управления показом компонентов
-    FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
-    Fragment fragmentListMeetings; // фрагмент со списком заявок
-    Fragment fragmentRequestMeeting; // фрагмент с заявкой
-    Fragment currentFragment; // текущий фрагмент
-    DatabaseReference databaseReference; //ссылка на данные
-    FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
-    SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
-    String requestNotFilled; // заявка не заполнялась
-    ClassDataBase classDataBase; // класс по работе с БД
-    ClassGlobalApp classGlobalApp; //класс для работы с функциями общими для всех активити, фрагментов, сервисов
-
+    private ClassGlobalApp classGlobalApp; //класс для работы с функциями общими для всех активити, фрагментов, сервисов
+    private MaterialToolbar materialToolbar; // верхняя панелька
+    private FragmentManager fragmentManager; // для управления показом компонентов
+    private FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
+    private Fragment fragmentListMeetings; // фрагмент со списком заявок
+    private Fragment fragmentRequestMeeting; // фрагмент с заявкой
+    private Fragment currentFragment; // текущий фрагмент
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_meetings);
 
-        //инициализация - НАЧАЛО
-        mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
+        //инициализация /////////////////////////////////////////////////////////////////////////////
+        classGlobalApp = (ClassGlobalApp) getApplicationContext();
+        fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
-        fragmentManager = getSupportFragmentManager();
-        firebaseDatabase = FirebaseDatabase.getInstance(); // БД
-        saveParams = getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
-        requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
-        classDataBase = new ClassDataBase();
-        classGlobalApp = (ClassGlobalApp) getApplicationContext();
-
-
+        //requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
 
         //ищем нужные элементы
-        topAppBar = (MaterialToolbar) findViewById(R.id.topAppBar); // верхняя панель с кнопками
+        materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
+        //============================================================================================
 
-        //добавляем слушателей
-        topAppBar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
+
+
+        // materialToolbar ///////////////////////////////////////////////////////////////////////////
+        materialToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели
                 if(item.getItemId() == R.id.request) // если нажата кнопка показать заявку
@@ -67,58 +57,37 @@ public class ActivityMeetings extends AppCompatActivity {
                 return false;
             }
         });
-        //инициализация - КОНЕЦ
+        //==========================================================================================
 
 
-        // при загрузке активити показываем фрагмент со встречами
 
-        //Bundle bundle = getIntent().getExtras();
-        //if (bundle != null) {
-            //String str = bundle.get("fragmentName").toString();
-        //}
-
-        //Intent intent = getIntent();
-
-        //String str = getIntent().getStringExtra("fragmentName");
-        //String str2 = getIntent().getStringExtra("1");
-        //Bundle b = savedInstanceState;
-        //Bundle bundle = getIntent().getExtras();
-        //if (bundle != null) {
-            //String str1 = bundle.getString("fragmentName");;
-            //String str2 = "";
-        //}
-        //intent.getEx
-
-        if (requestNotFilled.equals("true")) {// если заявка никогда не заполнялась
-            ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
-        } else {
+        //грузим нужный фрагмент///////////////////////////////////////////////////////////////////////
+        if (classGlobalApp.GetParam("requestIsActive").equals("trueTrue")) {// если заявка активна и заполнялась
             ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+        } else {
+            ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+        }
+        //===========================================================================================
+
+    }
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+            startActivity(new Intent(getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
+            finish(); // убиваем активити
         }
     }
 
-/*    @Override //метод когда принимается новое намерение
-    protected void onNewIntent(Intent intent) {
-        super.onNewIntent(intent);
-
-
-        //Bundle bundle = getIntent().getExtras();
-        Bundle bundle = intent.getExtras();
-        if (bundle != null) {
-            tmp_str = bundle.getString("fragmentName");
-
-        }
-
-        String str20 = "sdv";
-        str20 = "dfvdv";
-
-
-    }*/
 
     /**
      * Меняет фрагмент на экране (в активити)
-     * @param FragmentNameNew - новый фрагмент, который надо показать
-     * @param Tag -
-     * @param toStack - добавлять его в стек или нет, чтобы можно было переходить по кнопке назад
+     * @param FragmentNameNew новый фрагмент, который надо показать
+     * @param Tag идентификатор фрагмента в менеджере фрагментов
+     * @param toStack добавлять его в стек или нет, чтобы можно было переходить по кнопке назад
      */
     void ChangeFragment (Fragment FragmentNameNew, String Tag, boolean toStack){ // меняет отображение фрагмента
 
@@ -136,33 +105,5 @@ public class ActivityMeetings extends AppCompatActivity {
         }
 
     }
-
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        // Check if user is signed in (non-null) and update UI accordingly.
-        FirebaseUser currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) { // если пользователь пустой, не авторизирован
-            startActivity(new Intent(ActivityMeetings.this, ActivityLogin.class)); // отправляем к началу на авторизацию
-            finish(); // убиваем активити
-        }
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-        //adapter.stopListening(); // адаптер прекращает слушать БД
-    }
-
-/*    // скрываем нужный пункт меню
-    @Override
-    public boolean onPrepareOptionsMenu(Menu menu) {
-
-        menu.findItem(R.id.request).setVisible(false);
-
-        return super.onPrepareOptionsMenu(menu);
-    }*/
 
 }

@@ -28,7 +28,6 @@
                 android:layout_height="wrap_content"
                 android:text="Любое место"
                 android:buttonTint="?attr/colorPrimary"
-                android:checked="true"
                 android:layout_marginStart="10dp"/>
 
 
@@ -39,8 +38,6 @@
                 android:layout_height="wrap_content"
                 android:text="Прогуляться по улице"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -52,8 +49,6 @@
                 android:layout_height="wrap_content"
                 android:text="Пикник на даче или природе"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -65,8 +60,6 @@
                 android:layout_height="wrap_content"
                 android:text="Прокатиться на машине"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -78,8 +71,6 @@
                 android:layout_height="wrap_content"
                 android:text="Заняться спортом"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -91,8 +82,6 @@
                 android:layout_height="wrap_content"
                 android:text="Кино, театр, концерт"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -104,8 +93,6 @@
                 android:layout_height="wrap_content"
                 android:text="Бильярд, боулинг"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -117,8 +104,6 @@
                 android:layout_height="wrap_content"
                 android:text="Кафе, караоке, ресторан"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -130,8 +115,6 @@
                 android:layout_height="wrap_content"
                 android:text="Клуб, дискотека"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -143,8 +126,6 @@
                 android:layout_height="wrap_content"
                 android:text="Баня, сауна"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -156,8 +137,6 @@
                 android:layout_height="wrap_content"
                 android:text="У меня в гостях"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -169,8 +148,6 @@
                 android:layout_height="wrap_content"
                 android:text="У тебя в гостях"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -182,8 +159,6 @@
                 android:layout_height="wrap_content"
                 android:text="Гостиница"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -195,8 +170,6 @@
                 android:layout_height="wrap_content"
                 android:text="Прочее"
                 android:buttonTint="?attr/colorPrimary"
-                android:enabled="false"
-                android:checked="true"
                 android:layout_marginStart="30dp"
                 />
 
@@ -210,6 +183,7 @@
                 app:counterEnabled="true"
                 app:counterMaxLength="200"
                 app:helperTextEnabled="true"
+                android:enabled="false"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="30dp">
 
@@ -219,6 +193,7 @@
                     android:layout_height="wrap_content"
                     android:maxLength="200"
                     android:inputType="textMultiLine"
+                    android:enabled="false"
                     />
 
             </com.google.android.material.textfield.TextInputLayout>

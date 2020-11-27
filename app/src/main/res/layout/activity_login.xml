@@ -6,7 +6,9 @@
     android:layout_height="match_parent"
     android:background="@drawable/image_background"
     android:scaleType="centerCrop"
-    tools:context=".ActivityLogin">
+    tools:context=".ActivityLogin"
+    android:id="@+id/mainLayout"
+    >
 
     <!--android:visibility="invisible"-->
     <!--    android:indeterminateTintMode="src_in"-->

@@ -18,6 +18,14 @@ import com.google.firebase.messaging.RemoteMessage;
 
 public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 {
+    ClassGlobalApp classGlobalApp; // класс для работы с общими для всех компонентов функциями приложения
+
+    @Override
+    public void onCreate() {
+        super.onCreate();
+
+        classGlobalApp = (ClassGlobalApp) getApplicationContext();
+    }
 
     @Override // при получении сообщения
     public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление
@@ -27,9 +35,9 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         //intent.putExtra("fragmentName", "fragmentListChats");
         //intent.putExtra("1", "1");
 
-        Bundle bundle = new Bundle();
-        bundle.putString("fragmentName", "fragmentListChats");
-        intent.putExtras(bundle);
+        ////Bundle bundle = new Bundle();
+        ////bundle.putString("fragmentName", "fragmentListChats");
+        ////intent.putExtras(bundle);
 
 
         intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
@@ -38,13 +46,13 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         // The stack builder object will contain an artificial back stack for the started Activity.
         // This ensures that navigating backward from the Activity leads out of
         // your application to the Home screen.
-        TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
+        ////TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
 
         // Adds the back stack for the Intent (but not the Intent itself)
-        stackBuilder.addParentStack(ActivityMeetings.class); // добавляем в стек с активити, родительскую активити. В манифесте у дочерних активити можно прописать типа android:parentActivityName=".MainActivity", тогда  откроется дочерне активити.
+        ////stackBuilder.addParentStack(ActivityMeetings.class); // добавляем в стек с активити, родительскую активити. В манифесте у дочерних активити можно прописать типа android:parentActivityName=".MainActivity", тогда  откроется дочерне активити.
 
         // Adds the Intent that starts the Activity to the top of the stack
-        stackBuilder.addNextIntent(intent); // добавляем в стек интент
+        ////stackBuilder.addNextIntent(intent); // добавляем в стек интент
 
         // Make this unique ID to make sure there is not generated just a brand new intent with new extra values:
         //int requestID = (int) System.currentTimeMillis();
@@ -70,9 +78,6 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
                 .setContentIntent(pendingIntent)
                 ;
 
-
-        //notificationBuilder.setContentIntent(pendingIntent);
-        //notificationBuilder.setAutoCancel(true);
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
         notificationManager.notify(0, notificationBuilder.build());
     }
@@ -92,12 +97,14 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         //sendRegistrationToServer(token);
 
         //сохраняем в память телефона
-        getSharedPreferences("saveParams", MODE_PRIVATE).edit().putString("token", token).apply();
+        //getSharedPreferences("saveParams", MODE_PRIVATE).edit().putString("token", token).apply();
+        classGlobalApp.SetTokenDevice(token);
+
     }
 
-    public static String GetToken(Context context) { // получить текущий токен, запрашиваем сразу после логина
+/*    public static String GetToken(Context context) { // получить текущий токен, запрашиваем сразу после логина
         return context.getSharedPreferences("saveParams", MODE_PRIVATE).getString("token", "");
-    }
+    }*/
 
 }
 

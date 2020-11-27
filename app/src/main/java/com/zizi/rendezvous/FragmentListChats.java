@@ -17,6 +17,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.google.android.material.appbar.MaterialToolbar;
+import com.google.android.material.badge.BadgeDrawable;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.material.button.MaterialButton;
 import com.google.firebase.auth.FirebaseAuth;
@@ -26,30 +27,29 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
 
 public class FragmentListChats extends Fragment {
 
-    //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    FirebaseAuth mAuth; // для работы с FireBase
-    FirebaseUser currentUser; //текущий пользователь
-    RecyclerView recyclerView; // список с сообщениями
-    ArrayList<ModelChat> arrayListAllItems; // Имя для универсальности и использования на других экранах, коллекция со всеми ячейками recyclerView
-    Adapter adapter; // адаптер с данными для RecyclerView
-    FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
-    DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
-    Bundle bundle; // для приема параметров в фрагмент
-    ModelChat modelChat; // модель сущности одного чата
-    LinearLayoutManager linearLayoutManager; // для вертикальной ориентации recyclerView
-    BottomNavigationView bottomNavigationView; // нижняя панелька
-    ActivityMeetings listMeetingsTbActivity; // активити для переключения фрагментов из фрагментов
-    FragmentListMeetings fragmentListMeetings; // фрагмент со встречами
-    Bundle bundleToChat; // параметры для передачи в фрагмент чата
-    FragmentChat fragmentChat; // фрагмент с одним чатом
-    MaterialToolbar topAppBar; // верхняя панелька
-    //ArrayList<ModelSingleMeeting> infoAllItems; // информация по всем пользователям
-    //Объявление - КОНЕЦ ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    private ClassGlobalApp classGlobalApp; //гобальный класс по работе с приложением
+    private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
+    private ArrayList<ModelChat> arrayListAllItems; // Имя для универсальности и использования на других экранах, коллекция со всеми ячейками recyclerView
+    private Adapter adapter; // адаптер с данными для RecyclerView
+    private FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
+    private DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
+    private ModelChat modelChat; // модель сущности одного чата
+    private LinearLayoutManager linearLayoutManager; // для вертикальной ориентации recyclerView
+    private FragmentListMeetings fragmentListMeetings; // фрагмент со встречами
+    private FragmentChat fragmentChat; // фрагмент с одним чатом
+    private int countUnreads; // количество непрочитанных чатов текущего пользователя
+    private BadgeDrawable badgeDrawable; // значек для изменения количества непрочитанных сообщений
+
+    //вьюхи
+    private RecyclerView recyclerView; // список с сообщениями
+    private MaterialToolbar materialToolbar; // верхняя панелька
+    private BottomNavigationView bottomNavigationView; // нижняя панелька
 
 
     @Override
@@ -59,68 +59,98 @@ public class FragmentListChats extends Fragment {
         return inflater.inflate(R.layout.fragment_list_chats, container, false);
     }
 
+
+
     @Override //Вызывается, когда отработает метод активности onCreate(), а значит фрагмент может обратиться к компонентам активности
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //инициализация - НАЧАЛО
+        //инициализация ////////////////////////////////////////////////////////////////////////////
+        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
         arrayListAllItems = new ArrayList<>();
-        mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
-        currentUser = mAuth.getCurrentUser();
-        firebaseDatabase = FirebaseDatabase.getInstance(); // БД
-        bundle = this.getArguments();
-        modelChat = new ModelChat();
-        linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
         adapter = new Adapter(arrayListAllItems);
+        modelChat = new ModelChat();
         fragmentListMeetings = new FragmentListMeetings();
-        bundleToChat = new Bundle(); // аргументы для передачи на другой фрагмент
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
-        //infoAllItems = new ArrayList<>(); // информация по всем пользователям
-        //инициализация - КОНЕЦ
+        activityMeetings = (ActivityMeetings)getActivity();
+        linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
+        firebaseDatabase = FirebaseDatabase.getInstance(); // БД
+        countUnreads = 0;
+        //===========================================================================================
 
-        //Ищем нужные вьюхи - НАЧАЛО
+
+
+        //Ищем вьюхи /////////////////////////////////////////////////////////////////////////////////
         bottomNavigationView = getActivity().findViewById(R.id.bottom_navigation);
         recyclerView = getActivity().findViewById(R.id.recycler_view);
-        listMeetingsTbActivity = (ActivityMeetings)getActivity();
-        topAppBar = getActivity().findViewById(R.id.topAppBar);
-        //Ищем нужные вьюхи - КОНЕЦ
+        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
+        //===========================================================================================
 
+
+
+        //recyclerView ///////////////////////////////////////////////////////////////////////////////
+        recyclerView.setHasFixedSize(true); // для производительности recyclerView
+        linearLayoutManager.setOrientation(linearLayoutManager.VERTICAL); //вертикальная ориентация
+        recyclerView.setLayoutManager(linearLayoutManager); // применяем к recyclerView ориентацию
+        recyclerView.setAdapter(adapter); // применяем адаптер
+        UpdateChats(); // событийный метод по обновлению данных из БД, если будут меняться
+        //==========================================================================================
+
+
+
+        //materialToolbar /////////////////////////////////////////////////////////////////////////////
+        materialToolbar.setTitle("Чаты"); // заголовок в панельке верхней
+        materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
+
+        // событие при клике на кнопку навигации на верхней панельке
+        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //getActivity().onBackPressed();
+            }
+        });
+        //==========================================================================================
+
+
+
+        // bottomNavigationView ////////////////////////////////////////////////////////////////////
         bottomNavigationView.setSelectedItemId(R.id.chats); // делаем нужный пункт нижней панели по умолчанию
 
-
-        topAppBar.setTitle("Чаты"); // заголовок в панельке верхней
-        topAppBar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
-        topAppBar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой в верхней панельке
-
-        //добавляем слушателей - НАЧАЛО
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.meetings: // при нажатии на кнопочку Встречи в нижней панели
-                        listMeetingsTbActivity.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
+                        activityMeetings.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
                         return true;
                 }
                 return false;
             }
         });
 
-        // событие при клике на кнопку навигации на верхней панельке
-        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+        // ЗНАЧЕК с количеством непрочитанных сообщений текущего пользователя
+        databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
+        databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
-            public void onClick(View v) {
-                //getActivity().onBackPressed();
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                classGlobalApp.Log("FragmentListChats", "onActivityCreated/onDataChange", "Количество непрочитанных изменилось", false);
+                countUnreads = (int) snapshot.getChildrenCount(); // получаем количество непрочитанных чатов
+                if (countUnreads > 0) { // если есть непрочитанные чаты
+                    badgeDrawable = bottomNavigationView.getOrCreateBadge(R.id.chats); // создаем значек около вкладки Чаты на нижней панели, пока без номера
+                    badgeDrawable.setNumber(countUnreads); // показываем количество непрочитанных чатов
+                } else {
+                    bottomNavigationView.removeBadge(R.id.chats); // удаляем значек с панели
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                // тут надо обработать ошибочку и залогировать
             }
         });
-        //добавляем слушателей - КОНЕЦ
+        //============================================================================================
 
-        recyclerView.setHasFixedSize(true); // для производительности recyclerView
-        linearLayoutManager.setOrientation(linearLayoutManager.VERTICAL); //вертикальная ориентация
-        recyclerView.setLayoutManager(linearLayoutManager); // применяем к recyclerView ориентацию
-        recyclerView.setAdapter(adapter); // применяем адаптер
-
-        UpdateChats(); // событийный метод по обновлению данных из БД, если будут меняться
-        ClassStaticMethods.getCountUnreads(bottomNavigationView); // подписываемся на обновление количества непрочитанных чатов на нижней панельке
 
     }
 
@@ -130,14 +160,10 @@ public class FragmentListChats extends Fragment {
     public void onStart() {
         super.onStart();
 
-        currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) { // если пользователь пустой, не авторизирован
+        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
-
-        //adapter.startListening(); // адаптер начинает слушать БД
 
     }
 
@@ -145,28 +171,25 @@ public class FragmentListChats extends Fragment {
     public void onResume() {
         super.onResume();
 
-
-
     }
 
     @Override
     public void onStop() {
         super.onStop();
-        //adapter.stopListening(); // адаптер прекращает слушать БД
+
     }
-
-
 
 
     /**
      * Метод вызывается при изменении данных в БД в списке чатов пользователя
      */
     private void UpdateChats(){
-        databaseReference = firebaseDatabase.getReference("chats/lists/" + currentUser.getUid() + "/"); //ссылка на данные
+        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/"); //ссылка на данные
 
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД чата
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
+                classGlobalApp.Log("FragmentListChats", "UpdateChats/onChildAdded", "В список добавились чаты", false);
                 arrayListAllItems.add(snapshot.getValue(ModelChat.class)); // записываем инфу о чате в коллекцию со всеми сообщениями
                 adapter.notifyDataSetChanged(); // обновление адаптера
                 recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount()); // пролистать чат в самый конец
@@ -205,6 +228,8 @@ public class FragmentListChats extends Fragment {
 
     /**
      * Возвращает индекс чата в котором изменились данные
+     * @param modelChat модель чата из списка чатов
+     * @return индекс чата в списке чатов arrayListAllItems
      */
     private int GetItemIndex (ModelChat modelChat){
 
@@ -222,7 +247,9 @@ public class FragmentListChats extends Fragment {
 
     }
 
-    // класс адаптера для получения данных
+    /**
+     * Класс адаптера для получения данных
+     */
     class Adapter extends RecyclerView.Adapter<Adapter.ViewHolder> {
 
         private ArrayList<ModelChat> arrayListItems; // коллекция со всеми ячейками RecyclerView
@@ -238,7 +265,11 @@ public class FragmentListChats extends Fragment {
         }
 
 
-
+        /**
+         * Подставляются/связываются значения в ячейки RecyclerView
+         * @param holder Экземпляр класса одной ячейки ViewHolder
+         * @param position позиция в RecyclerView
+         */
         @Override // тут подставляются значения в ячейки RecyclerView
         public void onBindViewHolder(@NonNull Adapter.ViewHolder holder, int position) {
 
@@ -254,12 +285,19 @@ public class FragmentListChats extends Fragment {
 
         }
 
+        /**
+         * Возвращает количество элементов для построения RecyclerView
+         * @return количество элементов
+         */
         @Override
-        public int getItemCount() { // возвращает количество сообщений для построения RecyclerView
+        public int getItemCount() {
             return arrayListItems.size();
         }
 
-        // класс одной ячейки RecyclerView
+
+        /**
+         * Класс одной ячейки RecyclerView
+         */
         class ViewHolder extends RecyclerView.ViewHolder {
             TextView tv_name; // имя партнера
             TextView tv_age; // возраст партнера
@@ -280,14 +318,14 @@ public class FragmentListChats extends Fragment {
                     @Override
                     public void onClick(View v) {
 
+                        // добавляем аргументы для передачи в другой фрагмент
+                        classGlobalApp.ClearBundle();
+                        classGlobalApp.AddBundle("partnerID", arrayListItems.get(getAdapterPosition()).getUserID());
+                        classGlobalApp.AddBundle("partnerToken", arrayListItems.get(getAdapterPosition()).getToken());
+                        classGlobalApp.AddBundle("partnerName", arrayListItems.get(getAdapterPosition()).getName());
+                        classGlobalApp.AddBundle("partnerAge", arrayListItems.get(getAdapterPosition()).getAge());
 
-                    bundleToChat.putString("partnerID", arrayListItems.get(getAdapterPosition()).getUserID()); // добавляем аргумент для передачи в другой фрагмент
-                    bundleToChat.putString("partnerToken", arrayListItems.get(getAdapterPosition()).getToken()); // добавляем аргумент для передачи в другой фрагмент
-                    bundleToChat.putString("partnerName", arrayListItems.get(getAdapterPosition()).getName()); // добавляем аргумент для передачи в другой фрагмент
-                    bundleToChat.putString("partnerAge", arrayListItems.get(getAdapterPosition()).getAge()); // добавляем аргумент для передачи в другой фрагмент
-
-                    fragmentChat.setArguments(bundleToChat); // добавить все аргументы
-                    listMeetingsTbActivity.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+                        activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
 
                     }
                 });
