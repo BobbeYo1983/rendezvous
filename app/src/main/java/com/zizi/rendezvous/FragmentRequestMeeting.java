@@ -89,8 +89,11 @@ public class FragmentRequestMeeting extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
+
+
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        //classGlobalApp.Log("FragmentRequestMeeting", "onActivityCreated", "Метод вызван", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         activityMeetings = (ActivityMeetings)getActivity();
@@ -215,7 +218,6 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         //til_phone_et ////////////////////////////////////////////////////////////////////////////
-        //til_phone_et.setText(saveParams.getString("phone", "")); // восстанавливаем выбранное значение из памяти
         til_phone_et.setText(classGlobalApp.GetParam("phone")); // восстанавливаем выбранное значение из памяти
 
         //слушатель введенного текста, нужен для показать или спрятать подсказку
@@ -392,7 +394,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         //til_place_et //////////////////////////////////////////////////////////////////////////////
-        //Обновление значения поля в onResume()
+        til_place_et.setText(tmpStr);
         // Слушатель при нажатии на поле
         til_place_et.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -402,8 +404,6 @@ public class FragmentRequestMeeting extends Fragment {
                 activityMeetings.ChangeFragment(fragmentPlace, "fragmentPlace", true);
             }
         });
-
-
         //===========================================================================================
 
 
@@ -581,37 +581,12 @@ public class FragmentRequestMeeting extends Fragment {
     public void onStart() {
         super.onStart();
 
+        //classGlobalApp.Log("FragmentRequestMeeting", "onStart", "Метод вызван", false);
+
         if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
-
-        til_name_et.setText(classGlobalApp.GetParam("name")); // восстанавливаем текст из памяти
-        til_gender_act.setText(classGlobalApp.GetParam("gender"));
-        til_age_act.setText(classGlobalApp.GetParam("age")); // восстанавливаем выбранное значение из памяти
-        til_phone_et.setText(classGlobalApp.GetParam("phone")); // восстанавливаем выбранное значение из памяти
-
-
-
-        // cb_only_write ////////////////////////////////////////////////////////////////////////////////
-        //восстанавливаем из памяти
-        if (classGlobalApp.GetParam("onlyWrite").equals("trueTrue")){ // если галка  поставлена и сохранена
-            cb_only_write.setChecked(true);
-        } else {
-            cb_only_write.setChecked(false);// то не ставим галку
-        }
-        // ==============================================================================================
-
-
-
-        til_soc_net_et.setText(classGlobalApp.GetParam("socNet")); // восстанавливаем выбранное значение из памяти);
-        til_contact_et.setText(classGlobalApp.GetParam("contact")); // восстанавливаем выбранное значение из памяти
-        til_gender_partner_act.setText(classGlobalApp.GetParam("gender_partner")); // восстанавливаем выбранное значение из памяти
-        til_age_min_act.setText(classGlobalApp.GetParam("age_min")); // восстанавливаем выбранное значение из памяти
-        til_age_max_act.setText(classGlobalApp.GetParam("age_max"));
-        til_region_act.setText(classGlobalApp.GetParam("region"));  // восстанавливаем выбранное значение из памяти
-        til_town_act.setText(classGlobalApp.GetParam("town")); // подгружаем имя города из памяти
-
 
 
         //til_place_et /////////////////////////////////////////////////////////////////////////////////////
@@ -685,8 +660,6 @@ public class FragmentRequestMeeting extends Fragment {
         til_place_et.setText(tmpStr);
         //==================================================================================================
 
-        til_time_act.setText(classGlobalApp.GetParam("time")); // восстанавливаем выбранное значение из памяти
-        til_comment_et.setText(classGlobalApp.GetParam("comment")); // восстанавливаем выбранное значение из памяти
 
     }
 
@@ -760,5 +733,6 @@ public class FragmentRequestMeeting extends Fragment {
 
         classGlobalApp.SaveParams();
     }
+
 
 }

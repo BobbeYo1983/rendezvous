@@ -86,7 +86,7 @@ public class ClassGlobalApp extends Application {
 
         if (BuildConfig.DEBUG) { // если режим отладки, то ведем ЛОГ
             //символы !@# достаточно уникальны для фильтровки и быстро набираются на клавиатуре
-            Log.v("!@#", "[" + _class + "/" + method + "]: " +  message);
+            Log.v("!@#", "[" + _class + "." + method + "]: " +  message);
 
         }
 

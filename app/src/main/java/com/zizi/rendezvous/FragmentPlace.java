@@ -15,6 +15,7 @@ import android.widget.CompoundButton;
 
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.android.material.textfield.TextInputEditText;
+import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
@@ -23,29 +24,28 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentPlace extends Fragment {
 
-    //ОБЪЯВЛЕНИЕ///////////////////////////////////////////////////////////////////////////////////
-    FirebaseAuth mAuth; // для работы с FireBase
-    FirebaseUser currentUser; //текущий пользователь
-    MaterialToolbar topAppBar; // верхняя панелька
-    SharedPreferences saveParams; // хранилище в энергонезависимой памяти любых параметров
-    SharedPreferences.Editor editorSaveParams; // объект для редакции энергонезависимого хранилища
+    private ClassGlobalApp classGlobalApp; // глобальный класс для всего приложения
 
-    CheckBox cb_anyPlace; // чекбокс любое место
-    CheckBox cb_street; // Прогуляться на улице
-    CheckBox cb_picnic;
-    CheckBox cb_car;
-    CheckBox cb_sport;
-    CheckBox cb_film;
-    CheckBox cb_billiards;
-    CheckBox cb_cafe;
-    CheckBox cb_disco;
-    CheckBox cb_bath;
-    CheckBox cb_myHome;
-    CheckBox cb_youHome;
-    CheckBox cb_hotel;
-    CheckBox cb_other;
+    //вьюхи
+    private MaterialToolbar materialToolbar; // верхняя панелька
 
-    TextInputEditText til_other_et; // поле для ввода прочего места
+    private CheckBox cb_anyPlace; // чекбокс любое место
+    private CheckBox cb_street; // Прогуляться на улице
+    private CheckBox cb_picnic;
+    private CheckBox cb_car;
+    private CheckBox cb_sport;
+    private CheckBox cb_film;
+    private CheckBox cb_billiards;
+    private CheckBox cb_cafe;
+    private CheckBox cb_disco;
+    private CheckBox cb_bath;
+    private CheckBox cb_myHome;
+    private CheckBox cb_youHome;
+    private CheckBox cb_hotel;
+    private CheckBox cb_other;
+
+    private TextInputLayout til_other;
+    private TextInputEditText til_other_et; // поле для ввода прочего места
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -58,12 +58,12 @@ public class FragmentPlace extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        //ИНИЦИАЛИЗАЦИЯ//////////////////////////////////////////////////////////////////////////////
-        mAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
-        saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
+        classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
 
-        //ИЩЕМ ВЬЮХИ
-        topAppBar = getActivity().findViewById(R.id.materialToolbar);
+
+
+        //ИЩЕМ ВЬЮХИ////////////////////////////////////////////////////////////////////////////////
+        materialToolbar = getActivity().findViewById(R.id.materialToolbar);
 
         cb_anyPlace = getActivity().findViewById(R.id.cb_anyPlace);
         cb_street = getActivity().findViewById(R.id.cb_street);
@@ -80,17 +80,18 @@ public class FragmentPlace extends Fragment {
         cb_hotel = getActivity().findViewById(R.id.cb_hotel);
         cb_other = getActivity().findViewById(R.id.cb_other);
 
+        til_other = getActivity().findViewById(R.id.til_other);
         til_other_et = getActivity().findViewById(R.id.til_other_et);
         // ==========================================================================================
 
 
 
-        // topAppBar /////////////////////////////////////////////////////////////////////////////////
-        topAppBar.setTitle("Место встречи"); // заголовок панельки
-        topAppBar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
+        // materialToolbar /////////////////////////////////////////////////////////////////////////////////
+        materialToolbar.setTitle("Место встречи"); // заголовок панельки
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации стрелкой в верхней панельке
 
         // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
-        topAppBar.setNavigationOnClickListener(new View.OnClickListener() {
+        materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 getActivity().onBackPressed();
@@ -98,6 +99,27 @@ public class FragmentPlace extends Fragment {
         });
         //===========================================================================================
 
+
+
+        //восстанавливаем галки из памяти////////////////////////////////////////////////////////////
+        if (classGlobalApp.GetParam("placeAnyPlace")   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);}      else {cb_anyPlace.setChecked(false);};
+        if (classGlobalApp.GetParam("placeStreet")     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);}        else {cb_street.setChecked(false);};
+        if (classGlobalApp.GetParam("placePicnic")     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);}        else {cb_picnic.setChecked(false);};
+        if (classGlobalApp.GetParam("placeCar")        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);}           else {cb_car.setChecked(false);};
+        if (classGlobalApp.GetParam("placeSport")      .equals(cb_sport.getText().toString()))     {cb_sport.setChecked(true);}         else {cb_sport.setChecked(false);};
+        if (classGlobalApp.GetParam("placeFilm")       .equals(cb_film.getText().toString()))      {cb_film.setChecked(true);}          else {cb_film.setChecked(false);};
+        if (classGlobalApp.GetParam("placeBilliards")  .equals(cb_billiards.getText().toString())) {cb_billiards.setChecked(true);}     else {cb_billiards.setChecked(false);};
+        if (classGlobalApp.GetParam("placeCafe")       .equals(cb_cafe.getText().toString()))      {cb_cafe.setChecked(true);}          else {cb_cafe.setChecked(false);};
+        if (classGlobalApp.GetParam("placeDisco")      .equals(cb_disco.getText().toString()))     {cb_disco.setChecked(true);}         else {cb_disco.setChecked(false);};
+        if (classGlobalApp.GetParam("placeBath")       .equals(cb_bath.getText().toString()))      {cb_bath.setChecked(true);}          else {cb_bath.setChecked(false);};
+        if (classGlobalApp.GetParam("placeMyHome")     .equals(cb_myHome.getText().toString()))    {cb_myHome.setChecked(true);}        else {cb_myHome.setChecked(false);};
+        if (classGlobalApp.GetParam("placeYouHome")    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);}       else {cb_youHome.setChecked(false);};
+        if (classGlobalApp.GetParam("placeHotel")      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);}         else {cb_hotel.setChecked(false);};
+        if (classGlobalApp.GetParam("placeOther")      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);}         else {cb_other.setChecked(false);};
+        //============================================================================================
+
+
+        // cb_anyPlace //////////////////////////////////////////////////////////////////////////////
         //Слушатель изменения общей галки Любое место
         cb_anyPlace.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -165,19 +187,38 @@ public class FragmentPlace extends Fragment {
                 }
             }
         });
+        //==========================================================================================
 
-        //Слушатель за галкой Прочее место, дает или не дает вводить текст в поле Прочее место
+
+
+        //Слушатель за галкой Прочее место, дает или не дает вводить текст в поле Прочее место////////
         cb_other.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if (isChecked) {
+                    til_other.setEnabled(true);
                     til_other_et.setEnabled(true);
                 } else {
                     til_other_et.setText("");
+                    til_other.setEnabled(false);
                     til_other_et.setEnabled(false);
                 }
             }
         });
+        //============================================================================================
+
+
+
+        // til_other_et ////////////////////////////////////////////////////////////////////////////
+        til_other_et.setText(classGlobalApp.GetParam("placeOtherDescription"));
+        if (cb_other.isChecked()){
+            til_other.setEnabled(true);
+            til_other_et.setEnabled(true);
+        }else{
+            til_other.setEnabled(false);
+            til_other_et.setEnabled(false);
+        }
+        //==========================================================================================
 
 
     }
@@ -186,48 +227,13 @@ public class FragmentPlace extends Fragment {
     public void onStart() {
         super.onStart();
 
-        currentUser = mAuth.getCurrentUser();
-
-        if (currentUser == null) { // если пользователь пустой, не авторизирован
+        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
             startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             getActivity().finish(); // убиваем активити
         }
 
-    }
-
-
-    @Override
-    public void onPause() {
-        super.onPause();
-
-        // сохраняем выбранные места встреч
-        editorSaveParams = saveParams.edit(); // запоминаем в энергонезависимою память для входа
-
-        if (cb_anyPlace.isChecked())    { editorSaveParams.putString("placeAnyPlace",   cb_anyPlace.getText().toString()); } else {editorSaveParams.putString("placeAnyPlace", ""); }
-        if (cb_street.isChecked())      { editorSaveParams.putString("placeStreet",     cb_street.getText().toString()); } else {editorSaveParams.putString("placeStreet", ""); }
-        if (cb_picnic.isChecked())      { editorSaveParams.putString("placePicnic",     cb_picnic.getText().toString()); } else {editorSaveParams.putString("placePicnic", ""); }
-        if (cb_car.isChecked())         { editorSaveParams.putString("placeCar",        cb_car.getText().toString()); } else {editorSaveParams.putString("placeCar", ""); }
-        if (cb_sport.isChecked())       { editorSaveParams.putString("placeSport",      cb_sport.getText().toString()); } else {editorSaveParams.putString("placeSport", ""); }
-        if (cb_film.isChecked())        { editorSaveParams.putString("placeFilm",       cb_film.getText().toString()); } else {editorSaveParams.putString("placeFilm", ""); }
-        if (cb_billiards.isChecked())   { editorSaveParams.putString("placeBilliards",  cb_billiards.getText().toString()); } else {editorSaveParams.putString("placeBilliards", ""); }
-        if (cb_cafe.isChecked())        { editorSaveParams.putString("placeCafe",       cb_cafe.getText().toString()); } else {editorSaveParams.putString("placeCafe", ""); }
-        if (cb_disco.isChecked())       { editorSaveParams.putString("placeDisco",      cb_disco.getText().toString()); } else {editorSaveParams.putString("placeDisco", ""); }
-        if (cb_bath.isChecked())        { editorSaveParams.putString("placeBath",       cb_bath.getText().toString()); } else {editorSaveParams.putString("placeBath", ""); }
-        if (cb_myHome.isChecked())      { editorSaveParams.putString("placeMyHome",     cb_myHome.getText().toString()); } else {editorSaveParams.putString("placeMyHome", ""); }
-        if (cb_youHome.isChecked())     { editorSaveParams.putString("placeYouHome",    cb_youHome.getText().toString()); } else {editorSaveParams.putString("placeYouHome", ""); }
-        if (cb_hotel.isChecked())       { editorSaveParams.putString("placeHotel",      cb_hotel.getText().toString()); } else {editorSaveParams.putString("placeHotel", ""); }
-        if (cb_other.isChecked())       { editorSaveParams.putString("placeOther",      cb_other.getText().toString()); } else {editorSaveParams.putString("placeOther", ""); }
-        editorSaveParams.putString("placeOtherDescription", til_other_et.getText().toString());
-
-        editorSaveParams.apply();
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-
         // восстанавливаем места встречь из памяти телефона
-        if (saveParams.getString("placeAnyPlace",   cb_anyPlace.getText().toString())   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);} else {cb_anyPlace.setChecked(false);};
+/*        if (saveParams.getString("placeAnyPlace",   cb_anyPlace.getText().toString())   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);} else {cb_anyPlace.setChecked(false);};
         if (saveParams.getString("placeStreet",     cb_street.getText().toString())     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);} else {cb_street.setChecked(false);};
         if (saveParams.getString("placePicnic",     cb_picnic.getText().toString())     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);} else {cb_picnic.setChecked(false);};
         if (saveParams.getString("placeCar",        cb_car.getText().toString())        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);} else {cb_car.setChecked(false);};
@@ -241,9 +247,40 @@ public class FragmentPlace extends Fragment {
         if (saveParams.getString("placeYouHome",    cb_youHome.getText().toString())    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);} else {cb_youHome.setChecked(false);};
         if (saveParams.getString("placeHotel",      cb_hotel.getText().toString())      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);} else {cb_hotel.setChecked(false);};
         if (saveParams.getString("placeOther",      cb_other.getText().toString())      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);} else {cb_other.setChecked(false);};
-        til_other_et.setText(saveParams.getString("placeOtherDescription", ""));
+        til_other_et.setText(saveParams.getString("placeOtherDescription", ""));*/
 
 
 
     }
+
+
+    @Override
+    public void onPause() {
+        super.onPause();
+
+        // сохраняем выбранные места встреч
+
+        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   cb_anyPlace.getText().toString()); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
+        if (cb_street.isChecked())          { classGlobalApp.PreparingToSave("placeStreet",     cb_street.getText().toString()); } else {classGlobalApp.PreparingToSave("placeStreet",   ""); }
+        if (cb_picnic.isChecked())          { classGlobalApp.PreparingToSave("placePicnic",     cb_picnic.getText().toString()); } else {classGlobalApp.PreparingToSave("placePicnic",   ""); }
+        if (cb_car.isChecked())             { classGlobalApp.PreparingToSave("placeCar",        cb_car.getText().toString()); } else {classGlobalApp.PreparingToSave("placeCar",   ""); }
+        if (cb_sport.isChecked())           { classGlobalApp.PreparingToSave("placeSport",      cb_sport.getText().toString()); } else {classGlobalApp.PreparingToSave("placeSport",   ""); }
+        if (cb_film.isChecked())            { classGlobalApp.PreparingToSave("placeFilm",       cb_film.getText().toString()); } else {classGlobalApp.PreparingToSave("placeFilm",   ""); }
+        if (cb_billiards.isChecked())       { classGlobalApp.PreparingToSave("placeBilliards",  cb_billiards.getText().toString()); } else {classGlobalApp.PreparingToSave("placeBilliards",   ""); }
+        if (cb_cafe.isChecked())            { classGlobalApp.PreparingToSave("placeCafe",       cb_cafe.getText().toString()); } else {classGlobalApp.PreparingToSave("placeCafe",   ""); }
+        if (cb_disco.isChecked())           { classGlobalApp.PreparingToSave("placeDisco",      cb_disco.getText().toString()); } else {classGlobalApp.PreparingToSave("placeDisco",   ""); }
+        if (cb_bath.isChecked())            { classGlobalApp.PreparingToSave("placeBath",       cb_bath.getText().toString()); } else {classGlobalApp.PreparingToSave("placeBath",   ""); }
+        if (cb_myHome.isChecked())          { classGlobalApp.PreparingToSave("placeMyHome",     cb_myHome.getText().toString()); } else {classGlobalApp.PreparingToSave("placeMyHome",   ""); }
+        if (cb_youHome.isChecked())         { classGlobalApp.PreparingToSave("placeYouHome",    cb_youHome.getText().toString()); } else {classGlobalApp.PreparingToSave("placeYouHome",   ""); }
+        if (cb_hotel.isChecked())           { classGlobalApp.PreparingToSave("placeHotel",      cb_hotel.getText().toString()); } else {classGlobalApp.PreparingToSave("placeHotel",   ""); }
+        if (cb_other.isChecked())           { classGlobalApp.PreparingToSave("placeOther",      cb_other.getText().toString()); } else {classGlobalApp.PreparingToSave("placeOther",   ""); }
+
+        classGlobalApp.PreparingToSave("placeOtherDescription", til_other_et.getText().toString());
+
+        classGlobalApp.Log("FragmentPlace", "onPause", "Сохранение выбранных мест в память", false);
+        classGlobalApp.SaveParams();
+
+    }
+
+
 }
