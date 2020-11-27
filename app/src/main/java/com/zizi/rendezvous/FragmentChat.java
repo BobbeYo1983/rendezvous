@@ -69,14 +69,11 @@ import static android.content.Context.MODE_PRIVATE;
 
 public class FragmentChat extends Fragment {
 
-    //Объявление - НАЧАЛО ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-    //private ActivityMeetings activityMeetings; // активити для переключения фрагментов из фрагментов
     private ClassGlobalApp classGlobalApp; // глобальный класс для всего приложения
     private ArrayList<ModelMessage> arrayListAllMessages; // коллекция с сообщениями
     private Adapter adapter; // адаптер с данными для RecyclerView
     private FirebaseDatabase firebaseDatabase; // = FirebaseDatabase.getInstance(); // БД
     private DatabaseReference databaseReference;// = database.getReference("message"); //ссылка на данные
-    //private Bundle bundle; // для приема параметров в фрагмент
     private TextInputEditText til_message_et; // поле с техтом ввода сообщения
     private Date dateNow; // для работы с датой
     private RelativeLayout.LayoutParams layoutParams; // параметры для изменениЯ геометрии поля с сообщением в чате и изменения позиции
@@ -91,7 +88,7 @@ public class FragmentChat extends Fragment {
     private ModelChat partnerInfo; // информация о партнере
     private ModelChat currentUserInfo; // информация о текущем пользователе
     private List<String> usersIDs; // для формирования канала чата
-    private boolean fragmentIsActive;
+    private boolean fragmentIsVisible;
 
     //вьюхи
     private FloatingActionButton floatingActionButton; //кнопка отправить сообщение
@@ -100,24 +97,6 @@ public class FragmentChat extends Fragment {
     private TextView tv_unread;
 
 
-
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        //инициализация
-        arrayListAllMessages = new ArrayList<>();
-        adapter = new Adapter(arrayListAllMessages);
-        modelMessage = new ModelMessage();
-        size = new Point();
-        formatForDateNow = new SimpleDateFormat("HH:mm:ss"); // для формата вывода даты
-        partnerInfo = new ModelChat(); // информация об партнере по чату, класс логически не так называется, но чтобы не плодить, использую этот
-        currentUserInfo = new ModelChat(); // информация о текущем пользователе, класс логически не так называется, но чтобы не плодить, использую этот
-        usersIDs = new ArrayList<String>();
-        fragmentIsActive = true;
-
-
-    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -131,8 +110,15 @@ public class FragmentChat extends Fragment {
         super.onActivityCreated(savedInstanceState);
 
         //инициализация ////////////////////////////////////////////////////////////////////////////
-        //activityMeetings = (ActivityMeetings) getActivity(); // получаем объект текущей активити
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        arrayListAllMessages = new ArrayList<>();
+        adapter = new Adapter(arrayListAllMessages);
+        modelMessage = new ModelMessage();
+        size = new Point();
+        formatForDateNow = new SimpleDateFormat("HH:mm:ss"); // для формата вывода даты
+        partnerInfo = new ModelChat(); // информация об партнере по чату, класс логически не так называется, но чтобы не плодить, использую этот
+        currentUserInfo = new ModelChat(); // информация о текущем пользователе, класс логически не так называется, но чтобы не плодить, использую этот
+        usersIDs = new ArrayList<String>();
         dp = getActivity().getResources().getDisplayMetrics().density; // получаем плотность экрана на 1 dp
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД
@@ -167,7 +153,7 @@ public class FragmentChat extends Fragment {
         currentUserInfo.setUserID(classGlobalApp.GetCurrentUserUid());
         currentUserInfo.setToken(classGlobalApp.GetTokenDevice());
         currentUserInfo.setName(classGlobalApp.GetParam("name")); // подгружаем из памяти девайса
-        currentUserInfo.setName(classGlobalApp.GetParam("age")); // подгружаем из памяти девайса
+        currentUserInfo.setAge(classGlobalApp.GetParam("age")); // подгружаем из памяти девайса
         //==========================================================================================
 
 
@@ -191,14 +177,17 @@ public class FragmentChat extends Fragment {
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Можно сделать, что чат прочитан", false);
+                classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Можно сделать, что чат прочитан", false);
                 // если ветка в непрочитанных с ID партнера существует и фрагмет активен/открыт, то ее нужно удалить, тем самым сказать, что чат прочитан
                 //if (snapshot.child(partnerInfo.getUserID()).exists() && fragmentIsActive) {
                 //if (snapshot.child(partnerInfo.getUserID()).exists() && fragmentIsActive) {
 
-                    databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
-                    databaseReference.removeValue();
-                    classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Этот чат прочитан", false);
+                    //databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
+                    //databaseReference.removeValue();
+                    if (fragmentIsVisible){
+                        classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Этот чат прочитан", false);
+                    }
+
                 //}
 
             }
@@ -291,32 +280,43 @@ public class FragmentChat extends Fragment {
 
                 if (!til_message_et.getText().toString().equals("")) // если сообщение не пустое
                 {
-                    databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()) ); //ссылка на данные, формируем канал чата
 
-                    //отправляем сообщение
+                    // отправляем сообщение /////////////////////////////////////////////////////////
+                    databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()) ); //ссылка на данные, формируем канал чата
                     modelMessage.userID = classGlobalApp.GetCurrentUserUid(); // формируем ID пользователя
                     modelMessage.textMessage = til_message_et.getText().toString().trim(); // текст сообщения без пробелов в начале и конце строки
                     modelMessage.dateTimeDevice = formatForDateNow.format(new Date()); // формируем даты на девайсе, не на сервере
                     databaseReference.push().setValue(modelMessage); // записываем сообщение в базу на сервак
+                    //===============================================================================
 
-                    //ссылка на данные, формируем информацию о чатах текущего пользователя
+
+
+                    //Если пишем партнеру в первый раз, то в нашем списке чатов создастся чат с партнером
                     databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
                     databaseReference.setValue(partnerInfo); // записываем модель данных в БД
+                    //=================================================================================
+
+
+
+                    //ЗНАЧЕК в нижней панели и ИНДИКАТОР В ЧАТЕ, надо партнеру подсветить, что у него есть непрочитанный чат
+                    databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID() + "/"); // путь к непрочитанным чатам партнера
+                    databaseReference.child(classGlobalApp.GetCurrentUserUid()).setValue("thisChatUnread"); // записываем, что от меня у партнера есть непрочитанный чат
+                    //==============================================================================
+
+
 
                     //КОНВЕРТ/ИНДИКАТОР В СПИСКЕ ЧАТОВ ссылка на данные, формируем информацию о чатах партнера
                     databaseReference = firebaseDatabase.getReference("chats/lists/" + partnerInfo.getUserID() + "/" + classGlobalApp.GetCurrentUserUid()  + "/"); // путь к листу чатов партнера
                     currentUserInfo.setUnReadMsg("1"); // записываем отметку, что есть непрочитанные сообщения
                     databaseReference.setValue(currentUserInfo); // записываем модель данных в БД
-                    //ЗНАЧЕК в нашей нижней панели и ИНДИКАТОР В ЧАТЕ, надо партнеру подсветить, что у него есть непрочитанный чат
-                    databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID() + "/"); // путь к непрочитанным чатам партнера
-                    databaseReference.child(classGlobalApp.GetCurrentUserUid()).setValue("thisChatUnread"); // записываем, что от меня у партнера есть непрочитанный чат
+
 
                     til_message_et.setText("");
 
                     /**
                      * Отправляем уведомление в асинхронной задаче
                      */
-                    new Notify().execute();
+                    //new Notify().execute();
 
                 }
 
@@ -337,28 +337,23 @@ public class FragmentChat extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
 
-        fragmentIsActive = true; // отмечаем, что фрагмент стал активным
-
-
-    }
 
     @Override
     public void onPause() {
         super.onPause();
 
-        fragmentIsActive = false; // отмечаем, что фрагмент не активный
+        fragmentIsVisible = false; // делаем статус фрагмента не видимым
 
     }
 
-    @Override
-    public void onStop() {
-        super.onStop();
-        //adapter.stopListening(); // адаптер прекращает слушать БД
 
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        fragmentIsVisible = true; // делаем статус фрагмента видимым
     }
 
     /**
