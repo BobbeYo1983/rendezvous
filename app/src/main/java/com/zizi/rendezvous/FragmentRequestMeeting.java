@@ -78,12 +78,16 @@ public class FragmentRequestMeeting extends Fragment {
     private TextInputEditText til_comment_et; // комментарий к встрече
     private Button btn_apply_request; // кнопка подачи заявки
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_request_meeting, container, false);
     }
+
+
 
     @Override //Вызывается, когда отработает метод активности onCreate(), а значит фрагмент может обратиться к компонентам активности
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -93,14 +97,11 @@ public class FragmentRequestMeeting extends Fragment {
 
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
-        //classGlobalApp.Log("FragmentRequestMeeting", "onActivityCreated", "Метод вызван", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
-        //saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
-
 
         // находим все вьюхи на активити
         til_name = getActivity().findViewById(R.id.til_name);
@@ -378,7 +379,6 @@ public class FragmentRequestMeeting extends Fragment {
         } else {
             til_town.setEnabled(true);
             til_town_act.setEnabled(true); // то делаем активным
-            //til_town_act.setText(saveParams.getString("town", "")); // подгружаем имя города из памяти
             til_town_act.setText(classGlobalApp.GetParam("town")); // подгружаем имя города из памяти
             til_town_act.setAdapter(CreateAdapterTowns(classGlobalApp.GetParam("region")));//тут нужно дернуть слушатель, чтобы подгрузил города
         }
