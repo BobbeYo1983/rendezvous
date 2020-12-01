@@ -57,6 +57,8 @@ public class FragmentListMeetings extends Fragment {
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
+    private int age_min;
+    private int age_max;
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -179,11 +181,16 @@ public class FragmentListMeetings extends Fragment {
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         //query = firebaseFirestore.collection("meetings"); // запрос к БД
+        age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")) - 1;
+        age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")) + 1;
+
         // запрос к БД c фильтрами
         query = firebaseFirestore.collection("meetings")// коллекция
                 .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает
-                .whereGreaterThanOrEqualTo("age", classGlobalApp.GetParam("age_min"))
-                .whereLessThanOrEqualTo("age", classGlobalApp.GetParam("age_max"))
+                //.whereGreaterThanOrEqualTo("age", classGlobalApp.GetParam("age_min"))
+                //.whereLessThanOrEqualTo("age", classGlobalApp.GetParam("age_max"))
+                .whereGreaterThan("age", String.valueOf(age_min))
+                .whereLessThan("age", String.valueOf(age_max))
                 .whereEqualTo("region", classGlobalApp.GetParam("region"))
                 .whereEqualTo("town", classGlobalApp.GetParam("town"))
                 //здесь нужны места
