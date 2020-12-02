@@ -57,8 +57,7 @@ public class FragmentListMeetings extends Fragment {
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
-    //private int age_min;
-    //private int age_max;
+    private ArrayList<String> placeArray; // список с местами встреч партнера
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -114,6 +113,7 @@ public class FragmentListMeetings extends Fragment {
         fragmentListChats = new FragmentListChats(); //фрагмент с чатами
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         fragmentDetailsMeeting = new FragmentDetailsMeeting();
+        placeArray = new ArrayList<>();
         countUnreads = 0; // количество непрочитанных переменных
 
 
@@ -187,6 +187,7 @@ public class FragmentListMeetings extends Fragment {
         // запрос к БД c фильтрами
         query = firebaseFirestore.collection("meetings")// коллекция
                 .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает пол в запросе и пол партнера
+                //по возрасту выборка на уровне приложения сделана на вкладке со встречами
                 //.whereGreaterThanOrEqualTo("age", classGlobalApp.GetParam("age_min"))
                 //.whereLessThanOrEqualTo("age", classGlobalApp.GetParam("age_max"))
                 //.whereGreaterThan("age", String.valueOf(age_min))
@@ -195,35 +196,6 @@ public class FragmentListMeetings extends Fragment {
                 .whereEqualTo("town", classGlobalApp.GetParam("town")) //совпадает город в запросе и в заявке партнера
                 //.whereArrayContains()
 
-/*                .whereNotEqualTo("placeStreet", "")
-                .whereNotEqualTo("placePicnic", "")
-                .whereNotEqualTo("placeCar", "")
-                .whereNotEqualTo("placeSport", "")
-                .whereNotEqualTo("placeFilm", "")
-                .whereNotEqualTo("placeBilliards", "")
-                .whereNotEqualTo("placeCafe", "")
-                .whereNotEqualTo("placeDisco", "")
-                .whereNotEqualTo("placeBath", "")
-                .whereNotEqualTo("placeMyHome", "")
-                .whereNotEqualTo("placeYouHome", "")
-                .whereNotEqualTo("placeHotel", "")
-                .whereNotEqualTo("placeOther", "")*/
-
-/*                .whereEqualTo("placeStreet", classGlobalApp.GetParam("placeStreet"))
-                .whereEqualTo("placePicnic", classGlobalApp.GetParam("placePicnic"))
-                .whereEqualTo("placeCar", classGlobalApp.GetParam("placeCar"))
-                .whereEqualTo("placeSport", classGlobalApp.GetParam("placeSport"))
-                .whereEqualTo("placeFilm", classGlobalApp.GetParam("placeFilm"))
-                .whereEqualTo("placeBilliards", classGlobalApp.GetParam("placeBilliards"))
-                .whereEqualTo("placeCafe", classGlobalApp.GetParam("placeCafe"))
-                .whereEqualTo("placeDisco", classGlobalApp.GetParam("placeDisco"))
-                .whereEqualTo("placeBath", classGlobalApp.GetParam("placeBath"))
-                .whereEqualTo("placeMyHome", classGlobalApp.GetParam("placeMyHome"))
-                .whereEqualTo("placeYouHome", classGlobalApp.GetParam("placeYouHome"))
-                .whereEqualTo("placeHotel", classGlobalApp.GetParam("placeHotel"))
-                .whereEqualTo("placeOther", classGlobalApp.GetParam("placeOther"))*/
-                //здесь нужны места
-                //.whereEqualTo("time", classGlobalApp.GetParam("time"))
                 ;
 
         options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч
@@ -240,11 +212,13 @@ public class FragmentListMeetings extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) {
 
-                DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД
+                DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД, один из списка
 
                 int age = Integer.parseInt(model.getAge()); //получаем возраст
                 int age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")); //минимальный возраст из заявки текущего пользователя
                 int age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")); //максимальный возраст из заявки текущего пользователя
+
+                placeArray = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
 
                 if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
                         !(age >= age_min && age <= age_max) //если возраст не попадает в диапазон запроса
@@ -256,7 +230,7 @@ public class FragmentListMeetings extends Fragment {
                     layoutParams.bottomMargin = 0; // отступ снизу
 
                 } else { // связываем данные и представление
-                  
+
                         holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
                         holder.tv_age.setText(model.getAge());
                         holder.tv_comment.setText(model.getComment());
