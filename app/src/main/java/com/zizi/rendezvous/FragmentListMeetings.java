@@ -57,8 +57,8 @@ public class FragmentListMeetings extends Fragment {
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
-    private int age_min;
-    private int age_max;
+    //private int age_min;
+    //private int age_max;
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -181,8 +181,8 @@ public class FragmentListMeetings extends Fragment {
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         //query = firebaseFirestore.collection("meetings"); // запрос к БД
-        age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")) - 1;
-        age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")) + 1;
+        //age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")) - 1;
+        //age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")) + 1;
 
         // запрос к БД c фильтрами
         query = firebaseFirestore.collection("meetings")// коллекция
@@ -223,7 +223,7 @@ public class FragmentListMeetings extends Fragment {
                 .whereEqualTo("placeHotel", classGlobalApp.GetParam("placeHotel"))
                 .whereEqualTo("placeOther", classGlobalApp.GetParam("placeOther"))*/
                 //здесь нужны места
-                .whereEqualTo("time", classGlobalApp.GetParam("time"))
+                //.whereEqualTo("time", classGlobalApp.GetParam("time"))
                 ;
 
         options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч
@@ -242,20 +242,28 @@ public class FragmentListMeetings extends Fragment {
 
                 DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД
 
-                if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail())) { // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
+                int age = Integer.parseInt(model.getAge()); //получаем возраст
+                int age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")); //минимальный возраст из заявки текущего пользователя
+                int age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")); //максимальный возраст из заявки текущего пользователя
+
+                if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
+                        !(age >= age_min && age <= age_max) //если возраст не попадает в диапазон запроса
+                ) {
 
                     RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)holder.itemView.getLayoutParams(); // получаем параметры элемента
                     layoutParams.height = 0; // высота ячейки ноль, то есть скрываем ее
                     layoutParams.topMargin = 0; // отступ сверху
                     layoutParams.bottomMargin = 0; // отступ снизу
 
-                } else {
-                    holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
-                    holder.tv_age.setText(model.getAge());
-                    holder.tv_comment.setText(model.getComment());
+                } else { // связываем данные и представление
+                  
+                        holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
+                        holder.tv_age.setText(model.getAge());
+                        holder.tv_comment.setText(model.getComment());
+
                 }
 
-                usersInfoAll.add(model); // добавляем в список всех пользователей для передачи в информации в другие фрагменты
+                usersInfoAll.add(model); // добавляем в список всех пользователей для передачи информации в другие фрагменты
 
 
             }
