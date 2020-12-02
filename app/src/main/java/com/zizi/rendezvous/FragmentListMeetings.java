@@ -186,13 +186,42 @@ public class FragmentListMeetings extends Fragment {
 
         // запрос к БД c фильтрами
         query = firebaseFirestore.collection("meetings")// коллекция
-                .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает
+                .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает пол в запросе и пол партнера
                 //.whereGreaterThanOrEqualTo("age", classGlobalApp.GetParam("age_min"))
                 //.whereLessThanOrEqualTo("age", classGlobalApp.GetParam("age_max"))
-                .whereGreaterThan("age", String.valueOf(age_min))
-                .whereLessThan("age", String.valueOf(age_max))
-                .whereEqualTo("region", classGlobalApp.GetParam("region"))
-                .whereEqualTo("town", classGlobalApp.GetParam("town"))
+                //.whereGreaterThan("age", String.valueOf(age_min))
+                //.whereLessThan("age", String.valueOf(age_max))
+                .whereEqualTo("region", classGlobalApp.GetParam("region")) //совпадает регион в запросе и в заявке партнера
+                .whereEqualTo("town", classGlobalApp.GetParam("town")) //совпадает город в запросе и в заявке партнера
+                //.whereArrayContains()
+
+/*                .whereNotEqualTo("placeStreet", "")
+                .whereNotEqualTo("placePicnic", "")
+                .whereNotEqualTo("placeCar", "")
+                .whereNotEqualTo("placeSport", "")
+                .whereNotEqualTo("placeFilm", "")
+                .whereNotEqualTo("placeBilliards", "")
+                .whereNotEqualTo("placeCafe", "")
+                .whereNotEqualTo("placeDisco", "")
+                .whereNotEqualTo("placeBath", "")
+                .whereNotEqualTo("placeMyHome", "")
+                .whereNotEqualTo("placeYouHome", "")
+                .whereNotEqualTo("placeHotel", "")
+                .whereNotEqualTo("placeOther", "")*/
+
+/*                .whereEqualTo("placeStreet", classGlobalApp.GetParam("placeStreet"))
+                .whereEqualTo("placePicnic", classGlobalApp.GetParam("placePicnic"))
+                .whereEqualTo("placeCar", classGlobalApp.GetParam("placeCar"))
+                .whereEqualTo("placeSport", classGlobalApp.GetParam("placeSport"))
+                .whereEqualTo("placeFilm", classGlobalApp.GetParam("placeFilm"))
+                .whereEqualTo("placeBilliards", classGlobalApp.GetParam("placeBilliards"))
+                .whereEqualTo("placeCafe", classGlobalApp.GetParam("placeCafe"))
+                .whereEqualTo("placeDisco", classGlobalApp.GetParam("placeDisco"))
+                .whereEqualTo("placeBath", classGlobalApp.GetParam("placeBath"))
+                .whereEqualTo("placeMyHome", classGlobalApp.GetParam("placeMyHome"))
+                .whereEqualTo("placeYouHome", classGlobalApp.GetParam("placeYouHome"))
+                .whereEqualTo("placeHotel", classGlobalApp.GetParam("placeHotel"))
+                .whereEqualTo("placeOther", classGlobalApp.GetParam("placeOther"))*/
                 //здесь нужны места
                 .whereEqualTo("time", classGlobalApp.GetParam("time"))
                 ;

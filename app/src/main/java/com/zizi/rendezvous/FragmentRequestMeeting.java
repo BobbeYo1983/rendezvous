@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -497,6 +498,37 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("region", til_region_act.getEditableText().toString().trim());
                     meeting.put("town", til_town_act.getEditableText().toString().trim());
                     meeting.put("place", til_place_et.getEditableText().toString().trim());
+                    //данные ранее сохраненные на другом фрагменте о местах встречи
+/*                    meeting.put("placeStreet", classGlobalApp.GetParam("placeStreet"));
+                    meeting.put("placePicnic", classGlobalApp.GetParam("placePicnic"));
+                    meeting.put("placeCar", classGlobalApp.GetParam("placeCar"));
+                    meeting.put("placeSport", classGlobalApp.GetParam("placeSport"));
+                    meeting.put("placeFilm", classGlobalApp.GetParam("placeFilm"));
+                    meeting.put("placeBilliards", classGlobalApp.GetParam("placeBilliards"));
+                    meeting.put("placeCafe", classGlobalApp.GetParam("placeCafe"));
+                    meeting.put("placeDisco", classGlobalApp.GetParam("placeDisco"));
+                    meeting.put("placeBath", classGlobalApp.GetParam("placeBath"));
+                    meeting.put("placeMyHome", classGlobalApp.GetParam("placeMyHome"));
+                    meeting.put("placeYouHome", classGlobalApp.GetParam("placeYouHome"));
+                    meeting.put("placeHotel", classGlobalApp.GetParam("placeHotel"));
+                    meeting.put("placeOther", classGlobalApp.GetParam("placeOther"));*/
+
+                    meeting.put("placeArray", Arrays.asList(classGlobalApp.GetParam("placeStreet"),
+                                                            classGlobalApp.GetParam("placePicnic"),
+                                                            classGlobalApp.GetParam("placeCar"),
+                                                            classGlobalApp.GetParam("placeSport"),
+                                                            classGlobalApp.GetParam("placeFilm"),
+                                                            classGlobalApp.GetParam("placeBilliards"),
+                                                            classGlobalApp.GetParam("placeCafe"),
+                                                            classGlobalApp.GetParam("placeDisco"),
+                                                            classGlobalApp.GetParam("placeBath"),
+                                                            classGlobalApp.GetParam("placeMyHome"),
+                                                            classGlobalApp.GetParam("placeYouHome"),
+                                                            classGlobalApp.GetParam("placeHotel"),
+                                                            classGlobalApp.GetParam("placeOther")
+                                                            ));
+
+
                     meeting.put("time", til_time_act.getEditableText().toString().trim());
                     meeting.put("comment", til_comment_et.getText().toString().trim());
 

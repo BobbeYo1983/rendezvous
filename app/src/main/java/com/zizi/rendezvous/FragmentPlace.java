@@ -102,20 +102,57 @@ public class FragmentPlace extends Fragment {
 
 
         //восстанавливаем галки из памяти////////////////////////////////////////////////////////////
-        if (classGlobalApp.GetParam("placeAnyPlace")   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);}      else {cb_anyPlace.setChecked(false);};
-        if (classGlobalApp.GetParam("placeStreet")     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);}        else {cb_street.setChecked(false);};
-        if (classGlobalApp.GetParam("placePicnic")     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);}        else {cb_picnic.setChecked(false);};
-        if (classGlobalApp.GetParam("placeCar")        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);}           else {cb_car.setChecked(false);};
-        if (classGlobalApp.GetParam("placeSport")      .equals(cb_sport.getText().toString()))     {cb_sport.setChecked(true);}         else {cb_sport.setChecked(false);};
-        if (classGlobalApp.GetParam("placeFilm")       .equals(cb_film.getText().toString()))      {cb_film.setChecked(true);}          else {cb_film.setChecked(false);};
-        if (classGlobalApp.GetParam("placeBilliards")  .equals(cb_billiards.getText().toString())) {cb_billiards.setChecked(true);}     else {cb_billiards.setChecked(false);};
-        if (classGlobalApp.GetParam("placeCafe")       .equals(cb_cafe.getText().toString()))      {cb_cafe.setChecked(true);}          else {cb_cafe.setChecked(false);};
-        if (classGlobalApp.GetParam("placeDisco")      .equals(cb_disco.getText().toString()))     {cb_disco.setChecked(true);}         else {cb_disco.setChecked(false);};
-        if (classGlobalApp.GetParam("placeBath")       .equals(cb_bath.getText().toString()))      {cb_bath.setChecked(true);}          else {cb_bath.setChecked(false);};
-        if (classGlobalApp.GetParam("placeMyHome")     .equals(cb_myHome.getText().toString()))    {cb_myHome.setChecked(true);}        else {cb_myHome.setChecked(false);};
-        if (classGlobalApp.GetParam("placeYouHome")    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);}       else {cb_youHome.setChecked(false);};
-        if (classGlobalApp.GetParam("placeHotel")      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);}         else {cb_hotel.setChecked(false);};
-        if (classGlobalApp.GetParam("placeOther")      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);}         else {cb_other.setChecked(false);};
+        if (classGlobalApp.GetParam("placeAnyPlace").equals(cb_anyPlace.getText().toString())) {// если галка любое место стоит и сохранена
+            cb_anyPlace.setChecked(true); //ставим галку любое место, а другие пункты делаем не активными
+
+            cb_street.setEnabled(false); // делаем не активные
+            cb_picnic.setEnabled(false);
+            cb_car.setEnabled(false);
+            cb_sport.setEnabled(false);
+            cb_film.setEnabled(false);
+            cb_billiards.setEnabled(false);
+            cb_cafe.setEnabled(false);
+            cb_disco.setEnabled(false);
+            cb_bath.setEnabled(false);
+            cb_myHome.setEnabled(false);
+            cb_youHome.setEnabled(false);
+            cb_hotel.setEnabled(false);
+            cb_other.setEnabled(false);
+
+            cb_street.setChecked(true); // ставим галки
+            cb_picnic.setChecked(true);
+            cb_car.setChecked(true);
+            cb_sport.setChecked(true);
+            cb_film.setChecked(true);
+            cb_billiards.setChecked(true);
+            cb_cafe.setChecked(true);
+            cb_disco.setChecked(true);
+            cb_bath.setChecked(true);
+            cb_myHome.setChecked(true);
+            cb_youHome.setChecked(true);
+            cb_hotel.setChecked(true);
+            cb_other.setChecked(true);
+
+        } else { // если не стоит галка, что любое место, то пробегаемся по другим и восстанавливаем из памяти каждую
+
+            //if (classGlobalApp.GetParam("placeAnyPlace")   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);}      else {cb_anyPlace.setChecked(false);};
+            if (classGlobalApp.GetParam("placeStreet")     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);}        else {cb_street.setChecked(false);};
+            if (classGlobalApp.GetParam("placePicnic")     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);}        else {cb_picnic.setChecked(false);};
+            if (classGlobalApp.GetParam("placeCar")        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);}           else {cb_car.setChecked(false);};
+            if (classGlobalApp.GetParam("placeSport")      .equals(cb_sport.getText().toString()))     {cb_sport.setChecked(true);}         else {cb_sport.setChecked(false);};
+            if (classGlobalApp.GetParam("placeFilm")       .equals(cb_film.getText().toString()))      {cb_film.setChecked(true);}          else {cb_film.setChecked(false);};
+            if (classGlobalApp.GetParam("placeBilliards")  .equals(cb_billiards.getText().toString())) {cb_billiards.setChecked(true);}     else {cb_billiards.setChecked(false);};
+            if (classGlobalApp.GetParam("placeCafe")       .equals(cb_cafe.getText().toString()))      {cb_cafe.setChecked(true);}          else {cb_cafe.setChecked(false);};
+            if (classGlobalApp.GetParam("placeDisco")      .equals(cb_disco.getText().toString()))     {cb_disco.setChecked(true);}         else {cb_disco.setChecked(false);};
+            if (classGlobalApp.GetParam("placeBath")       .equals(cb_bath.getText().toString()))      {cb_bath.setChecked(true);}          else {cb_bath.setChecked(false);};
+            if (classGlobalApp.GetParam("placeMyHome")     .equals(cb_myHome.getText().toString()))    {cb_myHome.setChecked(true);}        else {cb_myHome.setChecked(false);};
+            if (classGlobalApp.GetParam("placeYouHome")    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);}       else {cb_youHome.setChecked(false);};
+            if (classGlobalApp.GetParam("placeHotel")      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);}         else {cb_hotel.setChecked(false);};
+            if (classGlobalApp.GetParam("placeOther")      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);}         else {cb_other.setChecked(false);};
+        }
+
+
+
         //============================================================================================
 
 
