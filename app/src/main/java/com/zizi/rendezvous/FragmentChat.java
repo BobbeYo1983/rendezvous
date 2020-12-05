@@ -30,6 +30,7 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
@@ -245,6 +246,28 @@ public class FragmentChat extends Fragment {
             }
         });
         //============================================================================================
+
+
+
+        //формируем ссылку на данные сообщений чата с партнером
+        databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()));
+        Query queryLastMessages = databaseReference.orderByChild("timeStamp").limitToLast(100); //запрашиваем последние 100 сообщений
+
+        queryLastMessages.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child: snapshot.getChildren()) {
+                    classGlobalApp.Log("############", "################", child.getKey(), false);
+                }
+                classGlobalApp.Log("############", "################", String.valueOf(snapshot.getChildrenCount()), false);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
 
 
 
