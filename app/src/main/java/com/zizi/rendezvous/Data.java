@@ -2,12 +2,15 @@ package com.zizi.rendezvous;
 
 class Data {
 
-    public static String[] regionsTmp = new String[]{
+    //константы
+    public static final String anyTime = "Любое время";
+
+    public static final String[] regionsTmp = new String[]{
             "Нижегородская область",
             "Республика Мордовия"
     };
 
-    public static String[] regions = new String[]{
+    public static final String[] regions = new String[]{
             "Алтайский край",
             "Амурская область",
             "Архангельская область",
@@ -97,7 +100,7 @@ class Data {
 
     };
 
-    public static String[] theRepublicOfMordovia = new String[]{
+    public static final String[] theRepublicOfMordovia = new String[]{
         "Ардатов",
         "Инсар",
         "Ковылкино",
@@ -108,7 +111,7 @@ class Data {
 
     };
 
-    public static String[] nizhnyNovgorodRegion = new String[]{
+    public static final String[] nizhnyNovgorodRegion = new String[]{
             "Арзамас",
             "Балахна",
             "Богородск",
@@ -139,8 +142,9 @@ class Data {
             "Шахунья"
     };
 
-    public static String[] times = new String[]{
-            "Любое время",
+    public static final String[] times = new String[]{
+            //"Любое время",
+            anyTime,
             "Сейчас",
             "00:00",
             "01:00",

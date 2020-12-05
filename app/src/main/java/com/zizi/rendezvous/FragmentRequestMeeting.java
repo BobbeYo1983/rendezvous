@@ -29,6 +29,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -78,12 +79,16 @@ public class FragmentRequestMeeting extends Fragment {
     private TextInputEditText til_comment_et; // комментарий к встрече
     private Button btn_apply_request; // кнопка подачи заявки
 
+
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_request_meeting, container, false);
     }
+
+
 
     @Override //Вызывается, когда отработает метод активности onCreate(), а значит фрагмент может обратиться к компонентам активности
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
@@ -93,14 +98,11 @@ public class FragmentRequestMeeting extends Fragment {
 
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
-        //classGlobalApp.Log("FragmentRequestMeeting", "onActivityCreated", "Метод вызван", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         activityMeetings = (ActivityMeetings)getActivity();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentPlace = new FragmentPlace();
-        //saveParams = getActivity().getSharedPreferences("saveParams", MODE_PRIVATE); // инициализация объекта работы энергонезавичимой памятью, первый параметр имя файла, второй режим доступа, только для этого приложения
-
 
         // находим все вьюхи на активити
         til_name = getActivity().findViewById(R.id.til_name);
@@ -378,7 +380,6 @@ public class FragmentRequestMeeting extends Fragment {
         } else {
             til_town.setEnabled(true);
             til_town_act.setEnabled(true); // то делаем активным
-            //til_town_act.setText(saveParams.getString("town", "")); // подгружаем имя города из памяти
             til_town_act.setText(classGlobalApp.GetParam("town")); // подгружаем имя города из памяти
             til_town_act.setAdapter(CreateAdapterTowns(classGlobalApp.GetParam("region")));//тут нужно дернуть слушатель, чтобы подгрузил города
         }
@@ -497,6 +498,37 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("region", til_region_act.getEditableText().toString().trim());
                     meeting.put("town", til_town_act.getEditableText().toString().trim());
                     meeting.put("place", til_place_et.getEditableText().toString().trim());
+                    //данные ранее сохраненные на другом фрагменте о местах встречи
+/*                    meeting.put("placeStreet", classGlobalApp.GetParam("placeStreet"));
+                    meeting.put("placePicnic", classGlobalApp.GetParam("placePicnic"));
+                    meeting.put("placeCar", classGlobalApp.GetParam("placeCar"));
+                    meeting.put("placeSport", classGlobalApp.GetParam("placeSport"));
+                    meeting.put("placeFilm", classGlobalApp.GetParam("placeFilm"));
+                    meeting.put("placeBilliards", classGlobalApp.GetParam("placeBilliards"));
+                    meeting.put("placeCafe", classGlobalApp.GetParam("placeCafe"));
+                    meeting.put("placeDisco", classGlobalApp.GetParam("placeDisco"));
+                    meeting.put("placeBath", classGlobalApp.GetParam("placeBath"));
+                    meeting.put("placeMyHome", classGlobalApp.GetParam("placeMyHome"));
+                    meeting.put("placeYouHome", classGlobalApp.GetParam("placeYouHome"));
+                    meeting.put("placeHotel", classGlobalApp.GetParam("placeHotel"));
+                    meeting.put("placeOther", classGlobalApp.GetParam("placeOther"));*/
+
+                    meeting.put("placeArray", Arrays.asList(classGlobalApp.GetParam("placeStreet"),
+                                                            classGlobalApp.GetParam("placePicnic"),
+                                                            classGlobalApp.GetParam("placeCar"),
+                                                            classGlobalApp.GetParam("placeSport"),
+                                                            classGlobalApp.GetParam("placeFilm"),
+                                                            classGlobalApp.GetParam("placeBilliards"),
+                                                            classGlobalApp.GetParam("placeCafe"),
+                                                            classGlobalApp.GetParam("placeDisco"),
+                                                            classGlobalApp.GetParam("placeBath"),
+                                                            classGlobalApp.GetParam("placeMyHome"),
+                                                            classGlobalApp.GetParam("placeYouHome"),
+                                                            classGlobalApp.GetParam("placeHotel"),
+                                                            classGlobalApp.GetParam("placeOther")
+                                                            ));
+
+
                     meeting.put("time", til_time_act.getEditableText().toString().trim());
                     meeting.put("comment", til_comment_et.getText().toString().trim());
 

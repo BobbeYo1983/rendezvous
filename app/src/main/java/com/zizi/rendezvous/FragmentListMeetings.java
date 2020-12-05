@@ -57,6 +57,7 @@ public class FragmentListMeetings extends Fragment {
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
+    private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -112,6 +113,7 @@ public class FragmentListMeetings extends Fragment {
         fragmentListChats = new FragmentListChats(); //фрагмент с чатами
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         fragmentDetailsMeeting = new FragmentDetailsMeeting();
+        arrayListPlaces = new ArrayList<>();
         countUnreads = 0; // количество непрочитанных переменных
 
 
@@ -178,7 +180,24 @@ public class FragmentListMeetings extends Fragment {
 
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
-        query = firebaseFirestore.collection("meetings"); // запрос к БД
+        //query = firebaseFirestore.collection("meetings"); // запрос к БД
+        //age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")) - 1;
+        //age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")) + 1;
+
+        // запрос к БД c фильтрами
+        query = firebaseFirestore.collection("meetings")// коллекция
+                .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает пол в запросе и пол партнера
+                //по возрасту выборка на уровне приложения сделана на вкладке со встречами
+                //.whereGreaterThanOrEqualTo("age", classGlobalApp.GetParam("age_min"))
+                //.whereLessThanOrEqualTo("age", classGlobalApp.GetParam("age_max"))
+                //.whereGreaterThan("age", String.valueOf(age_min))
+                //.whereLessThan("age", String.valueOf(age_max))
+                .whereEqualTo("region", classGlobalApp.GetParam("region")) //совпадает регион в запросе и в заявке партнера
+                .whereEqualTo("town", classGlobalApp.GetParam("town")) //совпадает город в запросе и в заявке партнера
+                //.whereArrayContains()
+
+                ;
+
         options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч
         adapter = new FirestoreRecyclerAdapter<ModelSingleMeeting, FragmentListMeetings.SingleMeetingViewHolder>(options) { //показываем адаптеру класс одной встречи, вид встречи и подсовываем выборку из БД
             @NonNull
@@ -193,22 +212,36 @@ public class FragmentListMeetings extends Fragment {
             @Override
             protected void onBindViewHolder(@NonNull FragmentListMeetings.SingleMeetingViewHolder holder, int position, @NonNull ModelSingleMeeting model) {
 
-                DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД
+                DocumentSnapshot snapshot =  getSnapshots().getSnapshot(position); // документ из БД, один из списка
 
-                if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail())) { // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
+                int age = Integer.parseInt(model.getAge()); //получаем возраст
+                int age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")); //минимальный возраст из заявки текущего пользователя
+                int age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")); //максимальный возраст из заявки текущего пользователя
+
+                arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
+                //classGlobalApp.Log("#############", "#############", model.getName()+" Время соврадает? ответ: " + String.valueOf(IsTime(model.getTime())), false);
+
+                //отфильтровываем встречи по фильтру текущего пользователя и свою заявку тоже скрываем
+                if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
+                        !(age >= age_min && age <= age_max) || //если возраст не попадает в диапазон запроса
+                        !IsPlace(arrayListPlaces) || //если нет общих мест для встречи
+                        !IsTime(model.getTime()) // если не совпадает время встречи
+                ) {
 
                     RecyclerView.LayoutParams layoutParams = (RecyclerView.LayoutParams)holder.itemView.getLayoutParams(); // получаем параметры элемента
                     layoutParams.height = 0; // высота ячейки ноль, то есть скрываем ее
                     layoutParams.topMargin = 0; // отступ сверху
                     layoutParams.bottomMargin = 0; // отступ снизу
 
-                } else {
-                    holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
-                    holder.tv_age.setText(model.getAge());
-                    holder.tv_comment.setText(model.getComment());
+                } else { // связываем данные и представление
+
+                        holder.tv_name.setText(model.getName()); // связываем поле из item_meeting.xml и поле из Java-класса ModelSingleMeeting
+                        holder.tv_age.setText(model.getAge());
+                        holder.tv_comment.setText(model.getComment());
+
                 }
 
-                usersInfoAll.add(model); // добавляем в список всех пользователей для передачи в информации в другие фрагменты
+                usersInfoAll.add(model); // добавляем в список всех пользователей для передачи информации в другие фрагменты
 
 
             }
@@ -221,6 +254,53 @@ public class FragmentListMeetings extends Fragment {
         recyclerView.setAdapter(adapter); // ну и связываем вьюху с адаптером железно и навсегда
         //==========================================================================================
 
+    }
+
+
+
+    /**
+     * Проверяет есть ли совпадения в местах текущего пользователя с местами других пользователей, то есть есть ли общие места для встречи.
+     * @param arrayListPlaces список мест для встречи одного из пользователей
+     * @return есть или нет совпадения
+     */
+    public boolean IsPlace (ArrayList<String> arrayListPlaces) {
+
+        for (String place : arrayListPlaces) {
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeStreet"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placePicnic"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeCar"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeSport"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeFilm"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeBilliards"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeCafe"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeDisco"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeBath"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeMyHome"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeYouHome"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeHotel"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+            if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeOther"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
+
+        }
+
+        return false;
+    }
+
+
+
+    /**
+     * Проверяет есть ли совпадения по времени встречи текущего пользователя и других пользователей
+     * @param time выбранное значение времени партнера
+     * @return есть или нет совпадения
+     */
+    public boolean IsTime (String time) {
+
+        if (time.equals(Data.anyTime)){ // если у текущего пользователя выбрано любое время
+            return true;
+        } else if (time.equals(classGlobalApp.GetParam("time"))){ //если время не любое, и есть совпадение выбранного значения текущего пользователя с партнером
+                return true;
+        }
+
+        return false;
     }
 
     /**
@@ -293,4 +373,5 @@ public class FragmentListMeetings extends Fragment {
 
         }
     }
+
 }
