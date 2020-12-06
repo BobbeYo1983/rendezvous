@@ -180,22 +180,11 @@ public class FragmentListMeetings extends Fragment {
 
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
-        //query = firebaseFirestore.collection("meetings"); // запрос к БД
-        //age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")) - 1;
-        //age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")) + 1;
-
         // запрос к БД c фильтрами
         query = firebaseFirestore.collection("meetings")// коллекция
                 .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает пол в запросе и пол партнера
-                //по возрасту выборка на уровне приложения сделана на вкладке со встречами
-                //.whereGreaterThanOrEqualTo("age", classGlobalApp.GetParam("age_min"))
-                //.whereLessThanOrEqualTo("age", classGlobalApp.GetParam("age_max"))
-                //.whereGreaterThan("age", String.valueOf(age_min))
-                //.whereLessThan("age", String.valueOf(age_max))
                 .whereEqualTo("region", classGlobalApp.GetParam("region")) //совпадает регион в запросе и в заявке партнера
                 .whereEqualTo("town", classGlobalApp.GetParam("town")) //совпадает город в запросе и в заявке партнера
-                //.whereArrayContains()
-
                 ;
 
         options = new FirestoreRecyclerOptions.Builder<ModelSingleMeeting>().setQuery(query, ModelSingleMeeting.class).build(); // строим наполнение для списка встреч

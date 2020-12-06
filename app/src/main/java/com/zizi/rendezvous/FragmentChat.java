@@ -30,6 +30,8 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
 import org.json.JSONObject;
@@ -66,6 +68,9 @@ public class FragmentChat extends Fragment {
     private ModelChat currentUserInfo; // информация о текущем пользователе
     private List<String> usersIDs; // для формирования канала чата
     private boolean fragmentIsVisible;
+    private String pushKeyDeleteBefore;
+    private Query query;
+    private boolean firstVisibleMessage; // флаг для определния первого видимого сообщения
 
     //вьюхи
     private FloatingActionButton floatingActionButton; //кнопка отправить сообщение
@@ -100,6 +105,7 @@ public class FragmentChat extends Fragment {
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         layoutParams = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+
         // узнаем разрешение экрана
         display = getActivity().getWindowManager().getDefaultDisplay();
         display.getSize(size);
@@ -248,6 +254,40 @@ public class FragmentChat extends Fragment {
 
 
 
+        //формируем ссылку на данные сообщений чата с партнером
+        //databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()));
+        //Query queryLastMessages = databaseReference.orderByChild("timeStamp").limitToLast(100); //запрашиваем последние 100 сообщений
+        //Query queryLastMessages = databaseReference.orderByKey().limitToLast(100); //запрашиваем последние 100 сообщений
+        Query queryLastMessages = databaseReference.limitToLast(3); //запрашиваем последние 100 сообщений
+
+
+/*        queryLastMessages.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                //snapshot.getRef().removeValue();
+                for (DataSnapshot child: snapshot.getChildren()) {
+
+                    classGlobalApp.Log("############", "################", child.getKey(), false);
+                    keyDeleteBefore = child.getKey();
+
+
+                    break;
+                }
+                classGlobalApp.Log("############", "################", String.valueOf(snapshot.getChildrenCount()), false);
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });*/
+
+
+
+
+
+
         // ОТПРАВКА СООБЩЕНИЯ ////////////////////////////////////////////////////////////////////////
         floatingActionButton.setOnClickListener(new View.OnClickListener() { // при нажатии на кнопку отправить сообщение в чате
             @Override
@@ -258,10 +298,16 @@ public class FragmentChat extends Fragment {
 
                     // отправляем сообщение /////////////////////////////////////////////////////////
                     databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()) ); //ссылка на данные, формируем канал чата
-                    modelMessage.userID = classGlobalApp.GetCurrentUserUid(); // формируем ID пользователя
-                    modelMessage.textMessage = til_message_et.getText().toString().trim(); // текст сообщения без пробелов в начале и конце строки
-                    modelMessage.dateTimeDevice = formatForDateNow.format(new Date()); // формируем даты на девайсе, не на сервере
-                    databaseReference.push().setValue(modelMessage); // записываем сообщение в базу на сервак
+                    //modelMessage.userID = classGlobalApp.GetCurrentUserUid(); // формируем ID пользователя
+                    //modelMessage.textMessage = til_message_et.getText().toString().trim(); // текст сообщения без пробелов в начале и конце строки
+                    //modelMessage.dateTimeDevice = formatForDateNow.format(new Date()); // формируем даты на девайсе, не на сервере
+                    modelMessage.setUserID(classGlobalApp.GetCurrentUserUid()); // формируем ID пользователя
+                    modelMessage.setTextMessage(til_message_et.getText().toString().trim()); // текст сообщения без пробелов в начале и конце строки
+                    modelMessage.setDateTimeDevice(formatForDateNow.format(new Date())); // формируем даты на девайсе, не на сервере
+                    //databaseReference.push().setValue(modelMessage); // записываем сообщение в базу на сервак
+                    String pushKey = databaseReference.push().getKey(); //запоминаем сгенерированный ключ, чтобы его потом записать вместе с сообщение, чтобы потом делать выборку по нему
+                    modelMessage.setPushKey(pushKey);
+                    databaseReference.child(pushKey).setValue(modelMessage); // записываем сообщение в базу на сервак
                     //===============================================================================
 
 
@@ -338,11 +384,23 @@ public class FragmentChat extends Fragment {
      */
     private void UpdateMessages(){
 
+        firstVisibleMessage = true; // флаг для определния первого видимого сообщения
+
+        //ссылка на канал чата с партнером
         databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID())); //ссылка на данные
-        databaseReference.addChildEventListener(new ChildEventListener() {
+        query = databaseReference.orderByChild("pushKey").limitToLast(30); //читаем последние 30 сообщений, все остальные будут удалены
+        query.addChildEventListener(new ChildEventListener() {
+        //databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД сообщения
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 arrayListAllMessages.add(snapshot.getValue(ModelMessage.class)); // записываем сообщение в коллекцию со всеми сообщениями
+                if (firstVisibleMessage) { //если пришло первое сообщение для отображения
+                    //то оно добавлено в буфер всех сообщений, запоминаем у него идентификатор, до которого потом будем удалять сообщения
+                    pushKeyDeleteBefore = arrayListAllMessages.get(0).getPushKey();
+
+                    DeleteMessagesInDB(pushKeyDeleteBefore); // удаляем лишние сообщения из БД
+                    firstVisibleMessage = false; // сообщаем, что уже почистили, больше не надо
+                }
                 adapter.notifyDataSetChanged(); // обновление адаптера
                 recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount()); // пролистать чат в самый конец
 
@@ -376,6 +434,38 @@ public class FragmentChat extends Fragment {
 
             }
         });
+
+
+    }
+
+
+    /**
+     * Удаляет сообщения из БД из канала чата ДО указанного pushKey, перед удалением упорядочивает по pushKey
+     * @param pushKey уникальный идентификатор сообщения, генерируется в зависимости от времени, сравнивая их, можно определять кто был ранее сгенерирован
+     */
+    private void DeleteMessagesInDB (final String pushKey) {
+        databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()));
+        //запрос, упорядочиваем по полю и выбираем до указанного значения
+        Query queryDeleteMessages = databaseReference.orderByChild("pushKey").endAt(pushKey);
+
+        queryDeleteMessages.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                for (DataSnapshot child: snapshot.getChildren()) { //перебираем все сообщения
+
+                    if (!child.getKey().equals(pushKey)) { // сообщение с указанным идентификатором не чистим
+                        child.getRef().removeValue(); // удаляем сообщение из БД
+                    }
+                    //classGlobalApp.Log("############", "Delete", child.getKey(), false);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
     }
 
     /**
@@ -411,16 +501,13 @@ public class FragmentChat extends Fragment {
 
             // подставляем нужный текст полей
             ModelMessage modelMessage = arrayListMessages.get(position);
-            holder.til_textMessage_et.setText(modelMessage.textMessage.toString());
+            holder.til_textMessage_et.setText(modelMessage.getTextMessage());
             //переводим метку времени сервера в нужный формат даты
 
-            //String str = modelMessage.timeStamp.toString();
-            //Date dt = new Date(Long.parseLong(modelMessage.timeStamp.toString()));
-            //formatForDateNow.setTimeZone(TimeZone.getDefault()); // получаем часовой пояс
-            holder.tv_timeStamp.setText(formatForDateNow.format(new Date(Long.parseLong(modelMessage.timeStamp.toString()))));
-            //holder.tv_timeStamp.setText(formatForDateNow.format(dt));
+            //holder.tv_timeStamp.setText(formatForDateNow.format(new Date(Long.parseLong(modelMessage.timeStamp.toString()))));
+            holder.tv_timeStamp.setText(formatForDateNow.format(new Date(modelMessage.getTimeStampLong() ) ) );
 
-            if (modelMessage.userID.equals(classGlobalApp.GetCurrentUserUid())) { // если сообщение в чате мое, то показывать его справа
+            if (modelMessage.getUserID().equals(classGlobalApp.GetCurrentUserUid())) { // если сообщение в чате мое, то показывать его справа
 
                 layoutParams_til_textMessage.addRule(RelativeLayout.ALIGN_PARENT_END); //дальше нужно изменить положение слева или справа от экрана
                 layoutParams_til_textMessage.setMarginEnd((int) (10 * dp)); // переводим все в dp и делаем отступ справа
@@ -582,7 +669,7 @@ public class FragmentChat extends Fragment {
         int index = -1;
 
         for (int i = 0; i < arrayListAllMessages.size(); i++) {
-            if (arrayListAllMessages.get(i).userID == modelMessage.userID) { // пробегаемся по всей коллекции пользователей
+            if (arrayListAllMessages.get(i).getUserID() == modelMessage.getUserID()) { // пробегаемся по всей коллекции пользователей
                 index = i;
                 break;
             }
