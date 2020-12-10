@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
@@ -53,6 +54,7 @@ public class ActivityLogin extends AppCompatActivity {
 
         // Инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
+        Log.d("!@#", "Release");
         classGlobalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
