@@ -4,7 +4,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     signingConfigs {
         KeyStoreZizi {
-            storeFile file('D:\\Google Диск\\13-Randezvous\\KeyStoreZizi.jks')
+            storeFile file('D:\\Develope\\AndroidStudio\\KeyStoreZizi.jks')
             keyAlias 'KeyStoreZizi'
             storePassword 'NoProblem@10'
             keyPassword 'NoProblem@10'
@@ -29,7 +29,11 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.KeyStoreZizi
-            debuggable true
+        }
+        releaseDebMsg {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            signingConfig signingConfigs.KeyStoreZizi
         }
     }
 }
@@ -49,20 +53,14 @@ dependencies {
     implementation 'androidx.cardview:cardview:1.0.0'
     implementation 'com.google.android.material:material:1.3.0-alpha04'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    testImplementation 'junit:junit:4.13.1'
-    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
-
-
     implementation 'com.firebaseui:firebase-ui-firestore:6.2.1' // FirebaseUI for Cloud Firestore
     implementation 'com.yandex.money:checkout:3.0.4' // для яндекс кассы
     implementation 'com.google.firebase:firebase-messaging:21.0.0'
-    // Add the SDK for Firebase Cloud Messaging
-
     implementation 'com.google.firebase:firebase-analytics:18.0.0' // для Realtime Database
     implementation 'com.google.firebase:firebase-database:19.5.1'
-
-    //implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.swiperefreshlayout:swiperefreshlayout:1.1.0'
+    testImplementation 'junit:junit:4.13.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.2'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 
 }

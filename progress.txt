@@ -1,6 +1,5 @@
 НУЖНО СДЕЛАТЬ
-В сборке релиза указать debaggible false
-53. Настроить на другом компе подпись и проверить, когда шьешь на разных компах окошко, что подписи разные и убиваются данные приложения.
+Сделать сборку релиз плюс отладочные сообщения.
 Разобраться как писать в Logcat из релиза и убедиться, что сообщение релизное пишется, а отладочное нет. https://mobikul.com/release-variant-of-app-enable-logcat-running-release-build-application/
 Разобраться с отладкой по сети
 
@@ -28,8 +27,9 @@ A network error (such as timeout, interrupted connection or unreachable host) ha
 An internal error has occurred. [ Unable to resolve host "www.googleapis.com":No address associated with hostname ]   
 
 19. Перевести Firebase на другой аккаунт.
+В Студии пароль к ключу указывается в открытом виде, переделать пароль.
 Перед контрольной сборкой выполнить все рекомендации для релиза, описание здесь https://developer.android.com/studio/publish/preparing
-В сборке релиза указать debaggible false
+
 
 СДЕЛАТЬ ПОТОМ
 Может быть, как то упорядочивать вывод заявок? По дате? Алфавиту? Может наверху платные?
