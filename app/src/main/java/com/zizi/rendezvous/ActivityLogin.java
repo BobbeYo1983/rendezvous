@@ -146,20 +146,20 @@ public class ActivityLogin extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
-            email = "999999@1.com";
-            password = "Qwerty123";
-            Signin();
-        } else { // если не отладка приложения
-            // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
-            if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
-                SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
-            } else { // если раньше заполнял пользователь логин и пароль, то автовход
-                email = classGlobalApp.GetParam("email");
-                password = classGlobalApp.GetParam("password");
-                classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
+        // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
+        if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
+            if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
+                email = "999999@1.com";
+                password = "Qwerty123";
                 Signin();
+            } else { // если сборка релизная
+                SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
             }
+        } else { // если раньше заполнял пользователь логин и пароль, то автовход
+            email = classGlobalApp.GetParam("email");
+            password = classGlobalApp.GetParam("password");
+            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
+            Signin();
         }
 
     }
@@ -343,7 +343,7 @@ public class ActivityLogin extends AppCompatActivity {
     public void SaveProfileAndEnter (){
         classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
-        documentReference = firebaseFirestore.collection("users").document(classGlobalApp.GetCurrentUserEmail()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
+        //documentReference = firebaseFirestore.collection("users").document(classGlobalApp.GetCurrentUserEmail()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
         Map<String, Object> user = new HashMap<>(); // коллекция ключ-значение
         user.put("email", classGlobalApp.GetCurrentUserEmail());
         user.put("userID", classGlobalApp.GetCurrentUserUid());
@@ -352,6 +352,7 @@ public class ActivityLogin extends AppCompatActivity {
         //user.put("token", ServiceFirebaseCloudMessaging.GetToken(this)); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
 
         //сохраняем профайл пользователя в БД
+        documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserEmail()); // формируем путь к документу
         documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась
@@ -385,7 +386,6 @@ public class ActivityLogin extends AppCompatActivity {
                 }
             }
         });
-
 
     }
 

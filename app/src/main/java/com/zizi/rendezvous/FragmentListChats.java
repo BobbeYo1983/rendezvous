@@ -130,7 +130,7 @@ public class FragmentListChats extends Fragment {
         });
 
         // ЗНАЧЕК с количеством непрочитанных сообщений текущего пользователя
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -184,7 +184,7 @@ public class FragmentListChats extends Fragment {
      * Метод вызывается при изменении данных в БД в списке чатов пользователя
      */
     private void UpdateChats(){
-        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/"); //ссылка на данные
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/"); //ссылка на данные
 
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД чата

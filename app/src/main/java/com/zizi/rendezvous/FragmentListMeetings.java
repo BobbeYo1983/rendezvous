@@ -28,6 +28,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
@@ -56,6 +57,7 @@ public class FragmentListMeetings extends Fragment {
     private int countUnreads;
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
+    private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
     private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
 
@@ -141,7 +143,7 @@ public class FragmentListMeetings extends Fragment {
         });
 
         // ЗНАЧЕК с количеством непрочитанных сообщений текущего пользователя
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -181,7 +183,9 @@ public class FragmentListMeetings extends Fragment {
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         // запрос к БД c фильтрами
-        query = firebaseFirestore.collection("meetings")// коллекция
+        collectionReference = classGlobalApp.GenerateCollectionReference("meetings");
+        //query = firebaseFirestore.collection("meetings")// коллекция
+        query = collectionReference// коллекция meetings
                 .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает пол в запросе и пол партнера
                 .whereEqualTo("region", classGlobalApp.GetParam("region")) //совпадает регион в запросе и в заявке партнера
                 .whereEqualTo("town", classGlobalApp.GetParam("town")) //совпадает город в запросе и в заявке партнера

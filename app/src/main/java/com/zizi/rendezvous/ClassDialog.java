@@ -31,10 +31,18 @@ public class ClassDialog extends AppCompatDialogFragment {
         return builder.create();
     }
 
+    /**
+     * Задает заголовок всплывающего окна.
+     * @param title текст заголовка окна
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
+    /**
+     * Задает текст сообщения всплывабщего окна
+     * @param message текст сообщения
+     */
     public void setMessage(String message) {
         this.message = message;
     }

@@ -125,8 +125,10 @@ public class FragmentDetailsMeeting extends Fragment {
 
 
         //Читаем документ со встречей партнера из БД //////////////////////////////////////////////////
-        documentReference = firebaseFirestore.collection("meetings").document(classGlobalApp.GetBundle("partnerEmail")); // формируем путь к документу
+        //documentReference = firebaseFirestore.collection("meetings").document(classGlobalApp.GetBundle("partnerEmail")); // формируем путь к документу
+        //classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetBundle("partnerEmail")); // формируем путь к документу
         //documentReference = firebaseFirestore.collection("meetings").document("999999@1.com"); // формируем путь к документу
+        documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetBundle("partnerEmail")); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась

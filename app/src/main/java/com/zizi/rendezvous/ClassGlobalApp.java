@@ -1,27 +1,17 @@
 package com.zizi.rendezvous;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
 import android.content.SharedPreferences;
 import android.util.Log;
-
-import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -42,6 +32,10 @@ public class ClassGlobalApp extends Application {
     private FirebaseDatabase firebaseDatabase; // БД Realtime Database
     private DatabaseReference databaseReference; //ссылка на данные в базе
     private Map<String, Object> msg; // сообщение в БД
+
+    private FirebaseFirestore firebaseFirestore; // база данных
+    private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
+    private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
 
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
 
@@ -69,6 +63,7 @@ public class ClassGlobalApp extends Application {
         editorSharedPreferences = sharedPreferences.edit(); // подготавливаем редактор работы с памятью перед записью'
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД RealTime DataBase
+        firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
 
         tokenDevice = GetParam("tokenDevice");
 
@@ -89,13 +84,14 @@ public class ClassGlobalApp extends Application {
         }
 
         if (inDB) {
-            databaseReference = firebaseDatabase.getReference("logs");
             msg.clear();
             msg.put("timestamp", ServerValue.TIMESTAMP);
             msg.put("class", _class);
             msg.put("method", method);
             msg.put("message", message);
-            databaseReference.push().setValue(msg);
+            //databaseReference = firebaseDatabase.getReference("logs");
+            //databaseReference.push().setValue(msg);
+            GenerateDatabaseReference("logs").push().setValue(msg);
         }
 
     }
@@ -222,5 +218,47 @@ public class ClassGlobalApp extends Application {
         SaveParams();
     }
 
+
+
+    /**
+     * Формирует ссылку на БД FireBase Realtime Database в зависимости от варианта сборки Debug или Release
+     * @param path путь к данным в БД
+     * @return сгенерированная ссылка
+     */
+    public DatabaseReference GenerateDatabaseReference (String path){
+
+        if (BuildConfig.DEBUG) { // если режим отладки
+            path = "debug/" + path;
+        }
+
+        return databaseReference = firebaseDatabase.getReference(path); //формируем ссылку
+    }
+
+
+
+    /**
+     * Формирует ссылку на документ в БД FireBase Cloud Farestore в зависимости от варианта сборки Debug или Release
+     * @param collection имя коллекции в БД
+     * @param document имя документа в коллекции
+     * @return сгенерированная ссылка
+     */
+    public DocumentReference GenerateDocumentReference (String collection, String document){
+
+        if (BuildConfig.DEBUG) { // если режим отладки
+            collection = "_debug_" + collection;
+        }
+
+        return documentReference = firebaseFirestore.collection(collection).document(document); //формируем ссылку
+
+    }
+
+    public CollectionReference GenerateCollectionReference (String collection) {
+
+        if (BuildConfig.DEBUG) { // если режим отладки
+            collection = "_debug_" + collection;
+        }
+
+        return collectionReference = firebaseFirestore.collection(collection); //формируем ссылку
+    }
 
 }

@@ -476,8 +476,8 @@ public class FragmentRequestMeeting extends Fragment {
 
                 ) {
 
-                    // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля для подачи заявки
-                    documentReference = firebaseFirestore.collection("meetings").document(classGlobalApp.GetCurrentUserEmail());
+                    // подготавливаем данные для сохранениния документа заявки встречи
+
                     meeting.clear();
 
                     //добавляем параметры для подачи заявки
@@ -498,21 +498,8 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("region", til_region_act.getEditableText().toString().trim());
                     meeting.put("town", til_town_act.getEditableText().toString().trim());
                     meeting.put("place", til_place_et.getEditableText().toString().trim());
-                    //данные ранее сохраненные на другом фрагменте о местах встречи
-/*                    meeting.put("placeStreet", classGlobalApp.GetParam("placeStreet"));
-                    meeting.put("placePicnic", classGlobalApp.GetParam("placePicnic"));
-                    meeting.put("placeCar", classGlobalApp.GetParam("placeCar"));
-                    meeting.put("placeSport", classGlobalApp.GetParam("placeSport"));
-                    meeting.put("placeFilm", classGlobalApp.GetParam("placeFilm"));
-                    meeting.put("placeBilliards", classGlobalApp.GetParam("placeBilliards"));
-                    meeting.put("placeCafe", classGlobalApp.GetParam("placeCafe"));
-                    meeting.put("placeDisco", classGlobalApp.GetParam("placeDisco"));
-                    meeting.put("placeBath", classGlobalApp.GetParam("placeBath"));
-                    meeting.put("placeMyHome", classGlobalApp.GetParam("placeMyHome"));
-                    meeting.put("placeYouHome", classGlobalApp.GetParam("placeYouHome"));
-                    meeting.put("placeHotel", classGlobalApp.GetParam("placeHotel"));
-                    meeting.put("placeOther", classGlobalApp.GetParam("placeOther"));*/
 
+                    //добавляем в массив внутри документа все места со встречами
                     meeting.put("placeArray", Arrays.asList(classGlobalApp.GetParam("placeStreet"),
                                                             classGlobalApp.GetParam("placePicnic"),
                                                             classGlobalApp.GetParam("placeCar"),
@@ -538,6 +525,7 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("email", classGlobalApp.GetCurrentUserEmail());
 
                     // если запись в БД успешна
+                    documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserEmail());
                     documentReference.set(meeting).addOnSuccessListener(new OnSuccessListener<Void>() { //
                         @Override
                         public void onSuccess(Void aVoid) {
