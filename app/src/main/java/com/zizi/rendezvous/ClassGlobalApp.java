@@ -43,8 +43,6 @@ public class ClassGlobalApp extends Application {
     private DatabaseReference databaseReference; //ссылка на данные в базе
     private Map<String, Object> msg; // сообщение в БД
 
-    //private String currentUserEmail; // почта текущего пользователя
-    //private String currentUserUid; //идентификатор текущего пользователя
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
 
 

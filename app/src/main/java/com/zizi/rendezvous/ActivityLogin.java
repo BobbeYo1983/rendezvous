@@ -54,7 +54,6 @@ public class ActivityLogin extends AppCompatActivity {
 
         // Инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
-        Log.d("!@#", "Release");
         classGlobalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
@@ -147,15 +146,22 @@ public class ActivityLogin extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
-        if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
-            SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
-        } else { // если раньше заполнял пользователь логин и пароль, то автовход
-            email = classGlobalApp.GetParam("email");
-            password = classGlobalApp.GetParam("password");
-            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
+        if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
+            email = "999999@1.com";
+            password = "Qwerty123";
             Signin();
+        } else { // если не отладка приложения
+            // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
+            if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
+                SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
+            } else { // если раньше заполнял пользователь логин и пароль, то автовход
+                email = classGlobalApp.GetParam("email");
+                password = classGlobalApp.GetParam("password");
+                classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
+                Signin();
+            }
         }
+
     }
 
 

@@ -4,7 +4,7 @@ apply plugin: 'com.google.gms.google-services'
 android {
     signingConfigs {
         KeyStoreZizi {
-            storeFile file('D:\\Develope\\AndroidStudio\\KeyStoreZizi.jks')
+            storeFile file('D:\\Develope\\KeyStoreZizi.jks')
             keyAlias 'KeyStoreZizi'
             storePassword 'NoProblem@10'
             keyPassword 'NoProblem@10'
@@ -26,14 +26,10 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled false // ProGuard выключен
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.KeyStoreZizi
-        }
-        releaseDebMsg {
-            minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.KeyStoreZizi
+            signingConfig signingConfigs.KeyStoreZizi // подписываем приложение выбранной подписью
+
         }
     }
 }
