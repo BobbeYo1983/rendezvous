@@ -10,6 +10,7 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -20,6 +21,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -51,6 +54,7 @@ public class ActivityLogin extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) { //когда создается активити
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
 
         // Инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
@@ -137,6 +141,7 @@ public class ActivityLogin extends AppCompatActivity {
 
 
         SetVisibilityViews(false); // делаем вьюхи невидимыми
+
 
     }
 
