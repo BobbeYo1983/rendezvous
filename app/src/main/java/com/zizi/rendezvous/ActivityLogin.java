@@ -40,7 +40,7 @@ public class ActivityLogin extends AppCompatActivity {
     private FragmentManager manager; //менеджер фрагментов
     private ClassDialog classDialog; //класс для показа всплывающих окон
     private Display display; // для разрешения экрана
-    private Point size; // для разрешения экрана
+    private Point point; // для разрешения экрана
 
 
     //Вьюхи
@@ -69,6 +69,7 @@ public class ActivityLogin extends AppCompatActivity {
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         manager = getSupportFragmentManager();
         classDialog = new ClassDialog(); // класс для показа всплывающих окон
+        point = new Point();
         //==========================================================================================
 
 
@@ -359,10 +360,11 @@ public class ActivityLogin extends AppCompatActivity {
         user.put("userID", classGlobalApp.GetCurrentUserUid());
         user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
 
-        display = getWindowManager().getDefaultDisplay(); // получаем расширение экрана
-        display.getSize(size);
+        display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
+        display.getSize(point); // получаем расширение экрана
+        classGlobalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
 
-        user.put("screenExtension", String.valueOf(size.x) + "x" + String.valueOf(size.y));
+        user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
 
         //сохраняем профайл пользователя в БД
         documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserEmail()); // формируем путь к документу

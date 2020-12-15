@@ -34,7 +34,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -59,7 +62,8 @@ public class FragmentListMeetings extends Fragment {
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
-    private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
+    //private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
+    private ArrayList<?> arrayListPlaces; //
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -115,9 +119,8 @@ public class FragmentListMeetings extends Fragment {
         fragmentListChats = new FragmentListChats(); //фрагмент с чатами
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         fragmentDetailsMeeting = new FragmentDetailsMeeting();
-        arrayListPlaces = new ArrayList<>();
+        //arrayListPlaces = new ArrayList<String>();
         countUnreads = 0; // количество непрочитанных переменных
-
 
         //ищем нужные элементы
         recyclerView = getActivity().findViewById(R.id.rv_meeting); // список со встречами
@@ -211,8 +214,8 @@ public class FragmentListMeetings extends Fragment {
                 int age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")); //минимальный возраст из заявки текущего пользователя
                 int age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")); //максимальный возраст из заявки текущего пользователя
 
-                arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
-                //classGlobalApp.Log("#############", "#############", model.getName()+" Время соврадает? ответ: " + String.valueOf(IsTime(model.getTime())), false);
+                //arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
+                arrayListPlaces = new ArrayList<>((Collection<?>)snapshot.get("placeArray")); // получаем все места партнера
 
                 //отфильтровываем встречи по фильтру текущего пользователя и свою заявку тоже скрываем
                 if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
@@ -256,9 +259,12 @@ public class FragmentListMeetings extends Fragment {
      * @param arrayListPlaces список мест для встречи одного из пользователей
      * @return есть или нет совпадения
      */
-    public boolean IsPlace (ArrayList<String> arrayListPlaces) {
+    public boolean IsPlace (ArrayList<?> arrayListPlaces) {
 
-        for (String place : arrayListPlaces) {
+        for (int i = 0; i < arrayListPlaces.size(); i++) {
+
+            String place = arrayListPlaces.get(i).toString();
+
             if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeStreet"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
             if (!place.equals("") && place.equals(classGlobalApp.GetParam("placePicnic"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
             if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeCar"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя

@@ -188,7 +188,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_gender_act.setText(classGlobalApp.GetParam("gender"));
         //наполняем низпадающий список выбора пола для выбора пола
         String[] gender = new String[] {"Мужской", "Женский"}; // Ниспадающий список выбора пола
-        ArrayAdapter<String> adapter_gender = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, gender); // связываем с адаптером
+        ArrayAdapter<String> adapter_gender = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, gender); // связываем с адаптером
         til_gender_act.setAdapter(adapter_gender);
 
         til_gender_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -206,7 +206,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_age_act.setThreshold(100);
         til_age_act.setText(classGlobalApp.GetParam("age")); // восстанавливаем выбранное значение из памяти
         // набиваем список для выбора
-        ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
+        ArrayAdapter<String> arrayAdapterAge = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
         til_age_act.setAdapter(arrayAdapterAge); // связываем представление с адаптером
 
         til_age_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -321,13 +321,13 @@ public class FragmentRequestMeeting extends Fragment {
             til_age_max_act.setText(classGlobalApp.GetParam("age_max")); // восстанавливаем выбранное значение из памяти
         }
         //  связываем адаптер с данными
-        ArrayAdapter<String> arrayAdapterMinAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70));
+        ArrayAdapter<String> arrayAdapterMinAge = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70));
         til_age_min_act.setAdapter(arrayAdapterMinAge);
 
         if (til_age_min_act.getText().toString().equals("")) {//если поле с начальным возрастом пустое, то делваем весь диапазон возрастов в максимальном возразте
-            arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
+            arrayAdapterMaxAge = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(18,70)); //  связываем адаптер с данными
         } else { // если минимальный возраст выбран, то делаем диапазон макимальных возрастов от минимального
-            arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()),70)); //  связываем адаптер с данными
+            arrayAdapterMaxAge = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()),70)); //  связываем адаптер с данными
         }
         til_age_max_act.setAdapter(arrayAdapterMaxAge); // применяем данные
 
@@ -338,7 +338,7 @@ public class FragmentRequestMeeting extends Fragment {
                 if (Integer.parseInt(til_age_min_act.getText().toString()) > Integer.parseInt(til_age_max_act.getText().toString())) {
                     til_age_max_act.setText(til_age_min_act.getText());
                 }
-                arrayAdapterMaxAge = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()), 70));
+                arrayAdapterMaxAge = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, CreateAges(Integer.parseInt(til_age_min_act.getText().toString()), 70));
                 til_age_max_act.setAdapter(arrayAdapterMaxAge); // применяем данные
 
             }
@@ -352,7 +352,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_region_act.setText(classGlobalApp.GetParam("region"));  // восстанавливаем выбранное значение из памяти
 
         //формируем список для выбора
-        ArrayAdapter<String> adapter_regions = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.regionsTmp);
+        ArrayAdapter<String> adapter_regions = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.regionsTmp);
         til_region_act.setAdapter(adapter_regions);
 
         //слушатель - если меняется выбор региона
@@ -414,7 +414,7 @@ public class FragmentRequestMeeting extends Fragment {
         til_time_act.setText(classGlobalApp.GetParam("time")); // восстанавливаем выбранное значение из памяти
 
         //формируем список для сохранения времени
-        ArrayAdapter<String> adapter_time = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.times);
+        ArrayAdapter<String> adapter_time = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.times);
         til_time_act.setAdapter(adapter_time);
 
         til_time_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -690,12 +690,13 @@ public class FragmentRequestMeeting extends Fragment {
      * @param endAge конечный возраст
      * @return список возрастов
      */
-    private ArrayList CreateAges(int beginAge, int endAge)
+    private ArrayList<String> CreateAges(int beginAge, int endAge)
     {
-        ArrayList arrayListAges = new ArrayList();
+        ArrayList<String> arrayListAges = new ArrayList<String>();
 
         for (int i=beginAge; i <= endAge; i++ ) {
-            arrayListAges.add(i);
+            arrayListAges.add(String.valueOf(i));
+            //arrayListAges.add(i);
         }
 
         return arrayListAges;
@@ -712,13 +713,13 @@ public class FragmentRequestMeeting extends Fragment {
 
         switch(region) {
             case "Республика Мордовия":
-                adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfMordovia);
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.theRepublicOfMordovia);
                 break;
             case "Нижегородская область":
-                adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.nizhnyNovgorodRegion);
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list, Data.nizhnyNovgorodRegion);
                 break;
             default:
-                adapter_towns = new ArrayAdapter(getActivity().getApplicationContext(), R.layout.item_drop_down_list); // наверное пустой будет, не проверял
+                adapter_towns = new ArrayAdapter<String>(getActivity().getApplicationContext(), R.layout.item_drop_down_list); // наверное пустой будет, не проверял
                 break;
         }
         return adapter_towns;
