@@ -27,7 +27,7 @@ android {
 
     buildTypes {
         release {
-            minifyEnabled false // ProGuard выключен
+            minifyEnabled true // ProGuard выключен
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.KeyStoreZizi // подписываем приложение выбранной подписью
 

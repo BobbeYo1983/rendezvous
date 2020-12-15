@@ -5,10 +5,12 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Display;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -34,8 +36,11 @@ public class ActivityLogin extends AppCompatActivity {
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private String email; // почта пользователя
     private String password; // пароль пользователя
+    private Map<String, Object> user; // коллекция ключ-значение для сохранения профиля в БД
     private FragmentManager manager; //менеджер фрагментов
     private ClassDialog classDialog; //класс для показа всплывающих окон
+    private Display display; // для разрешения экрана
+    private Point size; // для разрешения экрана
 
 
     //Вьюхи
@@ -60,6 +65,7 @@ public class ActivityLogin extends AppCompatActivity {
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
         classGlobalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
+        user = new HashMap<>(); // коллекция ключ-значение для сохранения профиля в БД
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
         manager = getSupportFragmentManager();
         classDialog = new ClassDialog(); // класс для показа всплывающих окон
@@ -348,13 +354,15 @@ public class ActivityLogin extends AppCompatActivity {
     public void SaveProfileAndEnter (){
         classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
-        //documentReference = firebaseFirestore.collection("users").document(classGlobalApp.GetCurrentUserEmail()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
-        Map<String, Object> user = new HashMap<>(); // коллекция ключ-значение
+        //готовим коллекцию профайла пользователя для сохранениния
         user.put("email", classGlobalApp.GetCurrentUserEmail());
         user.put("userID", classGlobalApp.GetCurrentUserUid());
         user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
-        //user.put("email1", classGlobalApp.GetCurrentUserEmail());
-        //user.put("token", ServiceFirebaseCloudMessaging.GetToken(this)); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+
+        display = getWindowManager().getDefaultDisplay(); // получаем расширение экрана
+        display.getSize(size);
+
+        user.put("screenExtension", String.valueOf(size.x) + "x" + String.valueOf(size.y));
 
         //сохраняем профайл пользователя в БД
         documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserEmail()); // формируем путь к документу
