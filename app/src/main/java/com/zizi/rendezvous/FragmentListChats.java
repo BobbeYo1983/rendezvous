@@ -45,6 +45,7 @@ public class FragmentListChats extends Fragment {
     private FragmentChat fragmentChat; // фрагмент с одним чатом
     private int countUnreads; // количество непрочитанных чатов текущего пользователя
     private BadgeDrawable badgeDrawable; // значек для изменения количества непрочитанных сообщений
+    private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
 
     //вьюхи
     private RecyclerView recyclerView; // список с сообщениями
@@ -71,6 +72,7 @@ public class FragmentListChats extends Fragment {
         adapter = new Adapter(arrayListAllItems);
         modelChat = new ModelChat();
         fragmentListMeetings = new FragmentListMeetings();
+        fragmentDetailsMeeting = new FragmentDetailsMeeting();
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         activityMeetings = (ActivityMeetings)getActivity();
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
@@ -303,6 +305,7 @@ public class FragmentListChats extends Fragment {
             TextView tv_age; // возраст партнера
             ImageView iv_unReadMsg; // непрочитанные сообщения
             MaterialButton btn_write; // кнопка написать
+            MaterialButton btn_details; // кнопка подробности
 
 
 
@@ -313,6 +316,7 @@ public class FragmentListChats extends Fragment {
                 tv_age = itemView.findViewById(R.id.tv_age);
                 iv_unReadMsg = itemView.findViewById(R.id.iv_unReadMsg);
                 btn_write = itemView.findViewById(R.id.btn_write);
+                btn_details = itemView.findViewById(R.id.btn_details);
 
                 btn_write.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку написать
                     @Override
@@ -329,6 +333,19 @@ public class FragmentListChats extends Fragment {
 
                     }
                 });
+
+                btn_details.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //готовим аргументы для передачи в другой фрагмент
+                        classGlobalApp.ClearBundle();
+                        classGlobalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
+
+                        activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
+
+                    }
+                });
+
 
             }
         }

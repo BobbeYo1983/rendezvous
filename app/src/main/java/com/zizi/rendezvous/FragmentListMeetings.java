@@ -331,7 +331,7 @@ public class FragmentListMeetings extends Fragment {
 
                     //готовим аргументы для передачи в другой фрагмент
                     classGlobalApp.ClearBundle();
-                    classGlobalApp.AddBundle("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
+                    classGlobalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
 
                     activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
 

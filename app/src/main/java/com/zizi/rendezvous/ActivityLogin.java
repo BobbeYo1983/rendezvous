@@ -223,7 +223,74 @@ public class ActivityLogin extends AppCompatActivity {
 
                             SetVisibilityViews(true); //показываем вьюхи
 
-                            switch (task.getException().getMessage()) { // переводим ошибки
+                            String exceptionMessage = task.getException().getMessage(); // текст ошибки
+
+                            Map<String, Integer> mapErrors = new HashMap<>(); // словарь с текстом ошибок
+                            mapErrors.put("Too many unsuccessful login attempts", 0);
+                            mapErrors.put("The password is invalid or the user does not have a password", 1);
+                            mapErrors.put("The email address is badly formatted", 2);
+                            mapErrors.put("There is no user record corresponding to this identifier", 3);
+                            mapErrors.put("Unable to resolve host \"www.googleapis.com\":No address associated with hostname", 4);
+                            mapErrors.put("network error", 5);
+                            mapErrors.put("Failure in SSL library", 6);
+
+
+                            for (Map.Entry<String, Integer> error : mapErrors.entrySet()) { //пробегаемся по словарю
+                                if (exceptionMessage.contains(error.getKey())) { //если в тексте исключения есть ошибка из словаря
+                                    switch (error.getValue()) {
+                                        case 0:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
+                                            classDialog.show(manager, "classDialog");
+                                            break;
+                                        case 1:
+                                            til_password.setError("Неверный пароль.");
+                                            break;
+                                        case 2:
+                                            til_email.setError("Неверный формат email.");
+                                            break;
+                                        case 3:
+                                            til_email.setError("Нет пользователя с таким email. Возможно он был удален.");
+                                            break;
+                                        case 4:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
+                                            classDialog.show(manager, "classDialog");
+                                            break;
+                                        case 5:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
+                                            classDialog.show(manager, "classDialog");
+                                            break;
+                                        case 6:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.");
+                                            classDialog.show(manager, "classDialog");
+                                            break;
+                                        default:
+                                            //показываем пользователю
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Ошибка при входе пользователя: " + exceptionMessage);
+                                            classDialog.show(manager, "classDialog");
+
+                                            //добавляем в лог и в БД
+                                            classGlobalApp.Log("ActivityLogin",
+                                                    "Signin/onComplete",
+                                                    "Ошибка при входе пользователя: " + exceptionMessage,
+                                                    true
+                                            );
+                                            break;
+                                    }
+                                    //break;
+                                }
+                            }
+
+
+                            /*switch (exceptionMessage) { // переводим ошибки
                                 case "We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts. Please try again later. ]":
 
                                     //показываем всплывающее окно
@@ -270,7 +337,7 @@ public class ActivityLogin extends AppCompatActivity {
                                             true
                                     );
                                     break;
-                            }
+                            }*/
 
                         }
                     }
@@ -367,7 +434,8 @@ public class ActivityLogin extends AppCompatActivity {
         user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
 
         //сохраняем профайл пользователя в БД
-        documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserEmail()); // формируем путь к документу
+        //documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserEmail()); // формируем путь к документу
+        documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась

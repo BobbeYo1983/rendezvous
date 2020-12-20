@@ -525,7 +525,7 @@ public class FragmentRequestMeeting extends Fragment {
                     meeting.put("email", classGlobalApp.GetCurrentUserEmail());
 
                     // если запись в БД успешна
-                    documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserEmail());
+                    documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid());
                     documentReference.set(meeting).addOnSuccessListener(new OnSuccessListener<Void>() { //
                         @Override
                         public void onSuccess(Void aVoid) {

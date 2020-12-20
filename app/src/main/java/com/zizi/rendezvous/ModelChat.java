@@ -7,6 +7,7 @@ public class ModelChat {
     private String name;
     private String age;
     private String unReadMsg;
+    //private String email;
 
     public String getUnReadMsg() {
         return unReadMsg;
@@ -47,6 +48,10 @@ public class ModelChat {
     public void setAge(String age) {
         this.age = age;
     }
+
+    //public String getEmail() {return email;}
+
+    //public void setEmail(String email) { this.email = email; }
 
 
 }
