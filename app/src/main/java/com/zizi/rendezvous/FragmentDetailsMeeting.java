@@ -9,6 +9,7 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
 import android.text.Html;
+import android.text.method.LinkMovementMethod;
 import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -178,8 +179,7 @@ public class FragmentDetailsMeeting extends Fragment {
 
         til_soc_net_et.setText(mapDocument.get("socNet").toString());
         Linkify.addLinks(til_soc_net_et, Linkify.ALL); // для распознования ссылок
-        //til_soc_net_et.setTextColor();
-
+        til_soc_net_et.setLinkTextColor(Color.BLUE);
 
         til_contact_et.setText(mapDocument.get("contact").toString());
         til_place_et.setText(mapDocument.get("place").toString());

@@ -79,6 +79,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
                 ;
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+        classGlobalApp.notificationMessage = true; //сообщаем приложению, что пришло уведомление о сообщении, чтобы открыть фрагмент с чатами
         notificationManager.notify(0, notificationBuilder.build());
     }
 

@@ -20,6 +20,8 @@ import java.util.Map;
  */
 public class ClassGlobalApp extends Application {
 
+    public boolean notificationMessage;
+
     private Map<String, String> paramsToSave; // коллекция ключ-значение
     private Map<String, String> paramsToBundle; // коллекция ключ-значение
 
@@ -40,14 +42,15 @@ public class ClassGlobalApp extends Application {
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
 
 
+
     /**
      * Конструктор, тут еще контекст приложения не создан, не вся инициализация может проходить, поэтому можно инициализировать позже в onCreate()
      */
     public ClassGlobalApp(){
 
-        paramsToSave = new HashMap<>(); // коллекция ключ-значение
-        paramsToBundle = new HashMap<>(); // коллекция ключ-значение
-        msg = new HashMap<>();
+        //paramsToSave = new HashMap<>(); // коллекция ключ-значение
+        //paramsToBundle = new HashMap<>(); // коллекция ключ-значение
+        //msg = new HashMap<>();
 
     }
 
@@ -59,6 +62,10 @@ public class ClassGlobalApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        paramsToSave = new HashMap<>(); // коллекция ключ-значение
+        paramsToBundle = new HashMap<>(); // коллекция ключ-значение
+        msg = new HashMap<>();
+
         sharedPreferences = getSharedPreferences("saveParams", MODE_PRIVATE);
         editorSharedPreferences = sharedPreferences.edit(); // подготавливаем редактор работы с памятью перед записью'
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
@@ -66,6 +73,7 @@ public class ClassGlobalApp extends Application {
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
 
         tokenDevice = GetParam("tokenDevice");
+        notificationMessage = false;
 
     }
 

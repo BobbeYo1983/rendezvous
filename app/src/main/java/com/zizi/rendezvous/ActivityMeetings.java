@@ -28,6 +28,7 @@ public class ActivityMeetings extends AppCompatActivity {
     private Fragment fragmentListMeetings; // фрагмент со списком заявок
     private Fragment fragmentRequestMeeting; // фрагмент с заявкой
     private Fragment currentFragment; // текущий фрагмент
+    private Fragment fragmentListChats; // текущий фрагмент
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,7 +40,7 @@ public class ActivityMeetings extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
-        //requestNotFilled = saveParams.getString("requestNotFilled", "true"); // смотрим, подавалась ли ранее заявка или нет, если true, то не подавалась
+        fragmentListChats = new FragmentListChats();
 
         //ищем нужные элементы
         materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
@@ -64,7 +65,13 @@ public class ActivityMeetings extends AppCompatActivity {
 
         //грузим нужный фрагмент///////////////////////////////////////////////////////////////////////
         if (classGlobalApp.GetParam("requestIsActive").equals("trueTrue")) {// если заявка активна и заполнялась
-            ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+            if (classGlobalApp.notificationMessage){ //если пришло уведомление о сообщении, то надо открыть фрагмент с чатами
+                classGlobalApp.notificationMessage = false;
+                classGlobalApp.Log("ActivityMeetings", "onCreate", "Буду загружать fragmentListChats", false);
+                ChangeFragment(fragmentListChats, "fragmentListChats", false); // показываем встречи
+            } else {
+                ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+            }
         } else {
             ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
         }
