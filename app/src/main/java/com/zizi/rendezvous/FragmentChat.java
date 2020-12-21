@@ -553,8 +553,7 @@ public class FragmentChat extends Fragment {
 
                 JSONObject json = new JSONObject();
 
-                // тут указывается токен устройства на который отправляем
-                //json.put("to", "cMhgmmHISF-_LX7Kppl5YZ:APA91bGshqk6E77kn1soudXiL-s5b4OhTKkJ20JaGPMkIYkVNOaccVPNLT65ibHklqGvynWk_gTsV40-JZfMZ3gOXLHx1RZX7kPL3Lip-flMH6rlqN9zta4XG48Aton8vN626KQu4axQ");
+                ///тут указывается токен устройства на который отправляем
                 json.put("to", partnerInfo.getToken());
                 json.put("priority", "high"); // добавляем высокий приоритет, так как для типа посылки data он не самый высокий и может быть долгая доставка
 
@@ -562,7 +561,7 @@ public class FragmentChat extends Fragment {
                 data.put("title", "Сообщение");   // Notification title
                 data.put("body", "У вас есть новое сообщение"); // Notification body
 
-                //если не добавлять в посылку раздел notification, то данные гарантированно будут доставляться в метод onMessageReceived в службу ServiceFirebaseCloudMessaging, а из этого метода и формируем уведомление
+                ///если не добавлять в посылку раздел notification, то данные гарантированно будут доставляться в метод onMessageReceived в службу ServiceFirebaseCloudMessaging, а из этого метода и формируем уведомление
                 json.put("data", data); // добавляем в json - посылку
 
 
