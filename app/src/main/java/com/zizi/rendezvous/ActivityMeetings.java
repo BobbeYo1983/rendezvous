@@ -62,11 +62,16 @@ public class ActivityMeetings extends AppCompatActivity {
         //==========================================================================================
 
 
-
+        //classGlobalApp.Log("ActivityMeetings", "onCreate", "Method is run", false);
         //грузим нужный фрагмент///////////////////////////////////////////////////////////////////////
         if (classGlobalApp.GetParam("requestIsActive").equals("trueTrue")) {// если заявка активна и заполнялась
-            if (classGlobalApp.notificationMessage){ //если пришло уведомление о сообщении, то надо открыть фрагмент с чатами
-                classGlobalApp.notificationMessage = false;
+            classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка активна", false);
+            //if (classGlobalApp.IsNotificationMessage()){ //если пришло уведомление о сообщении, то надо открыть фрагмент с чатами
+            String str = classGlobalApp.GetBundle("notificationMessage");
+            classGlobalApp.Log("ActivityMeetings", "onCreate", "NotificationMessage=" + str, false);
+            if (classGlobalApp.GetBundle("notificationMessage") != null /*&& !classGlobalApp.GetBundle("notificationMessage").isEmpty()*/){ //если пришло уведомление о сообщении, то надо открыть фрагмент с чатами
+                classGlobalApp.Log("ActivityMeetings", "onCreate", "Пришло уведомление", false);
+                //classGlobalApp.SetNotificationMessage(false);
                 classGlobalApp.Log("ActivityMeetings", "onCreate", "Буду загружать fragmentListChats", false);
                 ChangeFragment(fragmentListChats, "fragmentListChats", false); // показываем встречи
             } else {
@@ -88,6 +93,8 @@ public class ActivityMeetings extends AppCompatActivity {
             startActivity(new Intent(getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
             finish(); // убиваем активити
         }
+
+
     }
 
 

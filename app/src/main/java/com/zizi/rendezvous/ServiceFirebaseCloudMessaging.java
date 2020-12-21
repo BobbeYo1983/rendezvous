@@ -11,6 +11,7 @@ import android.os.Bundle;
 //import android.support.v4.app.NotificationCompat;
 
 import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -25,13 +26,52 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         super.onCreate();
 
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
+        //classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onCreate", "Метод запущен", false);
     }
 
-    @Override // при получении сообщения
-    public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление
+    @Override // вызывается только, когда приложение запущено, не в фоновом режиме
+    public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление не в фоновом режиме
         super.onMessageReceived(remoteMessage);
 
+        //classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
+
+        // Create an explicit intent for an Activity in your app
+        Intent intent = new Intent(this, ActivityMeetings.class);
+        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+        //The setFlags() method shown above helps preserve the user's expected navigation experience after they open your app via the notification.
+        //https://developer.android.com/training/notify-user/navigation
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+
+        // Контент уведомления ///////////////////////////////////////////////////////////////////////////
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID) //канал уведомлений ранее регистрировали
+                .setSmallIcon(R.drawable.ic_rendezvous_foreground)
+                .setContentTitle("textTitle")
+                .setContentText("textContent")
+                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent) // Set the intent that will fire when the user taps the notification
+                .setAutoCancel(true)
+                ;
+        //=============================================================================================
+
+        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+
+        // notificationId is a unique int for each notification that you must define
+        //Remember to save the notification ID that you pass to NotificationManagerCompat.notify() because you'll need it later if you want to update or remove the notification.
+        notificationManager.notify(0, builder.build());
+
+
+
+
+
+/*
+        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        //classGlobalApp.notificationMessage = true; //сообщаем приложению, что пришло уведомление о сообщении, чтобы открыть фрагмент с чатами
+
         Intent intent = new Intent(getApplicationContext(), ActivityMeetings.class);
+        //Intent intent = new Intent(this, ActivityMeetings.class);
         //intent.putExtra("fragmentName", "fragmentListChats");
         //intent.putExtra("1", "1");
 
@@ -67,9 +107,11 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "RendChat")
         //NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
                 .setSmallIcon(R.drawable.ic_outline_message_24) // иконка в самом верху в панели уведомлений
-                .setContentTitle(remoteMessage.getNotification().getTitle()) // Заголовок уведомления
+                //.setContentTitle(remoteMessage.getNotification().getTitle()) // Заголовок уведомления
+                .setContentTitle(remoteMessage.getData().get("title")) // Заголовок уведомления
                 //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_outline_message_24)) // большая иконка в уведомлении
-                .setContentText(remoteMessage.getNotification().getBody()) // текст уведомления
+                //.setContentText(remoteMessage.getNotification().getBody()) // текст уведомления
+                .setContentText(remoteMessage.getData().get("body")) // текст уведомления
                 .setAutoCancel(true) // когда кликаем на уведомление, оно пропадает
                 //.setColor(0xffff7700) // добавит фоновый цвет иконке
                 //.setVibrate(new long[]{100, 100, 100, 100}) // настройка вибрации
@@ -79,8 +121,16 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
                 ;
 
         NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-        classGlobalApp.notificationMessage = true; //сообщаем приложению, что пришло уведомление о сообщении, чтобы открыть фрагмент с чатами
+
+        classGlobalApp.ClearBundle();
+        classGlobalApp.AddBundle("notificationMessage", "true");
+        //classGlobalApp.SetNotificationMessage(true); //сообщаем приложению, что пришло уведомление о сообщении, чтобы открыть фрагмент с чатами
         notificationManager.notify(0, notificationBuilder.build());
+
+        //===============================================================================================
+
+
+ */
     }
 
     /**

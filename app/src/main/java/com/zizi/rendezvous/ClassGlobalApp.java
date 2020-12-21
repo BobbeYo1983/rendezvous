@@ -1,7 +1,10 @@
 package com.zizi.rendezvous;
 
 import android.app.Application;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.SharedPreferences;
+import android.os.Build;
 import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -20,7 +23,7 @@ import java.util.Map;
  */
 public class ClassGlobalApp extends Application {
 
-    public boolean notificationMessage;
+    //private boolean notificationMessage;
 
     private Map<String, String> paramsToSave; // коллекция ключ-значение
     private Map<String, String> paramsToBundle; // коллекция ключ-значение
@@ -46,13 +49,13 @@ public class ClassGlobalApp extends Application {
     /**
      * Конструктор, тут еще контекст приложения не создан, не вся инициализация может проходить, поэтому можно инициализировать позже в onCreate()
      */
-    public ClassGlobalApp(){
+    //public ClassGlobalApp(){
 
         //paramsToSave = new HashMap<>(); // коллекция ключ-значение
         //paramsToBundle = new HashMap<>(); // коллекция ключ-значение
         //msg = new HashMap<>();
 
-    }
+    //}
 
     /**
      * В конструкторе класса, еще не создан объект контекста приложения, а чтобы создать объект SharedPreferences нужен контекст приложения,
@@ -68,12 +71,16 @@ public class ClassGlobalApp extends Application {
 
         sharedPreferences = getSharedPreferences("saveParams", MODE_PRIVATE);
         editorSharedPreferences = sharedPreferences.edit(); // подготавливаем редактор работы с памятью перед записью'
+
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД RealTime DataBase
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
 
         tokenDevice = GetParam("tokenDevice");
-        notificationMessage = false;
+        //notificationMessage = false;
+
+        //Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
+        createNotificationChannel();
 
     }
 
@@ -162,6 +169,7 @@ public class ClassGlobalApp extends Application {
     public String GetBundle(String paramName){
 
         return paramsToBundle.get(paramName);
+        //return "paramsToBundle.get(paramName)";
     }
 
     /**
@@ -267,6 +275,33 @@ public class ClassGlobalApp extends Application {
         }
 
         return collectionReference = firebaseFirestore.collection(collection); //формируем ссылку
+    }
+
+/*    public boolean IsNotificationMessage() {
+        return notificationMessage;
+    }
+
+    public void SetNotificationMessage(boolean notificationMessage) {
+        this.notificationMessage = notificationMessage;
+    }*/
+
+    /**
+     * Регистрирует канал уведомлений в системе
+     */
+    private void createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = Data.channelID;
+            String description = "Description channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel channel = new NotificationChannel(Data.channelID, name, importance);
+            channel.setDescription(description);
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            notificationManager.createNotificationChannel(channel);
+        }
     }
 
 }
