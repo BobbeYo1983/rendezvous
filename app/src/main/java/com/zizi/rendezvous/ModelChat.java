@@ -3,7 +3,7 @@ package com.zizi.rendezvous;
 public class ModelChat {
 
     private String userID;
-    private String token;
+    private String tokenDevice;
     private String name;
     private String age;
     private String unReadMsg;
@@ -17,12 +17,12 @@ public class ModelChat {
         this.unReadMsg = unReadMsg;
     }
 
-    public String getToken() {
-        return token;
+    public String getTokenDevice() {
+        return tokenDevice;
     }
 
-    public void setToken(String token) {
-        this.token = token;
+    public void setTokenDevice(String token) {
+        this.tokenDevice = token;
     }
 
     public String getUserID() {

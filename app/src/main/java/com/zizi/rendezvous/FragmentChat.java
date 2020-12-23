@@ -124,8 +124,7 @@ public class FragmentChat extends Fragment {
 
         // информация о партнере чата ///////////////////////////////////////////////////////////////
         partnerInfo.setUserID(classGlobalApp.GetBundle("partnerID"));
-        partnerInfo.setToken(classGlobalApp.GetBundle("partnerToken"));
-        //classGlobalApp.Log ("FragmentChat", "onActivityCreated", "Вычитан из памяти токен партнера: " + classGlobalApp.GetBundle("partnerToken"), false);
+        partnerInfo.setTokenDevice(classGlobalApp.GetBundle("partnerTokenDevice"));
         partnerInfo.setName(classGlobalApp.GetBundle("partnerName"));
         partnerInfo.setAge(classGlobalApp.GetBundle("partnerAge"));
         partnerInfo.setUnReadMsg("0"); // делаем по умолчанию ноль непрочитанных сообщений
@@ -135,7 +134,7 @@ public class FragmentChat extends Fragment {
 
         // заготовим информацию о текущем пользователе при загрузке фрагмента////////////////////////
         currentUserInfo.setUserID(classGlobalApp.GetCurrentUserUid());
-        currentUserInfo.setToken(classGlobalApp.GetTokenDevice());
+        currentUserInfo.setTokenDevice(classGlobalApp.GetTokenDevice());
         currentUserInfo.setName(classGlobalApp.GetParam("name")); // подгружаем из памяти девайса
         currentUserInfo.setAge(classGlobalApp.GetParam("age")); // подгружаем из памяти девайса
         //==========================================================================================
@@ -307,8 +306,11 @@ public class FragmentChat extends Fragment {
                     til_message_et.setText(""); //очищаем поле с текстом
 
 
-                    //Отправляем уведомление в асинхронной задаче
-                    new Notify().execute();
+                    //Отправляем уведомление в асинхронной задаче по ключу устройства, в конструктор ссылку на глобальный класс, чтобы писать логи в БД
+                    new NotificationMessage(classGlobalApp).execute(partnerInfo.getTokenDevice());
+                    //new Notify().execute(partnerInfo.getTokenDevice());
+                    //classGlobalApp.Log("FragmentChat", "floatingActionButton.setOnClickListener", "partnerTokenDevice = " + partnerInfo.getTokenDevice(), false);
+
 
                 }
 
@@ -360,7 +362,6 @@ public class FragmentChat extends Fragment {
         databaseReference = classGlobalApp.GenerateDatabaseReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID())); //ссылка на данные
         query = databaseReference.orderByChild("pushKey").limitToLast(30); //читаем последние 30 сообщений, все остальные будут удалены
         query.addChildEventListener(new ChildEventListener() {
-        //databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД сообщения
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 arrayListAllMessages.add(snapshot.getValue(ModelMessage.class)); // записываем сообщение в коллекцию со всеми сообщениями
@@ -426,7 +427,6 @@ public class FragmentChat extends Fragment {
                     if (!child.getKey().equals(pushKey)) { // сообщение с указанным идентификатором не чистим
                         child.getRef().removeValue(); // удаляем сообщение из БД
                     }
-                    //classGlobalApp.Log("############", "Delete", child.getKey(), false);
                 }
             }
 
@@ -528,91 +528,7 @@ public class FragmentChat extends Fragment {
         }
     }
 
-    /**
-     * Класс отправки уведомления в асинхронной задаче
-     */
-    public class Notify extends AsyncTask<Void,Void,Void>
-    {
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            try {
-
-                URL url = new URL("https://fcm.googleapis.com/fcm/send");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                conn.setUseCaches(false);
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                conn.setRequestMethod("POST");
-                // тут ключ сервака Farebase для FCM
-                conn.setRequestProperty("Authorization", "key=" + "AAAAbdXW9sc:APA91bGqfvYgRjMgjWVs4wBMFUheGra5ADSfrjP8xqDFwgflw1qPfdlz8QeUaK0_gNw8Mk-FEF9JrhA9D7UmIWUsIwKHP3HdB8GIyelP6N7hjEcyLshq-5Lw4QFqEF1vvN90fZSqcutS");
-                conn.setRequestProperty("Content-Type", "application/json");
-
-                JSONObject json = new JSONObject();
-
-                ///тут указывается токен устройства на который отправляем
-                json.put("to", partnerInfo.getToken());
-                json.put("priority", "high"); // добавляем высокий приоритет, так как для типа посылки data он не самый высокий и может быть долгая доставка
-
-                JSONObject data = new JSONObject();
-                data.put("title", "Сообщение");   // Notification title
-                data.put("body", "У вас есть новое сообщение"); // Notification body
-
-                ///если не добавлять в посылку раздел notification, то данные гарантированно будут доставляться в метод onMessageReceived в службу ServiceFirebaseCloudMessaging, а из этого метода и формируем уведомление
-                json.put("data", data); // добавляем в json - посылку
-
-
-                //JSONObject info = new JSONObject();
-                //info.put("title", "Сообщение");   // Notification title
-                //info.put("body", "У вас есть новое сообщение"); // Notification body
-                //info.put("click_action", "Open_ActivityMeetings"); //типа в манифесте ищется такой фильтр у Активити и типа она вызывается при клике на уведомление
-
-                //json.put("notification", info);
-
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write(json.toString());
-                wr.flush();
-                wr.close();
-
-                if (conn.getResponseCode() != 200) { // если код ошибки от сервера не равен нормальному значению 200
-                    classGlobalApp.Log("Notify",
-                            "doInBackground",
-                            "Ошибка отправки уведомления, код: " + conn.getResponseCode() + ", сообщение от сервера: " + conn.getResponseMessage(),
-                            true
-                            );
-
-                    // тут закоментирован способ получения полного ответа
-                    /*
-                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-                    classLogsAllApp.Log(conn.getResponseCode() + " " + response); // пишем лог на сервак
-                    */
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                classGlobalApp.Log("Notify",
-                        "doInBackground",
-                        "Исключение при отправке уведомления: " + e.getMessage(),
-                        true
-                );
-
-
-            }
-            return null;
-        }
-    }
 
     /**
      * Формируем айдишник канала чата

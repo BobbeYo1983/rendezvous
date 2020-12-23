@@ -434,7 +434,6 @@ public class ActivityLogin extends AppCompatActivity {
         user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
 
         //сохраняем профайл пользователя в БД
-        //documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserEmail()); // формируем путь к документу
         documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override

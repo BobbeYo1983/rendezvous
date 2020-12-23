@@ -49,13 +49,11 @@ public class ClassGlobalApp extends Application {
     /**
      * Конструктор, тут еще контекст приложения не создан, не вся инициализация может проходить, поэтому можно инициализировать позже в onCreate()
      */
-    //public ClassGlobalApp(){
+    public ClassGlobalApp(){
 
-        //paramsToSave = new HashMap<>(); // коллекция ключ-значение
-        //paramsToBundle = new HashMap<>(); // коллекция ключ-значение
-        //msg = new HashMap<>();
+        Log("ClassGlobalApp", "ClassGlobalApp", "Создан объект класса", false);
 
-    //}
+    }
 
     /**
      * В конструкторе класса, еще не создан объект контекста приложения, а чтобы создать объект SharedPreferences нужен контекст приложения,
@@ -94,7 +92,9 @@ public class ClassGlobalApp extends Application {
 
         if (BuildConfig.DEBUG) { // если режим отладки, то ведем ЛОГ
             //символы !@# достаточно уникальны для фильтровки и быстро набираются на клавиатуре
-            Log.v("!@#", "[" + _class + "." + method + "]: " +  message);
+            //Log.v("!@#", "[" + _class + "." + method + "]: " +  message);
+            //Data.tagLog еще есть в классе NotificationMessage
+            Log.v(Data.tagLog, "[" + _class + "." + method + "]: " +  message);
 
         }
 

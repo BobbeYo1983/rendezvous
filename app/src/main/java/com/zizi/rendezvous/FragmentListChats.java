@@ -109,7 +109,7 @@ public class FragmentListChats extends Fragment {
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //getActivity().onBackPressed();
+                //ничего не делать при нажатии
             }
         });
         //==========================================================================================
@@ -325,7 +325,7 @@ public class FragmentListChats extends Fragment {
                         // добавляем аргументы для передачи в другой фрагмент
                         classGlobalApp.ClearBundle();
                         classGlobalApp.AddBundle("partnerID", arrayListItems.get(getAdapterPosition()).getUserID());
-                        classGlobalApp.AddBundle("partnerToken", arrayListItems.get(getAdapterPosition()).getToken());
+                        classGlobalApp.AddBundle("partnerTokenDevice", arrayListItems.get(getAdapterPosition()).getTokenDevice());
                         classGlobalApp.AddBundle("partnerName", arrayListItems.get(getAdapterPosition()).getName());
                         classGlobalApp.AddBundle("partnerAge", arrayListItems.get(getAdapterPosition()).getAge());
 

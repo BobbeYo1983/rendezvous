@@ -349,7 +349,7 @@ public class FragmentListMeetings extends Fragment {
                     //готовим аргументы для передачи
                     classGlobalApp.ClearBundle();
                     classGlobalApp.AddBundle("partnerID", usersInfoAll.get(getAdapterPosition()).getUserID());
-                    classGlobalApp.AddBundle("partnerToken", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
+                    classGlobalApp.AddBundle("partnerTokenDevice", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
                     classGlobalApp.AddBundle("partnerName", usersInfoAll.get(getAdapterPosition()).getName());
                     classGlobalApp.AddBundle("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge());
 
