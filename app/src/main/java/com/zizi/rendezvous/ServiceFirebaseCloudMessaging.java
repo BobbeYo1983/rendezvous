@@ -36,7 +36,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         //classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
 
         // Create an explicit intent for an Activity in your app
-        Intent intent = new Intent(this, ActivityMeetings.class);
+        Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
         //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
         //The setFlags() method shown above helps preserve the user's expected navigation experience after they open your app via the notification.
         //https://developer.android.com/training/notify-user/navigation

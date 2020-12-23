@@ -13,11 +13,11 @@ import java.net.URL;
  * Класс отправки уведомления в асинхронной задаче на девайс с переданным токеном
  * String ... tokenDevice - обрабатывается только первый параметр, токен устройства, на который отправляем уведомление
  */
-public class NotificationMessage extends AsyncTask<String,Void,Void> {
+public class ClassNotificationMessage extends AsyncTask<String,Void,Void> {
 
     private ClassGlobalApp classGlobalApp; //глобальный класс приложения
 
-    NotificationMessage(ClassGlobalApp classGlobalApp){
+    ClassNotificationMessage(ClassGlobalApp classGlobalApp){
         this.classGlobalApp = classGlobalApp;
     }
 
@@ -68,7 +68,7 @@ public class NotificationMessage extends AsyncTask<String,Void,Void> {
 
             if (conn.getResponseCode() != 200) { // если код ошибки от сервера не равен нормальному значению 200
 
-                classGlobalApp.Log("NotificationMessage",
+                classGlobalApp.Log("ClassNotificationMessage",
                         "doInBackground",
                         "Ошибка отправки уведомления, код: " + conn.getResponseCode() + ", сообщение от сервера: " + conn.getResponseMessage(),
                         true
@@ -92,7 +92,7 @@ public class NotificationMessage extends AsyncTask<String,Void,Void> {
         }
         catch (Exception e)
         {
-            classGlobalApp.Log("NotificationMessage",
+            classGlobalApp.Log("ClassNotificationMessage",
                     "doInBackground",
                     "Исключение при отправке уведомления: " + e.getMessage(),
                     true

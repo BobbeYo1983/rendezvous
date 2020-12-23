@@ -4,7 +4,6 @@ package com.zizi.rendezvous;
 import android.content.Intent;
 
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,14 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONObject;
-
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -307,7 +300,7 @@ public class FragmentChat extends Fragment {
 
 
                     //Отправляем уведомление в асинхронной задаче по ключу устройства, в конструктор ссылку на глобальный класс, чтобы писать логи в БД
-                    new NotificationMessage(classGlobalApp).execute(partnerInfo.getTokenDevice());
+                    new ClassNotificationMessage(classGlobalApp).execute(partnerInfo.getTokenDevice());
                     //new Notify().execute(partnerInfo.getTokenDevice());
                     //classGlobalApp.Log("FragmentChat", "floatingActionButton.setOnClickListener", "partnerTokenDevice = " + partnerInfo.getTokenDevice(), false);
 
