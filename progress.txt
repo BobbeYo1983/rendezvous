@@ -2,6 +2,10 @@
 
 УВЕДОМЛЕНИЯ
 Сделать нормальную иконку уведомления, сейчас вместо цветной она белая
+.setColor(ContextCompat.getColor(mainActivity, R.color.colorPrimary))
+.setStyle(new Notification.BigPictureStyle())
+
+
 При клике на уведомление переходить на фрагмент с чатами.
 Сделать видимость уведомлений в зависимости от настроек пользователя. Инфа тут https://developer.android.com/training/notify-user/build-notification#builder раздел Set lock screen visibility
 Научиться обновлять уведомления, так же удалять https://developer.android.com/training/notify-user/build-notification#builder

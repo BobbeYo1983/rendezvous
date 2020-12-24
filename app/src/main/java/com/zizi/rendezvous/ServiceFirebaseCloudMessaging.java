@@ -12,6 +12,7 @@ import android.os.Bundle;
 
 import androidx.core.app.NotificationCompat;
 import androidx.core.app.NotificationManagerCompat;
+import androidx.core.content.ContextCompat;
 
 import com.google.firebase.messaging.FirebaseMessagingService;
 import com.google.firebase.messaging.RemoteMessage;
@@ -48,6 +49,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         // Контент уведомления ///////////////////////////////////////////////////////////////////////////
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID) //канал уведомлений ранее регистрировали
                 .setSmallIcon(R.drawable.ic_rendezvous_foreground)
+                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary))
                 .setContentTitle("textTitle")
                 .setContentText("textContent")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
