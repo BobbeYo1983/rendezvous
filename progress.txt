@@ -1,10 +1,15 @@
 НУЖНО СДЕЛАТЬ
 
+Все активити стартовать с singleTask, но проверить Create вызывается или нет.
+
 УВЕДОМЛЕНИЯ
 Сделать нормальную иконку уведомления, сейчас вместо цветной она белая
 .setColor(ContextCompat.getColor(mainActivity, R.color.colorPrimary))
 .setStyle(new Notification.BigPictureStyle())
 
+Установить этот атрибут, чтобы даже после длительного возврата стек не очщался. 
+	alwaysRetainTaskState учтановить в активити параметр true
+	If this attribute is set to "true" in the root activity of a task, the default behavior just described does not happen. The task retains all activities in its stack even after a long period.
 
 При клике на уведомление переходить на фрагмент с чатами.
 Сделать видимость уведомлений в зависимости от настроек пользователя. Инфа тут https://developer.android.com/training/notify-user/build-notification#builder раздел Set lock screen visibility
