@@ -20,6 +20,7 @@
 
         <activity
             android:name=".ActivityLogin"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
             >
             <intent-filter>
@@ -29,11 +30,10 @@
         </activity>
 
 
-<!--        android:launchMode="singleInstance"-->
+
         <activity
             android:name=".ActivityMeetings"
             android:screenOrientation="portrait"
-            android:launchMode="singleInstance"
             >
             <intent-filter>
                 <action android:name="Open_ActivityMeetings" />

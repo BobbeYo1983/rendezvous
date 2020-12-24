@@ -448,10 +448,15 @@ public class ActivityLogin extends AppCompatActivity {
                     //}
 
 
+                    //создаем намерение, что хотим перейти на другую активити
+                    Intent intent = new Intent(ActivityLogin.this, ActivityMeetings.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                                    |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                                    );
 
-                    //переходим на другую активити, то есть фактически входим в приложение
-                    startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
-                    finish(); // убиваем активити
+                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+                    //startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
+                    finish(); // убиваем текущую активити, чтобы не возвращаться по кнопке назад на нее
 
                 } else { // если сохранение не успешно
 

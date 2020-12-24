@@ -36,20 +36,19 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 
         //classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
 
-        // Create an explicit intent for an Activity in your app
+        //создаем намерение, что хотим перейти на другую активити
         Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
-        //intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
-        //The setFlags() method shown above helps preserve the user's expected navigation experience after they open your app via the notification.
-        //https://developer.android.com/training/notify-user/navigation
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        //PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, 0);
+        intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                        |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                        );
+
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         // Контент уведомления ///////////////////////////////////////////////////////////////////////////
         NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID) //канал уведомлений ранее регистрировали
                 .setSmallIcon(R.drawable.ic_rendezvous_foreground)
-                .setColor(ContextCompat.getColor(getApplicationContext(), R.color.colorPrimary))
+                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
                 .setContentTitle("textTitle")
                 .setContentText("textContent")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
