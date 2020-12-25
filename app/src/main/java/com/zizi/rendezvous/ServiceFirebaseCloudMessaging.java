@@ -42,6 +42,8 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
                         |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
                         );
 
+        // requestCode - номер отложенного намерения
+        // PendingIntent.FLAG_UPDATE_CURRENT - будет всегда земенять данные
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 

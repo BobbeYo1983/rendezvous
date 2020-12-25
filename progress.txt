@@ -1,8 +1,5 @@
 НУЖНО СДЕЛАТЬ
 
-PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); Второй параметр requestCode для чего?
-PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT); Последний параметр для чего?
-
 Установить этот атрибут, чтобы даже после длительного возврата стек не очщался. 
 	alwaysRetainTaskState учтановить в активити параметр true
 	If this attribute is set to "true" in the root activity of a task, the default behavior just described does not happen. The task retains all activities in its stack even after a long period.
@@ -26,7 +23,6 @@ PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, Pending
 Нужно делать админку.
 Нужна статистика о количестве встреч.
 Попробовать на различных расширениях устройств
-19. Перевести Firebase на другой аккаунт или иметь коллективный доступ.
 В Студии пароль к ключу указывается в открытом виде, переделать пароль.
 Перед контрольной сборкой выполнить все рекомендации для релиза, описание здесь https://developer.android.com/studio/publish/preparing
 
