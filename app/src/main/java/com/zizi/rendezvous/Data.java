@@ -4,7 +4,7 @@ class Data {
 
     //константы
     public static final String anyTime = "Любое время";
-    public static final String channelID = "appChannel";
+    public static final String channelID = "Сообщения";
     public static final String tagLog = "!@#";
 
     public static final String[] regionsTmp = new String[]{

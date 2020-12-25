@@ -4,6 +4,9 @@ import android.app.Application;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
+import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
 import com.google.firebase.auth.FirebaseAuth;
@@ -293,14 +296,32 @@ public class ClassGlobalApp extends Application {
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             CharSequence name = Data.channelID;
-            String description = "Description channel";
+            String descriptionСhannel = "Description channel";
             int importance = NotificationManager.IMPORTANCE_DEFAULT;
-            NotificationChannel channel = new NotificationChannel(Data.channelID, name, importance);
-            channel.setDescription(description);
+            NotificationChannel notificationChannel = new NotificationChannel(Data.channelID, name, importance); //создаем канал
+            notificationChannel.setDescription(descriptionСhannel); //добавляем описание канала
+
+
+            //атрибуты для звука уведомлений////////////////////////////////////////////////////////////////////
+/*             Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
+           AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build();
+
+            notificationChannel.setSound(uriDefaultSound,att); //применяем звук уведомления по умолчанию
+
+            //вибрация
+            notificationChannel.enableVibration(true);
+            notificationChannel.setVibrationPattern(new long[]{500, 500, 500});*/
+
+
+
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.createNotificationChannel(channel);
+            notificationManager.deleteNotificationChannel("appChannel");
+            notificationManager.createNotificationChannel(notificationChannel);
         }
     }
 

@@ -3,7 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.zizi.rendezvous"
     >
-    
+
+    <uses-permission android:name="android.permission.VIBRATE"/>
 <!--    <uses-permission android:name="android.permission.INTERNET"/>-->
 
     <application

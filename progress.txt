@@ -1,21 +1,16 @@
 НУЖНО СДЕЛАТЬ
 
+
+УВЕДОМЛЕНИЯ
+Уведомление не приходит ко мне на телефон, ранее приходило.
+52. Сделать вибрацию и звук, когда приходит сообщение.
+При клике на уведомление переходить на фрагмент с чатами.
+Нужен ли click_action в отправке уведомления?
+Нужен ли фильтр в манифесте в активити для приемки click_action 
+
 Установить этот атрибут, чтобы даже после длительного возврата стек не очщался. 
 	alwaysRetainTaskState учтановить в активити параметр true
 	If this attribute is set to "true" in the root activity of a task, the default behavior just described does not happen. The task retains all activities in its stack even after a long period.
-
-УВЕДОМЛЕНИЯ
-Сделать нормальную иконку уведомления, сейчас вместо цветной она белая
-.setColor(ContextCompat.getColor(mainActivity, R.color.colorPrimary))
-.setStyle(new Notification.BigPictureStyle())
-При клике на уведомление переходить на фрагмент с чатами.
-Сделать видимость уведомлений в зависимости от настроек пользователя. Инфа тут https://developer.android.com/training/notify-user/build-notification#builder раздел Set lock screen visibility
-Научиться обновлять уведомления, так же удалять https://developer.android.com/training/notify-user/build-notification#builder
-Есть тип уведомлений специально для чатов, для возможности ведения истории, примеры тут https://developer.android.com/training/notify-user/build-notification#builder
-52. Сделать вибрацию и звук, когда приходит сообщение.
-38. Поработать с отменой уведомлени и с накоплением https://startandroid.ru/ru/uroki/vse-uroki-spiskom/510-urok-185-notifications-rezhimy-otkrytiya-activity.html
-Нужен ли click_action в отправке уведомления?
-Нужен ли фильтр в манифесте в активити для приемки click_action 
 
 Нужно добавлять возможность удалить чат или как то их чистить
 28. Если нет чатов, то показать сообщение, если нет встреч, то показать сообщение.
@@ -26,8 +21,17 @@
 В Студии пароль к ключу указывается в открытом виде, переделать пароль.
 Перед контрольной сборкой выполнить все рекомендации для релиза, описание здесь https://developer.android.com/studio/publish/preparing
 
+ОПЦИИ
+Зажигать экран при уведомлении
+Вибрация при уведомлении
+Звук при уведомлении
+Сделать видимость уведомлений в зависимости от настроек пользователя. Инфа тут https://developer.android.com/training/notify-user/build-notification#builder раздел Set lock screen visibility
+
 
 СДЕЛАТЬ ПОТОМ
+Научиться обновлять уведомления, так же удалять https://developer.android.com/training/notify-user/build-notification#builder
+Есть тип уведомлений специально для чатов, для возможности ведения истории, примеры тут https://developer.android.com/training/notify-user/build-notification#builder
+38. Поработать с отменой уведомлени и с накоплением https://startandroid.ru/ru/uroki/vse-uroki-spiskom/510-urok-185-notifications-rezhimy-otkrytiya-activity.html
 Лицензионное соглашение с пользователем.
 Определять расширение экрана при загрузке первой активити, добавить расширение в переменные глобального класса и использовать их на фрагменте чата
 Добавить регионы

@@ -1,5 +1,7 @@
 package com.zizi.rendezvous;
 
+import android.app.Notification;
+import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.TaskStackBuilder;
@@ -8,6 +10,8 @@ import android.content.Intent;
 import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Vibrator;
+import android.provider.Settings;
 //import android.support.v4.app.NotificationCompat;
 
 import androidx.core.app.NotificationCompat;
@@ -42,21 +46,29 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
                         |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
                         );
 
+        //отложенное намерение позволяет работать с другими внешними приложениями и службами
         // requestCode - номер отложенного намерения
         // PendingIntent.FLAG_UPDATE_CURRENT - будет всегда земенять данные
         PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
 
         // Контент уведомления ///////////////////////////////////////////////////////////////////////////
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID) //канал уведомлений ранее регистрировали
-                .setSmallIcon(R.drawable.ic_rendezvous_foreground)
-                .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
-                .setContentTitle("textTitle")
-                .setContentText("textContent")
-                .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-                .setContentIntent(pendingIntent) // Set the intent that will fire when the user taps the notification
-                .setAutoCancel(true)
-                ;
+        //Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
+
+        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID); //канал уведомлений ранее регистрировали
+        builder.setSmallIcon(R.drawable.ic_outline_wc_24); // устанавливаем маленькую иконку
+        builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary)); // цвет иконки в уведомлении, но не в строке уведомлений
+        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT); // приоритет
+        builder.setContentTitle(remoteMessage.getData().get("title")); // заголовок
+        builder.setContentText(remoteMessage.getData().get("body")); //текст уведомления
+        //builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI); //звук по умолчанию для уведомлений
+        //builder.setVibrate(new long[] {1000, 1000, 1000, 1000, 1000}); // вибрация
+        builder.setAutoCancel(true); // при нажатии удаляется
+        builder.setContentIntent(pendingIntent); // связываем, что нужно сделать при нажатии
+
+        //Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+        // Vibrate for 500 milliseconds
+        //v.vibrate(500);
         //=============================================================================================
 
         NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
