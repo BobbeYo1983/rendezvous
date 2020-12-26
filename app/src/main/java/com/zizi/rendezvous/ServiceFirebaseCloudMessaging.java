@@ -155,7 +155,6 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
      */
     @Override
     public void onNewToken(String token) { // метод вызывается когда генерируется новый токен
-        //Log.d(TAG, "Refreshed token: " + token);
 
         // If you want to send messages to this application instance or
         // manage this apps subscriptions on the server side, send the
@@ -163,7 +162,6 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         //sendRegistrationToServer(token);
 
         //сохраняем в память телефона
-        //getSharedPreferences("saveParams", MODE_PRIVATE).edit().putString("token", token).apply();
         classGlobalApp.SetTokenDevice(token);
 
     }

@@ -250,6 +250,8 @@ public class FragmentListMeetings extends Fragment {
         recyclerView.setAdapter(adapter); // ну и связываем вьюху с адаптером железно и навсегда
         //==========================================================================================
 
+
+
     }
 
 

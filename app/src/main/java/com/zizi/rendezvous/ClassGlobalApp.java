@@ -9,6 +9,11 @@ import android.media.RingtoneManager;
 import android.net.Uri;
 import android.os.Build;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
@@ -233,8 +238,32 @@ public class ClassGlobalApp extends Application {
      */
     public void SetTokenDevice(String tokenDevice) {
         this.tokenDevice = tokenDevice;
-        PreparingToSave("tokenDevice", tokenDevice);
-        SaveParams();
+        PreparingToSave("tokenDevice", tokenDevice); //готовим к сохранению
+        SaveParams(); // сохраняем в девайс
+
+/*        if (GetParam("requestIsActive").equals("trueTrue")) { //если заявка подана и активна, то нужно сверить токен с заявкой, протому что, могли зайти с другого девайса или переустановить приложение
+            documentReference = GenerateDocumentReference("meetings", GetCurrentUserUid()); // документ со встречей текущего пользователя
+            paramsToSave.clear();
+            paramsToSave.put("tokenDevice", tokenDevice);
+            //записываем токен в БД
+            documentReference.set(paramsToSave).addOnCompleteListener(new OnCompleteListener<Void>() {
+                @Override
+                public void onComplete(@NonNull Task<Void> task) {
+                    if(task.isSuccessful()){
+                        //Toast.makeText(SelectLocationActivity.this, "Запись прошла успешно", Toast.LENGTH_SHORT).show();
+                    }
+                    else{
+                        Log(this.getClass().getSimpleName().toString(), "SetTokenDevice",
+                                "tokenDevice изменился. Ошибка при записи tokenDevice в активную заявку на встречу. Заявка будет помечена, как неактивная. Нужно заполнить заявку по новой.", true);
+                        PreparingToSave("requestIsActive", ""); //готовим к сохранению
+                        SaveParams(); // сохраняем в девайс
+
+                    }
+                }
+            });
+        }*/
+
+
     }
 
 
@@ -320,7 +349,7 @@ public class ClassGlobalApp extends Application {
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
             NotificationManager notificationManager = getSystemService(NotificationManager.class);
-            notificationManager.deleteNotificationChannel("appChannel");
+            //notificationManager.deleteNotificationChannel("appChannel");
             notificationManager.createNotificationChannel(notificationChannel);
         }
     }

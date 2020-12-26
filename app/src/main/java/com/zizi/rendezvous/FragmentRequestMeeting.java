@@ -526,7 +526,7 @@ public class FragmentRequestMeeting extends Fragment {
 
                     // если запись в БД успешна
                     documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid());
-                    documentReference.set(meeting).addOnSuccessListener(new OnSuccessListener<Void>() { //
+                    documentReference.set(meeting).addOnSuccessListener(new OnSuccessListener<Void>() { // записываем подготовленную мапу в БД
                         @Override
                         public void onSuccess(Void aVoid) {
 

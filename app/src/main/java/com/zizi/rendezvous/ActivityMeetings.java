@@ -1,5 +1,6 @@
 package com.zizi.rendezvous;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
@@ -12,11 +13,18 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.appbar.MaterialToolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class ActivityMeetings extends AppCompatActivity {
 
@@ -29,6 +37,9 @@ public class ActivityMeetings extends AppCompatActivity {
     private Fragment fragmentRequestMeeting; // фрагмент с заявкой
     private Fragment currentFragment; // текущий фрагмент
     private Fragment fragmentListChats; // текущий фрагмент
+    private DocumentReference documentReference; // ссылка на документ
+    private Map<String, Object> mapDocument; //Документ с информацией о встрече
+    private ClassDialog classDialog; //класс для показа всплывающих окон
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,22 +48,24 @@ public class ActivityMeetings extends AppCompatActivity {
 
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
+        //classGlobalApp.Log("ActivityMeetings", "onCreate", "Method is run", false);
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
         fragmentListChats = new FragmentListChats();
+        mapDocument = new HashMap<String, Object>();
+        classDialog = new ClassDialog(); // класс для показа всплывающих окон
 
         //ищем нужные элементы
         materialToolbar = (MaterialToolbar) findViewById(R.id.materialToolbar); // верхняя панель с кнопками
         //============================================================================================
 
 
-
         // materialToolbar ///////////////////////////////////////////////////////////////////////////
         materialToolbar.setOnMenuItemClickListener(new Toolbar.OnMenuItemClickListener() {
             @Override
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели
-                if(item.getItemId() == R.id.request) // если нажата кнопка показать заявку
+                if (item.getItemId() == R.id.request) // если нажата кнопка показать заявку
                 {
                     ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", true); // грузим фрагмент с заявкой на встречу
                 }
@@ -62,27 +75,86 @@ public class ActivityMeetings extends AppCompatActivity {
         //==========================================================================================
 
 
-        //classGlobalApp.Log("ActivityMeetings", "onCreate", "Method is run", false);
         //грузим нужный фрагмент///////////////////////////////////////////////////////////////////////
-        if (classGlobalApp.GetParam("requestIsActive").equals("trueTrue")) {// если заявка активна и заполнялась
-            classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка активна", false);
-            //if (classGlobalApp.IsNotificationMessage()){ //если пришло уведомление о сообщении, то надо открыть фрагмент с чатами
-            String str = classGlobalApp.GetBundle("notificationMessage");
-            classGlobalApp.Log("ActivityMeetings", "onCreate", "NotificationMessage=" + str, false);
-            if (classGlobalApp.GetBundle("notificationMessage") != null /*&& !classGlobalApp.GetBundle("notificationMessage").isEmpty()*/){ //если пришло уведомление о сообщении, то надо открыть фрагмент с чатами
-                classGlobalApp.Log("ActivityMeetings", "onCreate", "Пришло уведомление", false);
-                //classGlobalApp.SetNotificationMessage(false);
-                classGlobalApp.Log("ActivityMeetings", "onCreate", "Буду загружать fragmentListChats", false);
-                ChangeFragment(fragmentListChats, "fragmentListChats", false); // показываем встречи
-            } else {
+        // если в приложении залогинились не в первый раз, то работаем по штатной схеме, иначе нужно проверить в БД активная ли заявка и если активна, то восстановить ее из БД на устройство
+        if (classGlobalApp.GetParam("loginNotFirstTime").equals("trueTrue")) {
+            if (classGlobalApp.GetParam("requestIsActive").equals("trueTrue")) {// если заявка активна и заполнялась
                 ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+            } else {
+                ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
             }
-        } else {
-            ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+        } else { //если логинемся в первый раз, то нужно  залезть на сервак и оттуда получить заявку, если она активна
+
+            //Читаем документ с заявкой на встречу текущего пользователя
+            documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
+            documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
+                    if (task.isSuccessful()) { // если выполнилась успешно
+                        DocumentSnapshot document = task.getResult(); // получаем документ
+                        if (document.exists()) { // если документ такой есть, не null
+                            mapDocument = document.getData(); // получаем данные из документа БД
+                            classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
+
+                            if (mapDocument.size() > 0) { // если заявка на встречу есть в БД, то есть активна, то нужно восстановить ее
+
+                                for (Map.Entry<String, Object> entry : mapDocument.entrySet()) { //пробегаемся по всему документу
+                                    if (!entry.getKey().equals("deviceToken") || !entry.getKey().equals("userID")) { //если не токен, то готовим к сохранению
+                                        //TODO: если встретился массив с местами, обработать его особенно
+                                        classGlobalApp.PreparingToSave(entry.getKey(), entry.getValue().toString()); //готовим к сохранению в память телефона
+                                    }
+                                }
+                                classGlobalApp.SaveParams(); // сохраняем в память телефона
+
+                                RefreshDeviceTokenInMeeting();
+
+
+                            } else {//если заявки для текущего пользователя нет в БД, то есть не активна
+
+                                //считаем заявку не активной
+                                classGlobalApp.PreparingToSave("requestIsActive", ""); //готовим к сохранению
+                                classGlobalApp.PreparingToSave("loginNotFirstTime", "trueTrue"); // отмечаем, что уже разок логинились
+                                classGlobalApp.SaveParams(); // сохраняем в девайс
+
+                                ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+
+                            }
+
+                        } else { // если запрошенного документа не существует в БД
+
+                            classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", true);
+
+                            //считаем заявку не активной
+                            classGlobalApp.PreparingToSave("requestIsActive", ""); //готовим к сохранению
+                            classGlobalApp.PreparingToSave("loginNotFirstTime", "trueTrue"); // отмечаем, что уже разок логинились
+                            classGlobalApp.SaveParams(); // сохраняем в девайс
+
+                            ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+                        }
+
+                    } else { // если ошибка чтения БД
+
+                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Ошибка чтения БД: " + task.getException(), true);
+
+                        //показываем всплывающее окно
+                        classDialog.setTitle("Ошибка чтения БД");
+                        classDialog.setMessage("Ошибка при чтении заявки на встречу из БД, попробуйте войти позже. Подробности ошибки: " + task.getException());
+                        classDialog.setPositiveButtonRedirect("ActivityLogin");
+                        classDialog.show(fragmentManager, "classDialog");
+
+                    }
+                }
+            });
+            //=============================================================================================
+
+            // если все успешно, то отметить, то один раз логинелись
         }
+
+
         //===========================================================================================
 
     }
+
 
 
     @Override
@@ -118,6 +190,50 @@ public class ActivityMeetings extends AppCompatActivity {
             fragmentTransaction.commit();                                       // применяем
             currentFragment = FragmentNameNew;                                  // запоминаем текущий фрагмент
         }
+
+    }
+
+    /**
+     * Записывает новый tokenDevice в завку встречи в БД
+     */
+    private void RefreshDeviceTokenInMeeting() {
+
+        documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid()); // документ со встречей текущего пользователя
+        //mapDocument.clear();
+        //mapDocument.put("tokenDevice", classGlobalApp.GetTokenDevice()); // готовим мапу писать в БД
+        //записываем токен в БД
+        //documentReference.set(mapDocument).addOnCompleteListener(new OnCompleteListener<Void>() { // записываем новый tokenDevice в БД в заявку встречи
+        documentReference.update("tokenDevice", classGlobalApp.GetTokenDevice()).addOnCompleteListener(new OnCompleteListener<Void>() { // записываем новый tokenDevice в БД в заявку встречи
+            @Override
+            public void onComplete(@NonNull Task<Void> task) { // если токен записан
+                if(task.isSuccessful()){
+                    //если восстановление заявки с сервера прошло успешно и токен записали на сервер успешно
+                    classGlobalApp.PreparingToSave("loginNotFirstTime", "trueTrue"); // отмечаем, что уже разок логинились
+                    classGlobalApp.PreparingToSave("requestIsActive", "trueTrue"); //отмечаем, что заявочка активна
+                    classGlobalApp.SaveParams(); // сохраняем в девайс
+
+                    ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+                }
+                // если tokenDevice не записан в заявку встречи, то пользователь по старому токену не будет получать уведомления, то есть заявку можно считать неактивной
+                //удалять ее из БД бессмысленно, что-то не так с БД, раз мы записать не смогли, думаю нужно направить пользователя к заполнению заявки, пусть по кнопке еще пытается подать заявку
+                else{
+
+                    classGlobalApp.Log("ActivityMeetings", "RefreshDeviceTokenInMeeting",
+                            "Ошибка при записи tokenDevice в активную заявку на встречу. Пользователю не будут приходить уведомлени. Нужно заполнить заявку по новой.", true);
+
+                    //считаем заявку не активной
+                    classGlobalApp.PreparingToSave("requestIsActive", ""); //готовим к сохранению
+                    classGlobalApp.PreparingToSave("loginNotFirstTime", "trueTrue"); // отмечаем, что уже разок логинились
+                    classGlobalApp.SaveParams(); // сохраняем в девайс
+
+
+                    ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+
+
+
+                }
+            }
+        });
 
     }
 

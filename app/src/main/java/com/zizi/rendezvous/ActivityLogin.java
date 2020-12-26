@@ -37,7 +37,7 @@ public class ActivityLogin extends AppCompatActivity {
     private String email; // почта пользователя
     private String password; // пароль пользователя
     private Map<String, Object> user; // коллекция ключ-значение для сохранения профиля в БД
-    private FragmentManager manager; //менеджер фрагментов
+    private FragmentManager fragmentManager; //менеджер фрагментов
     private ClassDialog classDialog; //класс для показа всплывающих окон
     private Display display; // для разрешения экрана
     private Point point; // для разрешения экрана
@@ -67,7 +67,7 @@ public class ActivityLogin extends AppCompatActivity {
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
         user = new HashMap<>(); // коллекция ключ-значение для сохранения профиля в БД
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
-        manager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         classDialog = new ClassDialog(); // класс для показа всплывающих окон
         point = new Point();
         //==========================================================================================
@@ -242,7 +242,7 @@ public class ActivityLogin extends AppCompatActivity {
                                             //показываем всплывающее окно
                                             classDialog.setTitle("Ошибка входа");
                                             classDialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
-                                            classDialog.show(manager, "classDialog");
+                                            classDialog.show(fragmentManager, "classDialog");
                                             break;
                                         case 1:
                                             til_password.setError("Неверный пароль.");
@@ -257,25 +257,25 @@ public class ActivityLogin extends AppCompatActivity {
                                             //показываем всплывающее окно
                                             classDialog.setTitle("Ошибка входа");
                                             classDialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
-                                            classDialog.show(manager, "classDialog");
+                                            classDialog.show(fragmentManager, "classDialog");
                                             break;
                                         case 5:
                                             //показываем всплывающее окно
                                             classDialog.setTitle("Ошибка входа");
                                             classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
-                                            classDialog.show(manager, "classDialog");
+                                            classDialog.show(fragmentManager, "classDialog");
                                             break;
                                         case 6:
                                             //показываем всплывающее окно
                                             classDialog.setTitle("Ошибка входа");
                                             classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.");
-                                            classDialog.show(manager, "classDialog");
+                                            classDialog.show(fragmentManager, "classDialog");
                                             break;
                                         default:
                                             //показываем пользователю
                                             classDialog.setTitle("Ошибка входа");
                                             classDialog.setMessage("Ошибка при входе пользователя: " + exceptionMessage);
-                                            classDialog.show(manager, "classDialog");
+                                            classDialog.show(fragmentManager, "classDialog");
 
                                             //добавляем в лог и в БД
                                             classGlobalApp.Log("ActivityLogin",
@@ -288,56 +288,6 @@ public class ActivityLogin extends AppCompatActivity {
                                     //break;
                                 }
                             }
-
-
-                            /*switch (exceptionMessage) { // переводим ошибки
-                                case "We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts. Please try again later. ]":
-
-                                    //показываем всплывающее окно
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
-                                    classDialog.show(manager, "classDialog");
-                                    //til_password.setError("Много неуспешных попыток входа. Повторите вход позже.");
-
-                                    break;
-                                case "The password is invalid or the user does not have a password.":
-                                    til_password.setError("Неверный пароль.");
-                                    break;
-                                case "The email address is badly formatted.":
-                                    til_email.setError("Неверный формат email.");
-                                    break;
-                                case "There is no user record corresponding to this identifier. The user may have been deleted.":
-                                    til_email.setError("Нет пользователя с таким email. Возможно он был удален.");
-                                    break;
-
-                                case "An internal error has occurred. [ Unable to resolve host \"www.googleapis.com\":No address associated with hostname ]":
-                                    //показываем всплывающее окно
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
-                                    classDialog.show(manager, "classDialog");
-                                    break;
-
-                                case "A network error (such as timeout, interrupted connection or unreachable host) has occurred.":
-                                    //показываем всплывающее окно
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
-                                    classDialog.show(manager, "classDialog");
-                                    break;
-
-                                default:
-                                    //показываем пользователю
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Ошибка при входе пользователя: " + task.getException().getMessage());
-                                    classDialog.show(manager, "classDialog");
-
-                                    //добавляем в лог и в БД
-                                    classGlobalApp.Log("ActivityLogin",
-                                            "Signin/onComplete",
-                                            "Ошибка при входе пользователя: " + task.getException().getMessage(),
-                                            true
-                                    );
-                                    break;
-                            }*/
 
                         }
                     }
@@ -391,7 +341,7 @@ public class ActivityLogin extends AppCompatActivity {
                                     //показываем пользователю
                                     classDialog.setTitle("Ошибка регистрации");
                                     classDialog.setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage());
-                                    classDialog.show(manager, "classDialog");
+                                    classDialog.show(fragmentManager, "classDialog");
 
                                     //добавляем в лог и в БД
                                     classGlobalApp.Log("ActivityLogin",
@@ -455,7 +405,6 @@ public class ActivityLogin extends AppCompatActivity {
                                     );
 
                     startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
-                    //startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
                     finish(); // убиваем текущую активити, чтобы не возвращаться по кнопке назад на нее
 
                 } else { // если сохранение не успешно
@@ -465,7 +414,7 @@ public class ActivityLogin extends AppCompatActivity {
                     //показываем всплывающее окно
                     classDialog.setTitle("Ошибка входа");
                     classDialog.setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException());
-                    classDialog.show(manager, "classDialog");
+                    classDialog.show(fragmentManager, "classDialog");
 
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);
