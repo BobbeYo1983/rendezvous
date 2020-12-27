@@ -16,7 +16,7 @@ import java.net.URL;
  */
 public class ClassNotificationMessage extends AsyncTask<String,Void,Void> {
 
-    private ClassGlobalApp classGlobalApp; //глобальный класс приложения
+    private ClassGlobalApp classGlobalApp; //глобальный класс приложения, чтобы могли писать логи
 
     ClassNotificationMessage(ClassGlobalApp classGlobalApp){
         this.classGlobalApp = classGlobalApp;
@@ -51,6 +51,13 @@ public class ClassNotificationMessage extends AsyncTask<String,Void,Void> {
             JSONObject data = new JSONObject();
             data.put("title", "Сообщение");   // Notification title
             data.put("body", "У вас есть новое сообщение"); // Notification body
+            data.put("userID", classGlobalApp.GetCurrentUserUid()); // ID пользователя отправителя
+            data.put("tokenDevice", classGlobalApp.GetTokenDevice()); // tokenDevice отправителя
+            data.put("name", classGlobalApp.GetParam("name")); // имя отправителя
+            data.put("age", classGlobalApp.GetParam("age")); // возраст отправителя
+
+
+
 
             ///если не добавлять в посылку раздел notification, то данные гарантированно будут доставляться в метод onMessageReceived в службу ServiceFirebaseCloudMessaging, а из этого метода и формируем уведомление
             json.put("data", data); // добавляем в json - посылку

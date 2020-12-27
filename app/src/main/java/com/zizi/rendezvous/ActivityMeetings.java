@@ -37,6 +37,7 @@ public class ActivityMeetings extends AppCompatActivity {
     private FragmentTransaction fragmentTransaction; // для выполнения операций над фрагментами
     private Fragment fragmentListMeetings; // фрагмент со списком заявок
     private Fragment fragmentRequestMeeting; // фрагмент с заявкой
+    private Fragment fragmentChat; // фрагмент с чатом
     private Fragment currentFragment; // текущий фрагмент
     private Fragment fragmentListChats; // текущий фрагмент
     private DocumentReference documentReference; // ссылка на документ
@@ -54,6 +55,7 @@ public class ActivityMeetings extends AppCompatActivity {
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();
+        fragmentChat = new FragmentChat();
         fragmentListChats = new FragmentListChats();
         mapDocument = new HashMap<String, Object>();
         classDialog = new ClassDialog(); // класс для показа всплывающих окон
@@ -82,9 +84,41 @@ public class ActivityMeetings extends AppCompatActivity {
         if (classGlobalApp.GetParam("loginNotFirstTime").equals("trueTrue")) {
             classGlobalApp.Log("ActivityMeetings", "onCreate", "Ранее уже входили под настоящим логином", false);
             if (classGlobalApp.GetParam("requestIsActive").equals("trueTrue")) {// если заявка активна и заполнялась
-                classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка активна, загружаем список встреч", false);
-                ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
-            } else {
+                classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка активна", false);
+
+                if (getIntent().getExtras() != null) { // если есть какие-то параметры, то примем их
+
+                    Bundle bundle = getIntent().getExtras(); //получаем параметры переданные в активити
+                    classGlobalApp.Log("ActivityMeetings", "onCreate", "Получен параметр: partnerID="  + bundle.getString("partnerID"),false);
+                    classGlobalApp.Log("ActivityMeetings", "onCreate", "Получен параметр: partnerTokenDevice="  + bundle.getString("partnerTokenDevice"),false);
+                    classGlobalApp.Log("ActivityMeetings", "onCreate", "Получен параметр: partnerName="  + bundle.getString("partnerName"),false);
+                    classGlobalApp.Log("ActivityMeetings", "onCreate", "Получен параметр: partnerAge="  + bundle.getString("partnerAge"),false);
+
+                    if (bundle.getString("fragmentForLoad").equals(Data.fragmentChat)) { // если нужно грузить фрагмент с чатом
+                        classGlobalApp.Log("ActivityMeetings", "onCreate", "Параметр: fragmentForLoad="  + bundle.getString("fragmentForLoad") + ", нужно грузить фрагмент с чатом",false);
+
+                        //извлекаем параметры и передаем их дальше фрагменту
+                        classGlobalApp.ClearBundle();
+                        classGlobalApp.AddBundle("partnerID", bundle.getString("partnerID"));
+                        classGlobalApp.AddBundle("partnerTokenDevice", bundle.getString("partnerTokenDevice"));
+                        classGlobalApp.AddBundle("partnerName", bundle.getString("partnerName"));
+                        classGlobalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
+
+                        ChangeFragment(fragmentChat, "fragmentChat", false); // показываем встречи
+
+
+                    } else {
+
+                        ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+                    }
+
+
+                }else { // если нештатно не нужно грузить другой виджет, то грузим штатно список встреч
+
+                    ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+                }
+
+            } else { //заявка не активна
                 classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка не активна, загружаем заполнение заявки", false);
                 ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
             }

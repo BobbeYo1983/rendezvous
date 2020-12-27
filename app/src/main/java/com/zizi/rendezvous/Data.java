@@ -8,6 +8,8 @@ class Data {
     public static final String channelID = "Сообщения";
     public static final String tagLog = "!@#";
     public static final String activityLogin = "ActivityLogin";
+    public static final String fragmentChat = "FragmentChat";
+
 
     public static final String[] regionsTmp = new String[]{
         "Нижегородская область",

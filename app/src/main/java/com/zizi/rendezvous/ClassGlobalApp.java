@@ -167,6 +167,7 @@ public class ClassGlobalApp extends Application {
     public void AddBundle (String paramName, String paramValue) {
 
         paramsToBundle.put(paramName, paramValue);
+
     }
 
     /**
@@ -178,6 +179,15 @@ public class ClassGlobalApp extends Application {
 
         return paramsToBundle.get(paramName);
         //return "paramsToBundle.get(paramName)";
+    }
+
+    /**
+     * Удаляет параметр из буфера для передачи между различными активити и фрагментами
+     * @param paramName имя параметра
+     */
+    public void RemoveBundle(String paramName) {
+
+        paramsToBundle.remove(paramName);
     }
 
     /**
@@ -240,29 +250,6 @@ public class ClassGlobalApp extends Application {
         this.tokenDevice = tokenDevice;
         PreparingToSave("tokenDevice", tokenDevice); //готовим к сохранению
         SaveParams(); // сохраняем в девайс
-
-/*        if (GetParam("requestIsActive").equals("trueTrue")) { //если заявка подана и активна, то нужно сверить токен с заявкой, протому что, могли зайти с другого девайса или переустановить приложение
-            documentReference = GenerateDocumentReference("meetings", GetCurrentUserUid()); // документ со встречей текущего пользователя
-            paramsToSave.clear();
-            paramsToSave.put("tokenDevice", tokenDevice);
-            //записываем токен в БД
-            documentReference.set(paramsToSave).addOnCompleteListener(new OnCompleteListener<Void>() {
-                @Override
-                public void onComplete(@NonNull Task<Void> task) {
-                    if(task.isSuccessful()){
-                        //Toast.makeText(SelectLocationActivity.this, "Запись прошла успешно", Toast.LENGTH_SHORT).show();
-                    }
-                    else{
-                        Log(this.getClass().getSimpleName().toString(), "SetTokenDevice",
-                                "tokenDevice изменился. Ошибка при записи tokenDevice в активную заявку на встречу. Заявка будет помечена, как неактивная. Нужно заполнить заявку по новой.", true);
-                        PreparingToSave("requestIsActive", ""); //готовим к сохранению
-                        SaveParams(); // сохраняем в девайс
-
-                    }
-                }
-            });
-        }*/
-
 
     }
 

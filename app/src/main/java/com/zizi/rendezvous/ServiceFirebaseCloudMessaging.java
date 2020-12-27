@@ -42,6 +42,16 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 
         //создаем намерение, что хотим перейти на другую активити
         Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
+        intent.putExtra("fragmentForLoad", Data.fragmentChat);
+        intent.putExtra("partnerID", remoteMessage.getData().get("userID")); //передаем идентификатор пользователя, чтобы открыть нужный чат
+        intent.putExtra("partnerTokenDevice", remoteMessage.getData().get("tokenDevice"));
+        intent.putExtra("partnerName", remoteMessage.getData().get("name"));
+        intent.putExtra("partnerAge", remoteMessage.getData().get("age"));
+        //classGlobalApp.ClearBundle(); // очищаем буфер передаваемых параметров
+        //classGlobalApp.AddBundle("fragmentForLoad", Data.fragmentChat);
+
+
+
         intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
                         |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
                         );
