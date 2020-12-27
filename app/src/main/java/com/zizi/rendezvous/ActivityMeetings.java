@@ -80,26 +80,31 @@ public class ActivityMeetings extends AppCompatActivity {
         //грузим нужный фрагмент///////////////////////////////////////////////////////////////////////
         // если в приложении залогинились не в первый раз, то работаем по штатной схеме, иначе нужно проверить в БД активная ли заявка и если активна, то восстановить ее из БД на устройство
         if (classGlobalApp.GetParam("loginNotFirstTime").equals("trueTrue")) {
+            classGlobalApp.Log("ActivityMeetings", "onCreate", "Ранее уже входили под настоящим логином", false);
             if (classGlobalApp.GetParam("requestIsActive").equals("trueTrue")) {// если заявка активна и заполнялась
+                classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка активна, загружаем список встреч", false);
                 ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
             } else {
+                classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка не активна, загружаем заполнение заявки", false);
                 ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
             }
         } else { //если логинемся в первый раз, то нужно  залезть на сервак и оттуда получить заявку, если она активна
-
+            classGlobalApp.Log("ActivityMeetings", "onCreate", "Ранее не входили под настоящим логином", false);
             //Читаем документ с заявкой на встречу текущего пользователя
             documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
             documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
                 @Override
                 public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
                     if (task.isSuccessful()) { // если выполнилась успешно
+                        classGlobalApp.Log("ActivityMeetings", "onCreate", "Прочитали документ с заявкой из БД", false);
                         DocumentSnapshot document = task.getResult(); // получаем документ
                         if (document.exists()) { // если документ такой есть, не null
+                            classGlobalApp.Log("ActivityMeetings", "onCreate", "Документ с заявкой есть в БД", false);
                             mapDocument = document.getData(); // получаем данные из документа БД
                             classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
 
                             if (mapDocument.size() > 0) { // если заявка на встречу есть в БД, то есть активна, то нужно восстановить ее
-
+                                classGlobalApp.Log("ActivityMeetings", "onCreate", "Документ с заявкой содержить какие-то поля", false);
                                 for (Map.Entry<String, Object> entry : mapDocument.entrySet()) { //пробегаемся по всему документу
                                     if (!entry.getKey().equals("deviceToken") || !entry.getKey().equals("userID")) { //если не токен, то готовим к сохранению
                                         //TODO: может переделать хранение мест без массива, обрабатывать неудобно, посмотреть в других местах возможно удобно ипользовать
@@ -121,7 +126,7 @@ public class ActivityMeetings extends AppCompatActivity {
                                             classGlobalApp.PreparingToSave("placeHotel",      arrayListPlaces.get(11).toString());
                                             classGlobalApp.PreparingToSave("placeOther",      arrayListPlaces.get(12).toString());
 
-                                            classGlobalApp.SaveParams();
+                                            //classGlobalApp.SaveParams();
 
                                         } else if (entry.getKey().equals("place")){ //если попался параметр place
                                             if (entry.getValue().equals(Data.anyPlace)) { // если выбрано любое место, то в память нужно сохранить такой папаметр
@@ -134,7 +139,7 @@ public class ActivityMeetings extends AppCompatActivity {
                                         }
                                     }
                                 }
-                                classGlobalApp.SaveParams(); // сохраняем в память телефона
+                                classGlobalApp.SaveParams(); // сохраняем в память телефона все параметры заявки из БД
 
                                 RefreshDeviceTokenInMeeting();
 
@@ -169,7 +174,7 @@ public class ActivityMeetings extends AppCompatActivity {
                         //показываем всплывающее окно
                         classDialog.setTitle("Ошибка чтения БД");
                         classDialog.setMessage("Ошибка при чтении заявки на встречу из БД, попробуйте войти позже. Подробности ошибки: " + task.getException());
-                        classDialog.setPositiveButtonRedirect("ActivityLogin");
+                        classDialog.setPositiveButtonRedirect(Data.activityLogin);
                         classDialog.show(fragmentManager, "classDialog");
 
                     }
@@ -226,11 +231,9 @@ public class ActivityMeetings extends AppCompatActivity {
      */
     private void RefreshDeviceTokenInMeeting() {
 
+        classGlobalApp.Log("ActivityMeetings", "RefreshDeviceTokenInMeeting", "Обновляем tokenDevice в заявке в БД", false);
+
         documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid()); // документ со встречей текущего пользователя
-        //mapDocument.clear();
-        //mapDocument.put("tokenDevice", classGlobalApp.GetTokenDevice()); // готовим мапу писать в БД
-        //записываем токен в БД
-        //documentReference.set(mapDocument).addOnCompleteListener(new OnCompleteListener<Void>() { // записываем новый tokenDevice в БД в заявку встречи
         documentReference.update("tokenDevice", classGlobalApp.GetTokenDevice()).addOnCompleteListener(new OnCompleteListener<Void>() { // записываем новый tokenDevice в БД в заявку встречи
             @Override
             public void onComplete(@NonNull Task<Void> task) { // если токен записан

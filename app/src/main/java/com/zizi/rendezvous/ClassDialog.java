@@ -24,7 +24,6 @@ public class ClassDialog extends AppCompatDialogFragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
-        //widgetName = "";
     }
 
     @NonNull
@@ -36,10 +35,11 @@ public class ClassDialog extends AppCompatDialogFragment {
                 .setPositiveButton("ОК", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int id) {
 
-                        //classGlobalApp.Log("@@@@@@@", "@@@@@@@@@", widgetName, false);
 
-                        if (widgetName != null && widgetName.equals("ActivityLogin")) {
-                            //classGlobalApp.Log("@@@@@@@", "@@@@@@@@@", widgetName, false);
+                        // Закрываем окно
+                        dialog.cancel();
+
+                        if (widgetName != null && widgetName.equals(Data.activityLogin)) {
 
                             //создаем намерение, что хотим перейти на другую активити
                             Intent intent = new Intent(getContext(), ActivityLogin.class);
@@ -52,8 +52,7 @@ public class ClassDialog extends AppCompatDialogFragment {
                             widgetName = "";
                         }
 
-                        // Закрываем окно
-                        dialog.cancel();
+
 
                     }
                 });
@@ -76,6 +75,10 @@ public class ClassDialog extends AppCompatDialogFragment {
         this.message = message;
     }
 
+    /**
+     * Устанавливает, куда (активити или фрагмент) нужно перенаправить пользователя после нажатия на кнопку OK.
+     * @param widgetName имя активити или фрагмента
+     */
     public void setPositiveButtonRedirect (String widgetName) {
         this.widgetName = widgetName;
     }

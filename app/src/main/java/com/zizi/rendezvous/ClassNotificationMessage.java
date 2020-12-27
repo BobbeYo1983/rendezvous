@@ -1,6 +1,7 @@
 package com.zizi.rendezvous;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import org.json.JSONObject;
 
@@ -43,6 +44,7 @@ public class ClassNotificationMessage extends AsyncTask<String,Void,Void> {
             JSONObject json = new JSONObject();
 
             ///тут указывается токен устройства на который отправляем
+            classGlobalApp.Log("ClassNotificationMessage", "doInBackground", "tokenDevice = " + tokenDevice[0], false);
             json.put("to", tokenDevice[0]); // берем первый и единственный параметр со входа в функцию
             json.put("priority", "high"); // добавляем высокий приоритет, так как для типа посылки data он не самый высокий и может быть долгая доставка
 
@@ -57,7 +59,7 @@ public class ClassNotificationMessage extends AsyncTask<String,Void,Void> {
             //JSONObject info = new JSONObject();
             //info.put("title", "Сообщение");   // Notification title
             //info.put("body", "У вас есть новое сообщение"); // Notification body
-            //info.put("click_action", "Open_ActivityMeetings"); //типа в манифесте ищется такой фильтр у Активити и типа она вызывается при клике на уведомление
+            ////info.put("click_action", "Open_ActivityMeetings"); //типа в манифесте ищется такой фильтр у Активити и типа она вызывается при клике на уведомление
 
             //json.put("notification", info);
 

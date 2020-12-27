@@ -86,7 +86,7 @@ public class ClassGlobalApp extends Application {
         //notificationMessage = false;
 
         //Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
-        createNotificationChannel();
+        CreateNotificationChannel();
 
     }
 
@@ -320,7 +320,7 @@ public class ClassGlobalApp extends Application {
     /**
      * Регистрирует канал уведомлений в системе
      */
-    private void createNotificationChannel() {
+    private void CreateNotificationChannel() {
         // Create the NotificationChannel, but only on API 26+ because
         // the NotificationChannel class is new and not in the support library
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
@@ -330,9 +330,8 @@ public class ClassGlobalApp extends Application {
             NotificationChannel notificationChannel = new NotificationChannel(Data.channelID, name, importance); //создаем канал
             notificationChannel.setDescription(descriptionСhannel); //добавляем описание канала
 
-
-            //атрибуты для звука уведомлений////////////////////////////////////////////////////////////////////
-/*             Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
+           //атрибуты для звука уведомлений////////////////////////////////////////////////////////////////////
+/*           Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
            AudioAttributes att = new AudioAttributes.Builder()
                     .setUsage(AudioAttributes.USAGE_NOTIFICATION)
                     .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
@@ -343,8 +342,6 @@ public class ClassGlobalApp extends Application {
             //вибрация
             notificationChannel.enableVibration(true);
             notificationChannel.setVibrationPattern(new long[]{500, 500, 500});*/
-
-
 
             // Register the channel with the system; you can't change the importance
             // or other notification behaviors after this
