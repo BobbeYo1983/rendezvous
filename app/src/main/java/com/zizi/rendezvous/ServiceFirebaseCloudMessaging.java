@@ -31,130 +31,62 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         super.onCreate();
 
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
-        //classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onCreate", "Метод запущен", false);
+        classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onCreate", "Метод запущен", false);
     }
 
     @Override // вызывается только, когда приложение запущено, не в фоновом режиме
     public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление не в фоновом режиме
         super.onMessageReceived(remoteMessage);
 
-        //classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
-
-        //создаем намерение, что хотим перейти на другую активити
-        Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
-        intent.putExtra("fragmentForLoad", Data.fragmentChat);
-        intent.putExtra("partnerID", remoteMessage.getData().get("userID")); //передаем идентификатор пользователя, чтобы открыть нужный чат
-        intent.putExtra("partnerTokenDevice", remoteMessage.getData().get("tokenDevice"));
-        intent.putExtra("partnerName", remoteMessage.getData().get("name"));
-        intent.putExtra("partnerAge", remoteMessage.getData().get("age"));
-        //classGlobalApp.ClearBundle(); // очищаем буфер передаваемых параметров
-        //classGlobalApp.AddBundle("fragmentForLoad", Data.fragmentChat);
+        String stringTmp = Data.fragmentChat + remoteMessage.getData().get("userID"); //формируем строку для сравнения
+        // если в настоящее время открыт фрагмент (видимый виджет) с чатом пользователя, который прислал уведомление, то не формировать уведомление
+        if (!classGlobalApp.GetVisibleWidget().equals(stringTmp)) {
 
 
+            classGlobalApp.Log("ServiceFirebaseCloudMessaging", "onMessageReceived", "Метод запущен", false);
 
-        intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
-                        |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
-                        );
+            //создаем намерение, что хотим перейти на другую активити
+            Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
+            intent.putExtra("fragmentForLoad", Data.fragmentChat);
+            intent.putExtra("partnerID", remoteMessage.getData().get("userID")); //передаем идентификатор пользователя, чтобы открыть нужный чат
+            intent.putExtra("partnerTokenDevice", remoteMessage.getData().get("tokenDevice"));
+            intent.putExtra("partnerName", remoteMessage.getData().get("name"));
+            intent.putExtra("partnerAge", remoteMessage.getData().get("age"));
 
-        //отложенное намерение позволяет работать с другими внешними приложениями и службами
-        // requestCode - номер отложенного намерения
-        // PendingIntent.FLAG_UPDATE_CURRENT - будет всегда земенять данные
-        PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                    | Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+            );
 
+            //отложенное намерение позволяет работать с другими внешними приложениями и службами
+            // requestCode - номер отложенного намерения
+            // PendingIntent.FLAG_UPDATE_CURRENT - будет всегда земенять данные
+            PendingIntent pendingIntent = PendingIntent.getActivity(this, 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
 
-        // Контент уведомления ///////////////////////////////////////////////////////////////////////////
-        //Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
-        NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID); //канал уведомлений ранее регистрировали в classGlobalApp.CreateNotificationChannel()
-        builder.setSmallIcon(R.drawable.ic_outline_wc_24); // устанавливаем маленькую иконку
-        builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary)); // цвет иконки в уведомлении, но не в строке уведомлений
-        builder.setPriority(NotificationCompat.PRIORITY_DEFAULT); // приоритет
-        builder.setContentTitle(remoteMessage.getData().get("title")); // заголовок
-        builder.setContentText(remoteMessage.getData().get("body")); //текст уведомления
-        //builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI); //звук по умолчанию для уведомлений
-        //builder.setVibrate(new long[] {1000, 1000, 1000, 1000, 1000}); // вибрация
-        builder.setAutoCancel(true); // при нажатии удаляется
-        builder.setContentIntent(pendingIntent); // связываем, что нужно сделать при нажатии
+            // Контент уведомления ///////////////////////////////////////////////////////////////////////////
+            //Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, Data.channelID); //канал уведомлений ранее регистрировали в classGlobalApp.CreateNotificationChannel()
+            builder.setSmallIcon(R.drawable.ic_outline_wc_24); // устанавливаем маленькую иконку
+            builder.setColor(ContextCompat.getColor(this, R.color.colorPrimary)); // цвет иконки в уведомлении, но не в строке уведомлений
+            builder.setPriority(NotificationCompat.PRIORITY_DEFAULT); // приоритет
+            builder.setContentTitle(remoteMessage.getData().get("title")); // заголовок
+            builder.setContentText(remoteMessage.getData().get("body")); //текст уведомления
+            //builder.setSound(Settings.System.DEFAULT_NOTIFICATION_URI); //звук по умолчанию для уведомлений
+            //builder.setVibrate(new long[] {1000, 1000, 1000, 1000, 1000}); // вибрация
+            builder.setAutoCancel(true); // при нажатии удаляется
+            builder.setContentIntent(pendingIntent); // связываем, что нужно сделать при нажатии
 
-        //Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
-        // Vibrate for 500 milliseconds
-        //v.vibrate(500);
-        //=============================================================================================
+            //Vibrator v = (Vibrator) this.getSystemService(Context.VIBRATOR_SERVICE);
+            // Vibrate for 500 milliseconds
+            //v.vibrate(500);
+            //=============================================================================================
 
-        NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
+            NotificationManagerCompat notificationManager = NotificationManagerCompat.from(this);
 
-        // notificationId is a unique int for each notification that you must define
-        //Remember to save the notification ID that you pass to NotificationManagerCompat.notify() because you'll need it later if you want to update or remove the notification.
-        notificationManager.notify(0, builder.build());
+            // notificationId is a unique int for each notification that you must define
+            //Remember to save the notification ID that you pass to NotificationManagerCompat.notify() because you'll need it later if you want to update or remove the notification.
+            notificationManager.notify(0, builder.build());
+        }
 
-
-
-
-
-/*
-        //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        //classGlobalApp.notificationMessage = true; //сообщаем приложению, что пришло уведомление о сообщении, чтобы открыть фрагмент с чатами
-
-        Intent intent = new Intent(getApplicationContext(), ActivityMeetings.class);
-        //Intent intent = new Intent(this, ActivityMeetings.class);
-        //intent.putExtra("fragmentName", "fragmentListChats");
-        //intent.putExtra("1", "1");
-
-        ////Bundle bundle = new Bundle();
-        ////bundle.putString("fragmentName", "fragmentListChats");
-        ////intent.putExtras(bundle);
-
-
-        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-        //intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_SINGLE_TOP);
-
-        // The stack builder object will contain an artificial back stack for the started Activity.
-        // This ensures that navigating backward from the Activity leads out of
-        // your application to the Home screen.
-        ////TaskStackBuilder stackBuilder = TaskStackBuilder.create(getApplicationContext());
-
-        // Adds the back stack for the Intent (but not the Intent itself)
-        ////stackBuilder.addParentStack(ActivityMeetings.class); // добавляем в стек с активити, родительскую активити. В манифесте у дочерних активити можно прописать типа android:parentActivityName=".MainActivity", тогда  откроется дочерне активити.
-
-        // Adds the Intent that starts the Activity to the top of the stack
-        ////stackBuilder.addNextIntent(intent); // добавляем в стек интент
-
-        // Make this unique ID to make sure there is not generated just a brand new intent with new extra values:
-        //int requestID = (int) System.currentTimeMillis();
-        //PendingIntent pendingIntent = stackBuilder.getPendingIntent(0, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        //PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), (int) System.currentTimeMillis(), intent, PendingIntent.FLAG_UPDATE_CURRENT);
-        PendingIntent pendingIntent = PendingIntent.getActivity(getApplicationContext(), 0, intent, PendingIntent.FLAG_UPDATE_CURRENT);
-
-        Uri defaultSoundUri = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
-
-        //строим уведомление
-        NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext(), "RendChat")
-        //NotificationCompat.Builder notificationBuilder = new NotificationCompat.Builder(getApplicationContext())
-                .setSmallIcon(R.drawable.ic_outline_message_24) // иконка в самом верху в панели уведомлений
-                //.setContentTitle(remoteMessage.getNotification().getTitle()) // Заголовок уведомления
-                .setContentTitle(remoteMessage.getData().get("title")) // Заголовок уведомления
-                //.setLargeIcon(BitmapFactory.decodeResource(getResources(), R.drawable.ic_outline_message_24)) // большая иконка в уведомлении
-                //.setContentText(remoteMessage.getNotification().getBody()) // текст уведомления
-                .setContentText(remoteMessage.getData().get("body")) // текст уведомления
-                .setAutoCancel(true) // когда кликаем на уведомление, оно пропадает
-                //.setColor(0xffff7700) // добавит фоновый цвет иконке
-                //.setVibrate(new long[]{100, 100, 100, 100}) // настройка вибрации
-                //.setPriority(Notification.PRIORITY_MAX)
-                //.setSound(defaultSoundUri) // настройка звука
-                .setContentIntent(pendingIntent)
-                ;
-
-        NotificationManager notificationManager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
-
-        classGlobalApp.ClearBundle();
-        classGlobalApp.AddBundle("notificationMessage", "true");
-        //classGlobalApp.SetNotificationMessage(true); //сообщаем приложению, что пришло уведомление о сообщении, чтобы открыть фрагмент с чатами
-        notificationManager.notify(0, notificationBuilder.build());
-
-        //===============================================================================================
-
-
- */
     }
 
     /**
@@ -174,10 +106,6 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
         classGlobalApp.SetTokenDevice(token);
 
     }
-
-/*    public static String GetToken(Context context) { // получить текущий токен, запрашиваем сразу после логина
-        return context.getSharedPreferences("saveParams", MODE_PRIVATE).getString("token", "");
-    }*/
 
 }
 

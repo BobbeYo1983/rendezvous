@@ -104,7 +104,7 @@ public class ActivityMeetings extends AppCompatActivity {
                         classGlobalApp.AddBundle("partnerName", bundle.getString("partnerName"));
                         classGlobalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
 
-                        ChangeFragment(fragmentChat, "fragmentChat", false); // показываем встречи
+                        ChangeFragment(fragmentChat, "fragmentChat", false); // переходим к чату
 
 
                     } else {

@@ -51,6 +51,7 @@ public class ClassGlobalApp extends Application {
     private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
 
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
+    private String visibleWidget; // фрагмент или активити который в данный момент открыт
 
 
 
@@ -62,6 +63,8 @@ public class ClassGlobalApp extends Application {
         Log("ClassGlobalApp", "ClassGlobalApp", "Создан объект класса", false);
 
     }
+
+
 
     /**
      * В конструкторе класса, еще не создан объект контекста приложения, а чтобы создать объект SharedPreferences нужен контекст приложения,
@@ -83,7 +86,7 @@ public class ClassGlobalApp extends Application {
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
 
         tokenDevice = GetParam("tokenDevice");
-        //notificationMessage = false;
+        visibleWidget = "";
 
         //Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
         CreateNotificationChannel();
@@ -336,6 +339,14 @@ public class ClassGlobalApp extends Application {
             //notificationManager.deleteNotificationChannel("appChannel");
             notificationManager.createNotificationChannel(notificationChannel);
         }
+    }
+
+    public String GetVisibleWidget() {
+        return visibleWidget;
+    }
+
+    public void SetVisibleWidget(String visibleWidget) {
+        this.visibleWidget = visibleWidget;
     }
 
 }
