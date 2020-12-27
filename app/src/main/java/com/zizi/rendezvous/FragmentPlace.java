@@ -102,7 +102,7 @@ public class FragmentPlace extends Fragment {
 
 
         //восстанавливаем галки из памяти////////////////////////////////////////////////////////////
-        if (classGlobalApp.GetParam("placeAnyPlace").equals(cb_anyPlace.getText().toString())) {// если галка любое место стоит и сохранена
+        if (classGlobalApp.GetParam("placeAnyPlace").equals(Data.anyPlace)) {// если галка любое место стоит и сохранена
             cb_anyPlace.setChecked(true); //ставим галку любое место, а другие пункты делаем не активными
 
             cb_street.setEnabled(false); // делаем не активные
@@ -278,7 +278,7 @@ public class FragmentPlace extends Fragment {
 
         // сохраняем выбранные места встреч
 
-        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   cb_anyPlace.getText().toString()); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
+        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   Data.anyPlace); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
         if (cb_street.isChecked())          { classGlobalApp.PreparingToSave("placeStreet",     cb_street.getText().toString()); } else {classGlobalApp.PreparingToSave("placeStreet",   ""); }
         if (cb_picnic.isChecked())          { classGlobalApp.PreparingToSave("placePicnic",     cb_picnic.getText().toString()); } else {classGlobalApp.PreparingToSave("placePicnic",   ""); }
         if (cb_car.isChecked())             { classGlobalApp.PreparingToSave("placeCar",        cb_car.getText().toString()); } else {classGlobalApp.PreparingToSave("placeCar",   ""); }

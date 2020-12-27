@@ -63,7 +63,7 @@ public class FragmentListMeetings extends Fragment {
     private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
     //private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
-    private ArrayList<?> arrayListPlaces; //
+    private ArrayList<?> arrayListPlaces; //сюда вычитывать массив с местами будем
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками

@@ -23,6 +23,8 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -100,8 +102,36 @@ public class ActivityMeetings extends AppCompatActivity {
 
                                 for (Map.Entry<String, Object> entry : mapDocument.entrySet()) { //пробегаемся по всему документу
                                     if (!entry.getKey().equals("deviceToken") || !entry.getKey().equals("userID")) { //если не токен, то готовим к сохранению
-                                        //TODO: если встретился массив с местами, обработать его особенно
-                                        classGlobalApp.PreparingToSave(entry.getKey(), entry.getValue().toString()); //готовим к сохранению в память телефона
+                                        //TODO: может переделать хранение мест без массива, обрабатывать неудобно, посмотреть в других местах возможно удобно ипользовать
+
+                                        if (entry.getKey().equals("placeArray")) { // если попался массив со встречами
+                                            ArrayList<?> arrayListPlaces = new ArrayList<>((Collection<?>)entry.getValue()); // получаем все места партнера
+
+                                            classGlobalApp.PreparingToSave("placeStreet",     arrayListPlaces.get(0).toString());
+                                            classGlobalApp.PreparingToSave("placePicnic",     arrayListPlaces.get(1).toString());
+                                            classGlobalApp.PreparingToSave("placeCar",        arrayListPlaces.get(2).toString());
+                                            classGlobalApp.PreparingToSave("placeSport",      arrayListPlaces.get(3).toString());
+                                            classGlobalApp.PreparingToSave("placeFilm",       arrayListPlaces.get(4).toString());
+                                            classGlobalApp.PreparingToSave("placeBilliards",  arrayListPlaces.get(5).toString());
+                                            classGlobalApp.PreparingToSave("placeCafe",       arrayListPlaces.get(6).toString());
+                                            classGlobalApp.PreparingToSave("placeDisco",      arrayListPlaces.get(7).toString());
+                                            classGlobalApp.PreparingToSave("placeBath",       arrayListPlaces.get(8).toString());
+                                            classGlobalApp.PreparingToSave("placeMyHome",     arrayListPlaces.get(9).toString());
+                                            classGlobalApp.PreparingToSave("placeYouHome",    arrayListPlaces.get(10).toString());
+                                            classGlobalApp.PreparingToSave("placeHotel",      arrayListPlaces.get(11).toString());
+                                            classGlobalApp.PreparingToSave("placeOther",      arrayListPlaces.get(12).toString());
+
+                                            classGlobalApp.SaveParams();
+
+                                        } else if (entry.getKey().equals("place")){ //если попался параметр place
+                                            if (entry.getValue().equals(Data.anyPlace)) { // если выбрано любое место, то в память нужно сохранить такой папаметр
+                                                classGlobalApp.PreparingToSave("placeAnyPlace", Data.anyPlace);
+                                            }
+
+                                        } else {
+
+                                            classGlobalApp.PreparingToSave(entry.getKey(), entry.getValue().toString()); //готовим к сохранению в память телефона
+                                        }
                                     }
                                 }
                                 classGlobalApp.SaveParams(); // сохраняем в память телефона
@@ -145,9 +175,7 @@ public class ActivityMeetings extends AppCompatActivity {
                     }
                 }
             });
-            //=============================================================================================
 
-            // если все успешно, то отметить, то один раз логинелись
         }
 
 
