@@ -7,7 +7,6 @@
     android:orientation="vertical"
     tools:context=".FragmentListChats">
 
-    <!-- TODO: Update blank fragment layout -->
 
 
     <androidx.recyclerview.widget.RecyclerView

@@ -112,6 +112,7 @@ public class FragmentListMeetings extends Fragment {
 
         //инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        classGlobalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         userInfo = new HashMap<>(); // коллекция ключ-значение для описания встречи
@@ -171,7 +172,7 @@ public class FragmentListMeetings extends Fragment {
         // topAppBar ////////////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Встречи");
         materialToolbar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
-        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации стрелочкой назад в верхней панельке
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой
 
         // событие при клике на кнопку навигации на верхней панельке
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {

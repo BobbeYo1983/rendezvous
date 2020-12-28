@@ -139,6 +139,7 @@ public class FragmentChat extends Fragment {
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации менюшкой в верхней панельке
 
+
         // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
