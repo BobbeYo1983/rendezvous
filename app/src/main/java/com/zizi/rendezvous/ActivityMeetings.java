@@ -113,7 +113,7 @@ public class ActivityMeetings extends AppCompatActivity {
                     }
 
 
-                }else { // если нештатно не нужно грузить другой виджет, то грузим штатно список встреч
+                } else { // если нештатно не нужно грузить другой виджет, то грузим штатно список встреч
 
                     ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
                 }
@@ -249,8 +249,8 @@ public class ActivityMeetings extends AppCompatActivity {
 
         if ( !(currentFragment != null && currentFragment.isVisible()) ) { //если фрагмент этот уже открыт, то не выполнять операцию https://www.youtube.com/watch?v=2VLXdjpDD2g
 
-            fragmentTransaction = fragmentManager.beginTransaction();           // начинаем транзакцию
-            fragmentTransaction.replace(R.id.fragment_place, FragmentNameNew, Tag);  // обновляем фрагмент
+            fragmentTransaction = fragmentManager.beginTransaction();                // начинаем транзакцию
+            fragmentTransaction.replace(R.id.fragment_replace, FragmentNameNew, Tag);  // обновляем фрагмент
             if (toStack) { // если нужно добавить для навигации в стек фрагментов
                 fragmentTransaction.addToBackStack(null);                           // добавляем в конец стека фрагментов для навигации
             }

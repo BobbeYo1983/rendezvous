@@ -37,8 +37,8 @@
 
 
         <fragment
-            android:id="@+id/fragment_place"
-            android:name="com.zizi.rendezvous.FragmentListMeetings"
+            android:id="@+id/fragment_replace"
+            android:name="com.zizi.rendezvous.FragmentEmpty"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:layout_behavior="@string/appbar_scrolling_view_behavior"
