@@ -71,7 +71,7 @@ public class ActivityMeetings extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели
                 if (item.getItemId() == R.id.request) // если нажата кнопка показать заявку
                 {
-                    ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", true); // грузим фрагмент с заявкой на встречу
+                    ChangeFragment(fragmentRequestMeeting, true); // грузим фрагмент с заявкой на встречу
                 }
                 return false;
             }
@@ -104,23 +104,23 @@ public class ActivityMeetings extends AppCompatActivity {
                         classGlobalApp.AddBundle("partnerName", bundle.getString("partnerName"));
                         classGlobalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
 
-                        ChangeFragment(fragmentChat, "fragmentChat", true); // переходим к чату
+                        ChangeFragment(fragmentChat, true); // переходим к чату
 
 
                     } else {
 
-                        ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+                        ChangeFragment(fragmentListMeetings, false); // показываем встречи
                     }
 
 
                 } else { // если нештатно не нужно грузить другой виджет, то грузим штатно список встреч
 
-                    ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+                    ChangeFragment(fragmentListMeetings, false); // показываем встречи
                 }
 
             } else { //заявка не активна
                 classGlobalApp.Log("ActivityMeetings", "onCreate", "Заявка не активна, загружаем заполнение заявки", false);
-                ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+                ChangeFragment(fragmentRequestMeeting, false); // показываем заявку
             }
         } else { //если логинемся в первый раз, то нужно  залезть на сервак и оттуда получить заявку, если она активна
             classGlobalApp.Log("ActivityMeetings", "onCreate", "Ранее не входили под настоящим логином", false);
@@ -185,7 +185,7 @@ public class ActivityMeetings extends AppCompatActivity {
                                 classGlobalApp.PreparingToSave("loginNotFirstTime", "trueTrue"); // отмечаем, что уже разок логинились
                                 classGlobalApp.SaveParams(); // сохраняем в девайс
 
-                                ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+                                ChangeFragment(fragmentRequestMeeting,  false); // показываем заявку
 
                             }
 
@@ -198,7 +198,7 @@ public class ActivityMeetings extends AppCompatActivity {
                             classGlobalApp.PreparingToSave("loginNotFirstTime", "trueTrue"); // отмечаем, что уже разок логинились
                             classGlobalApp.SaveParams(); // сохраняем в девайс
 
-                            ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+                            ChangeFragment(fragmentRequestMeeting, false); // показываем заявку
                         }
 
                     } else { // если ошибка чтения БД
@@ -239,23 +239,22 @@ public class ActivityMeetings extends AppCompatActivity {
 
     /**
      * Меняет фрагмент на экране (в активити)
-     * @param FragmentNameNew новый фрагмент, который надо показать
-     * @param Tag идентификатор фрагмента в менеджере фрагментов
+     * @param fragment новый фрагмент, который надо показать
      * @param toStack добавлять его в стек или нет, чтобы можно было переходить по кнопке назад
      */
-    void ChangeFragment (Fragment FragmentNameNew, String Tag, boolean toStack){ // меняет отображение фрагмента
+    void ChangeFragment (Fragment fragment, boolean toStack){ // меняет отображение фрагмента
 
-        currentFragment = getSupportFragmentManager().findFragmentByTag(Tag); //ищем фрагмент по тегу, тег мы ниже в функции добавляем при смене
+        currentFragment = getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName()); //ищем фрагмент по тегу, тег мы ниже в функции добавляем при смене
 
         if ( !(currentFragment != null && currentFragment.isVisible()) ) { //если фрагмент этот уже открыт, то не выполнять операцию https://www.youtube.com/watch?v=2VLXdjpDD2g
 
             fragmentTransaction = fragmentManager.beginTransaction();                // начинаем транзакцию
-            fragmentTransaction.replace(R.id.fragment_replace, FragmentNameNew, Tag);  // обновляем фрагмент
+            fragmentTransaction.replace(R.id.fragment_replace, fragment, fragment.getClass().getSimpleName());  // обновляем фрагмент
             if (toStack) { // если нужно добавить для навигации в стек фрагментов
                 fragmentTransaction.addToBackStack(null);                           // добавляем в конец стека фрагментов для навигации
             }
             fragmentTransaction.commit();                                       // применяем
-            currentFragment = FragmentNameNew;                                  // запоминаем текущий фрагмент
+            currentFragment = fragment;                                  // запоминаем текущий фрагмент
         }
 
     }
@@ -277,7 +276,7 @@ public class ActivityMeetings extends AppCompatActivity {
                     classGlobalApp.PreparingToSave("requestIsActive", "trueTrue"); //отмечаем, что заявочка активна
                     classGlobalApp.SaveParams(); // сохраняем в девайс
 
-                    ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false); // показываем встречи
+                    ChangeFragment(fragmentListMeetings, false); // показываем встречи
                 }
                 // если tokenDevice не записан в заявку встречи, то пользователь по старому токену не будет получать уведомления, то есть заявку можно считать неактивной
                 //удалять ее из БД бессмысленно, что-то не так с БД, раз мы записать не смогли, думаю нужно направить пользователя к заполнению заявки, пусть по кнопке еще пытается подать заявку
@@ -292,7 +291,7 @@ public class ActivityMeetings extends AppCompatActivity {
                     classGlobalApp.SaveParams(); // сохраняем в девайс
 
 
-                    ChangeFragment(fragmentRequestMeeting, "fragmentRequestMeeting", false); // показываем заявку
+                    ChangeFragment(fragmentRequestMeeting, false); // показываем заявку
 
 
 

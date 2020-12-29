@@ -25,9 +25,13 @@
         android:foreground="?android:attr/selectableItemBackground"
         -->
 
+
+
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
+
+
 
             <TextView
                 android:id="@+id/tv_name"
@@ -39,6 +43,8 @@
                 app:layout_constraintTop_toTopOf="parent"
                 android:layout_marginStart="10dp"
                 android:layout_marginTop="10dp"/>
+
+
 
             <TextView
                 android:id="@+id/tv_age"
@@ -52,6 +58,19 @@
                 android:layout_marginEnd="10dp"
                 android:layout_marginTop="10dp"/>
 
+
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_delete"
+                style="?attr/borderlessButtonStyle"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Удалить"
+                app:layout_constraintEnd_toStartOf="@+id/btn_details"
+                app:layout_constraintTop_toBottomOf="@+id/tv_age" />
+
+
+
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_details"
                 style="?attr/borderlessButtonStyle"
@@ -60,6 +79,7 @@
                 android:text="Подробности"
                 app:layout_constraintEnd_toStartOf="@+id/btn_write"
                 app:layout_constraintTop_toBottomOf="@+id/tv_age" />
+
 
 
             <com.google.android.material.button.MaterialButton
@@ -71,6 +91,8 @@
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/tv_age" />
 
+
+
             <ImageView
                 android:id="@+id/iv_unReadMsg"
                 android:layout_width="wrap_content"
@@ -81,11 +103,16 @@
                 app:layout_constraintTop_toBottomOf="@+id/tv_name"
                 android:layout_marginStart="10dp"
                 android:layout_marginBottom="5dp"
-
                 />
+
+
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
+
+
     </com.google.android.material.card.MaterialCardView>
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

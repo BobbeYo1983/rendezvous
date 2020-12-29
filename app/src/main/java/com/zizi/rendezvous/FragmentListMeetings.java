@@ -139,7 +139,7 @@ public class FragmentListMeetings extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.chats: // при нажатии на кнопочку Чаты в нижней панели
-                        activityMeetings.ChangeFragment(fragmentListChats, "fragmentListChats", false);
+                        activityMeetings.ChangeFragment(fragmentListChats, false);
                         return true;
                 }
                 return false;
@@ -336,7 +336,7 @@ public class FragmentListMeetings extends Fragment {
                     classGlobalApp.ClearBundle();
                     classGlobalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
 
-                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
+                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, true); //переходим в подробности встречи
 
                 }
             });
@@ -356,7 +356,7 @@ public class FragmentListMeetings extends Fragment {
                     classGlobalApp.AddBundle("partnerName", usersInfoAll.get(getAdapterPosition()).getName());
                     classGlobalApp.AddBundle("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge());
 
-                    activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+                    activityMeetings.ChangeFragment(fragmentChat, true); //переходим в личный чат
                 }
             });
             //=======================================================================================

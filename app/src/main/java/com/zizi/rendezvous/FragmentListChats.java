@@ -124,7 +124,7 @@ public class FragmentListChats extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.meetings: // при нажатии на кнопочку Встречи в нижней панели
-                        activityMeetings.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
+                        activityMeetings.ChangeFragment(fragmentListMeetings, false);
                         return true;
                 }
                 return false;
@@ -304,8 +304,9 @@ public class FragmentListChats extends Fragment {
             TextView tv_name; // имя партнера
             TextView tv_age; // возраст партнера
             ImageView iv_unReadMsg; // непрочитанные сообщения
-            MaterialButton btn_write; // кнопка написать
+            MaterialButton btn_delete; // кнопка Удалить
             MaterialButton btn_details; // кнопка подробности
+            MaterialButton btn_write; // кнопка написать
 
 
 
@@ -315,9 +316,42 @@ public class FragmentListChats extends Fragment {
                 tv_name = itemView.findViewById(R.id.tv_name);
                 tv_age = itemView.findViewById(R.id.tv_age);
                 iv_unReadMsg = itemView.findViewById(R.id.iv_unReadMsg);
-                btn_write = itemView.findViewById(R.id.btn_write);
+                btn_delete = itemView.findViewById(R.id.btn_delete);
                 btn_details = itemView.findViewById(R.id.btn_details);
+                btn_write = itemView.findViewById(R.id.btn_write);
 
+
+
+                // КНОПКА УДАЛИТЬ ////////////////////////////////////////////////////////////////////
+                btn_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+
+
+
+                    }
+                });
+                //==================================================================================
+
+
+
+                // КНОПКА ПОДРОБНОСТИ //////////////////////////////////////////////////////////////
+                btn_details.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    //готовим аргументы для передачи в другой фрагмент
+                    classGlobalApp.ClearBundle();
+                    classGlobalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
+
+                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, true); //переходим в подробности встречи
+
+                    }
+                });
+                //==================================================================================
+
+
+
+                // КНОПКА НАПИСАТЬ /////////////////////////////////////////////////////////////////
                 btn_write.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку написать
                     @Override
                     public void onClick(View v) {
@@ -329,24 +363,11 @@ public class FragmentListChats extends Fragment {
                         classGlobalApp.AddBundle("partnerName", arrayListItems.get(getAdapterPosition()).getName());
                         classGlobalApp.AddBundle("partnerAge", arrayListItems.get(getAdapterPosition()).getAge());
 
-                        activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+                        activityMeetings.ChangeFragment(fragmentChat, true); //переходим в личный чат
 
                     }
                 });
-
-                btn_details.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //готовим аргументы для передачи в другой фрагмент
-                        classGlobalApp.ClearBundle();
-                        classGlobalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
-
-                        activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
-
-                    }
-                });
-
-
+                //===================================================================================
             }
         }
     }

@@ -402,7 +402,7 @@ public class FragmentRequestMeeting extends Fragment {
             public void onClick(View v) {
                 til_place.setErrorEnabled(false);
                 SaveParams(); // сохраняем значения полей в память
-                activityMeetings.ChangeFragment(fragmentPlace, "fragmentPlace", true);
+                activityMeetings.ChangeFragment(fragmentPlace, true);
             }
         });
         //===========================================================================================
@@ -537,7 +537,7 @@ public class FragmentRequestMeeting extends Fragment {
 
                             //Если лимит не исчерпан грузим фрагмент с заявками
                             //ActivityListMeetingsTb listMeetingsTbActivity = (ActivityListMeetingsTb)getActivity();
-                            activityMeetings.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
+                            activityMeetings.ChangeFragment(fragmentListMeetings, false);
                             //getActivity().getSupportFragmentManager().beginTransaction().replace(R.id.fragment_place, fragmentListMeetings, null).addToBackStack(null).commit();
 
                             //если лимит исчерпан, то переходим к оплате
