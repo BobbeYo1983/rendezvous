@@ -44,7 +44,7 @@ public class ClassNotificationMessage extends AsyncTask<String,Void,Void> {
             JSONObject json = new JSONObject();
 
             ///тут указывается токен устройства на который отправляем
-            classGlobalApp.Log("ClassNotificationMessage", "doInBackground", "tokenDevice = " + tokenDevice[0], false);
+            classGlobalApp.Log("ClassNotificationMessage", "doInBackground", "tokenDevice партнера = " + tokenDevice[0], false);
             json.put("to", tokenDevice[0]); // берем первый и единственный параметр со входа в функцию
             json.put("priority", "high"); // добавляем высокий приоритет, так как для типа посылки data он не самый высокий и может быть долгая доставка
 

@@ -104,6 +104,7 @@ public class ActivityMeetings extends AppCompatActivity {
                         classGlobalApp.AddBundle("partnerName", bundle.getString("partnerName"));
                         classGlobalApp.AddBundle("partnerAge", bundle.getString("partnerAge"));
 
+                        ChangeFragment(fragmentListMeetings, false); // показываем встречи
                         ChangeFragment(fragmentChat, true); // переходим к чату
 
 
@@ -244,9 +245,14 @@ public class ActivityMeetings extends AppCompatActivity {
      */
     void ChangeFragment (Fragment fragment, boolean toStack){ // меняет отображение фрагмента
 
-        currentFragment = getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName()); //ищем фрагмент по тегу, тег мы ниже в функции добавляем при смене
+        classGlobalApp.Log(getClass().getSimpleName(), "ChangeFragment", "Имя класса нового фрагмента = " + fragment.getClass().getSimpleName(), false);
+        //classGlobalApp.Log(getClass().getSimpleName(), "ChangeFragment", "Количество фрагментов до замены = " + getSupportFragmentManager().getBackStackEntryCount(), false);
+        //getSupportFragmentManager().popBackStack(null, FragmentManager.POP_BACK_STACK_INCLUSIVE);
 
-        if ( !(currentFragment != null && currentFragment.isVisible()) ) { //если фрагмент этот уже открыт, то не выполнять операцию https://www.youtube.com/watch?v=2VLXdjpDD2g
+        //currentFragment = getSupportFragmentManager().findFragmentByTag(fragment.getClass().getSimpleName()); //ищем фрагмент по тегу, тег мы ниже в функции добавляем при смене
+        //classGlobalApp.Log(getClass().getSimpleName(), "ChangeFragment", "Имя класса текущего фрагмента = " + currentFragment.getClass().getSimpleName(), false);
+
+        //if ( !(currentFragment != null && currentFragment.isVisible()) ) { //если фрагмент этот уже открыт, то не выполнять операцию https://www.youtube.com/watch?v=2VLXdjpDD2g
 
             fragmentTransaction = fragmentManager.beginTransaction();                // начинаем транзакцию
             fragmentTransaction.replace(R.id.fragment_replace, fragment, fragment.getClass().getSimpleName());  // обновляем фрагмент
@@ -255,8 +261,10 @@ public class ActivityMeetings extends AppCompatActivity {
             }
             fragmentTransaction.commit();                                       // применяем
             currentFragment = fragment;                                  // запоминаем текущий фрагмент
-        }
 
+        //}
+
+        //classGlobalApp.Log(getClass().getSimpleName(), "ChangeFragment", "Количество фрагментов после замены=" + getSupportFragmentManager().getBackStackEntryCount(), false);
     }
 
     /**

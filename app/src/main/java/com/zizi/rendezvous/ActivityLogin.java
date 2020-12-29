@@ -160,17 +160,18 @@ public class ActivityLogin extends AppCompatActivity {
 
         // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
         if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
-            if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
-                email = "999999@1.com";
-                password = "Qwerty123";
-                Signin();
-            } else { // если сборка релизная
+            //if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
+                //email = "999999@1.com";
+                //email = "emul@1.com";
+                //password = "Qwerty123";
+                //Signin();
+            //} else { // если сборка релизная
                 SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
-            }
+            //}
         } else { // если раньше заполнял пользователь логин и пароль, то автовход
+            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
             email = classGlobalApp.GetParam("email");
             password = classGlobalApp.GetParam("password");
-            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
             Signin();
         }
 
