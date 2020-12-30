@@ -28,12 +28,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 
@@ -56,8 +60,10 @@ public class FragmentListMeetings extends Fragment {
     private int countUnreads;
     private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
     private DatabaseReference databaseReference;// ссылка на данные в БД
+    private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
-    private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
+    //private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
+    private ArrayList<?> arrayListPlaces; //сюда вычитывать массив с местами будем
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -106,6 +112,7 @@ public class FragmentListMeetings extends Fragment {
 
         //инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        classGlobalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД
         userInfo = new HashMap<>(); // коллекция ключ-значение для описания встречи
@@ -113,9 +120,8 @@ public class FragmentListMeetings extends Fragment {
         fragmentListChats = new FragmentListChats(); //фрагмент с чатами
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         fragmentDetailsMeeting = new FragmentDetailsMeeting();
-        arrayListPlaces = new ArrayList<>();
+        //arrayListPlaces = new ArrayList<String>();
         countUnreads = 0; // количество непрочитанных переменных
-
 
         //ищем нужные элементы
         recyclerView = getActivity().findViewById(R.id.rv_meeting); // список со встречами
@@ -133,7 +139,7 @@ public class FragmentListMeetings extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.chats: // при нажатии на кнопочку Чаты в нижней панели
-                        activityMeetings.ChangeFragment(fragmentListChats, "fragmentListChats", false);
+                        activityMeetings.ChangeFragment(fragmentListChats, false);
                         return true;
                 }
                 return false;
@@ -141,7 +147,7 @@ public class FragmentListMeetings extends Fragment {
         });
 
         // ЗНАЧЕК с количеством непрочитанных сообщений текущего пользователя
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -166,7 +172,7 @@ public class FragmentListMeetings extends Fragment {
         // topAppBar ////////////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Встречи");
         materialToolbar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
-        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации стрелочкой назад в верхней панельке
+        materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой
 
         // событие при клике на кнопку навигации на верхней панельке
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
@@ -181,7 +187,9 @@ public class FragmentListMeetings extends Fragment {
 
         // rv_meeting ////////////////////////////////////////////////////////////////////////////////
         // запрос к БД c фильтрами
-        query = firebaseFirestore.collection("meetings")// коллекция
+        collectionReference = classGlobalApp.GenerateCollectionReference("meetings");
+        //query = firebaseFirestore.collection("meetings")// коллекция
+        query = collectionReference// коллекция meetings
                 .whereEqualTo("gender", classGlobalApp.GetParam("gender_partner")) //совпадает пол в запросе и пол партнера
                 .whereEqualTo("region", classGlobalApp.GetParam("region")) //совпадает регион в запросе и в заявке партнера
                 .whereEqualTo("town", classGlobalApp.GetParam("town")) //совпадает город в запросе и в заявке партнера
@@ -207,8 +215,8 @@ public class FragmentListMeetings extends Fragment {
                 int age_min = Integer.parseInt(classGlobalApp.GetParam("age_min")); //минимальный возраст из заявки текущего пользователя
                 int age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")); //максимальный возраст из заявки текущего пользователя
 
-                arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
-                //classGlobalApp.Log("#############", "#############", model.getName()+" Время соврадает? ответ: " + String.valueOf(IsTime(model.getTime())), false);
+                //arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
+                arrayListPlaces = new ArrayList<>((Collection<?>)snapshot.get("placeArray")); // получаем все места партнера
 
                 //отфильтровываем встречи по фильтру текущего пользователя и свою заявку тоже скрываем
                 if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке
@@ -243,6 +251,8 @@ public class FragmentListMeetings extends Fragment {
         recyclerView.setAdapter(adapter); // ну и связываем вьюху с адаптером железно и навсегда
         //==========================================================================================
 
+
+
     }
 
 
@@ -252,9 +262,12 @@ public class FragmentListMeetings extends Fragment {
      * @param arrayListPlaces список мест для встречи одного из пользователей
      * @return есть или нет совпадения
      */
-    public boolean IsPlace (ArrayList<String> arrayListPlaces) {
+    public boolean IsPlace (ArrayList<?> arrayListPlaces) {
 
-        for (String place : arrayListPlaces) {
+        for (int i = 0; i < arrayListPlaces.size(); i++) {
+
+            String place = arrayListPlaces.get(i).toString();
+
             if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeStreet"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
             if (!place.equals("") && place.equals(classGlobalApp.GetParam("placePicnic"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
             if (!place.equals("") && place.equals(classGlobalApp.GetParam("placeCar"))) {return true;} // если место не пустая строка и совпадает со значением фильтра текущего пользователя
@@ -321,9 +334,9 @@ public class FragmentListMeetings extends Fragment {
 
                     //готовим аргументы для передачи в другой фрагмент
                     classGlobalApp.ClearBundle();
-                    classGlobalApp.AddBundle("partnerEmail", usersInfoAll.get(getAdapterPosition()).getEmail());
+                    classGlobalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
 
-                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, "fragmentDetailsMeeting", true); //переходим в подробности встречи
+                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, true); //переходим в подробности встречи
 
                 }
             });
@@ -339,11 +352,11 @@ public class FragmentListMeetings extends Fragment {
                     //готовим аргументы для передачи
                     classGlobalApp.ClearBundle();
                     classGlobalApp.AddBundle("partnerID", usersInfoAll.get(getAdapterPosition()).getUserID());
-                    classGlobalApp.AddBundle("partnerToken", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
+                    classGlobalApp.AddBundle("partnerTokenDevice", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
                     classGlobalApp.AddBundle("partnerName", usersInfoAll.get(getAdapterPosition()).getName());
                     classGlobalApp.AddBundle("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge());
 
-                    activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+                    activityMeetings.ChangeFragment(fragmentChat, true); //переходим в личный чат
                 }
             });
             //=======================================================================================

@@ -1,13 +1,16 @@
 package com.zizi.rendezvous;
 
-import android.app.Activity;
 import android.app.Application;
-import android.content.Intent;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.content.SharedPreferences;
+import android.media.AudioAttributes;
+import android.media.RingtoneManager;
+import android.net.Uri;
+import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.FragmentManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -15,13 +18,11 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ServerValue;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -29,6 +30,8 @@ import java.util.Map;
  * для всех активити, фрагментов и сервисов. Функции по логированию, авторизации, хранению переменных.
  */
 public class ClassGlobalApp extends Application {
+
+    //private boolean notificationMessage;
 
     private Map<String, String> paramsToSave; // коллекция ключ-значение
     private Map<String, String> paramsToBundle; // коллекция ключ-значение
@@ -43,9 +46,13 @@ public class ClassGlobalApp extends Application {
     private DatabaseReference databaseReference; //ссылка на данные в базе
     private Map<String, Object> msg; // сообщение в БД
 
-    //private String currentUserEmail; // почта текущего пользователя
-    //private String currentUserUid; //идентификатор текущего пользователя
+    private FirebaseFirestore firebaseFirestore; // база данных
+    private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
+    private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
+
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
+    private String visibleWidget; // фрагмент или активити который в данный момент открыт
+
 
 
     /**
@@ -53,11 +60,11 @@ public class ClassGlobalApp extends Application {
      */
     public ClassGlobalApp(){
 
-        paramsToSave = new HashMap<>(); // коллекция ключ-значение
-        paramsToBundle = new HashMap<>(); // коллекция ключ-значение
-        msg = new HashMap<>();
+        Log("ClassGlobalApp", "ClassGlobalApp", "Создан объект класса", false);
 
     }
+
+
 
     /**
      * В конструкторе класса, еще не создан объект контекста приложения, а чтобы создать объект SharedPreferences нужен контекст приложения,
@@ -67,12 +74,22 @@ public class ClassGlobalApp extends Application {
     public void onCreate() {
         super.onCreate();
 
+        paramsToSave = new HashMap<>(); // коллекция ключ-значение
+        paramsToBundle = new HashMap<>(); // коллекция ключ-значение
+        msg = new HashMap<>();
+
         sharedPreferences = getSharedPreferences("saveParams", MODE_PRIVATE);
         editorSharedPreferences = sharedPreferences.edit(); // подготавливаем редактор работы с памятью перед записью'
+
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объекта для работы с авторизацией
         firebaseDatabase = FirebaseDatabase.getInstance(); // БД RealTime DataBase
+        firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
 
         tokenDevice = GetParam("tokenDevice");
+        visibleWidget = "";
+
+        //Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
+        CreateNotificationChannel();
 
     }
 
@@ -86,18 +103,21 @@ public class ClassGlobalApp extends Application {
 
         if (BuildConfig.DEBUG) { // если режим отладки, то ведем ЛОГ
             //символы !@# достаточно уникальны для фильтровки и быстро набираются на клавиатуре
-            Log.v("!@#", "[" + _class + "." + method + "]: " +  message);
+            //Log.v("!@#", "[" + _class + "." + method + "]: " +  message);
+            //Data.tagLog еще есть в классе NotificationMessage
+            Log.v(Data.tagLog, "[" + _class + "." + method + "]: " +  message);
 
         }
 
         if (inDB) {
-            databaseReference = firebaseDatabase.getReference("logs");
             msg.clear();
             msg.put("timestamp", ServerValue.TIMESTAMP);
             msg.put("class", _class);
             msg.put("method", method);
             msg.put("message", message);
-            databaseReference.push().setValue(msg);
+            //databaseReference = firebaseDatabase.getReference("logs");
+            //databaseReference.push().setValue(msg);
+            GenerateDatabaseReference("logs").push().setValue(msg);
         }
 
     }
@@ -150,6 +170,7 @@ public class ClassGlobalApp extends Application {
     public void AddBundle (String paramName, String paramValue) {
 
         paramsToBundle.put(paramName, paramValue);
+
     }
 
     /**
@@ -160,6 +181,16 @@ public class ClassGlobalApp extends Application {
     public String GetBundle(String paramName){
 
         return paramsToBundle.get(paramName);
+        //return "paramsToBundle.get(paramName)";
+    }
+
+    /**
+     * Удаляет параметр из буфера для передачи между различными активити и фрагментами
+     * @param paramName имя параметра
+     */
+    public void RemoveBundle(String paramName) {
+
+        paramsToBundle.remove(paramName);
     }
 
     /**
@@ -220,9 +251,102 @@ public class ClassGlobalApp extends Application {
      */
     public void SetTokenDevice(String tokenDevice) {
         this.tokenDevice = tokenDevice;
-        PreparingToSave("tokenDevice", tokenDevice);
-        SaveParams();
+        PreparingToSave("tokenDevice", tokenDevice); //готовим к сохранению
+        SaveParams(); // сохраняем в девайс
+
     }
 
+
+
+    /**
+     * Формирует ссылку на БД FireBase Realtime Database в зависимости от варианта сборки Debug или Release
+     * @param path путь к данным в БД
+     * @return сгенерированная ссылка
+     */
+    public DatabaseReference GenerateDatabaseReference (String path){
+
+        if (BuildConfig.DEBUG) { // если режим отладки
+            path = "debug/" + path;
+        }
+
+        return databaseReference = firebaseDatabase.getReference(path); //формируем ссылку
+    }
+
+
+
+    /**
+     * Формирует ссылку на документ в БД FireBase Cloud Farestore в зависимости от варианта сборки Debug или Release
+     * @param collection имя коллекции в БД
+     * @param document имя документа в коллекции
+     * @return сгенерированная ссылка
+     */
+    public DocumentReference GenerateDocumentReference (String collection, String document){
+
+        if (BuildConfig.DEBUG) { // если режим отладки
+            collection = "_debug_" + collection;
+        }
+
+        return documentReference = firebaseFirestore.collection(collection).document(document); //формируем ссылку
+
+    }
+
+    public CollectionReference GenerateCollectionReference (String collection) {
+
+        if (BuildConfig.DEBUG) { // если режим отладки
+            collection = "_debug_" + collection;
+        }
+
+        return collectionReference = firebaseFirestore.collection(collection); //формируем ссылку
+    }
+
+/*    public boolean IsNotificationMessage() {
+        return notificationMessage;
+    }
+
+    public void SetNotificationMessage(boolean notificationMessage) {
+        this.notificationMessage = notificationMessage;
+    }*/
+
+    /**
+     * Регистрирует канал уведомлений в системе
+     */
+    private void CreateNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            CharSequence name = Data.channelID;
+            String descriptionСhannel = "Description channel";
+            int importance = NotificationManager.IMPORTANCE_DEFAULT;
+            NotificationChannel notificationChannel = new NotificationChannel(Data.channelID, name, importance); //создаем канал
+            notificationChannel.setDescription(descriptionСhannel); //добавляем описание канала
+
+           //атрибуты для звука уведомлений////////////////////////////////////////////////////////////////////
+/*           Uri uriDefaultSound = RingtoneManager.getDefaultUri(RingtoneManager.TYPE_NOTIFICATION); // звук уведомления по умолчанию
+           AudioAttributes att = new AudioAttributes.Builder()
+                    .setUsage(AudioAttributes.USAGE_NOTIFICATION)
+                    .setContentType(AudioAttributes.CONTENT_TYPE_SPEECH)
+                    .build();
+
+            notificationChannel.setSound(uriDefaultSound,att); //применяем звук уведомления по умолчанию
+
+            //вибрация
+            notificationChannel.enableVibration(true);
+            notificationChannel.setVibrationPattern(new long[]{500, 500, 500});*/
+
+            // Register the channel with the system; you can't change the importance
+            // or other notification behaviors after this
+            NotificationManager notificationManager = getSystemService(NotificationManager.class);
+            //notificationManager.deleteNotificationChannel("appChannel");
+            notificationManager.createNotificationChannel(notificationChannel);
+        }
+    }
+
+    public String GetVisibleWidget() {
+        return visibleWidget;
+    }
+
+    public void SetVisibleWidget(String visibleWidget) {
+        this.visibleWidget = visibleWidget;
+    }
 
 }

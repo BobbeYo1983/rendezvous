@@ -1,52 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    package="com.zizi.rendezvous"
-    >
-    
-<!--    <uses-permission android:name="android.permission.INTERNET"/>-->
+    package="com.zizi.rendezvous">
+
+
+
+    <uses-permission android:name="android.permission.VIBRATE" />
+
+
 
     <application
+        android:name=".ClassGlobalApp"
         android:allowBackup="true"
         android:icon="@mipmap/ic_rendezvous"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_rendezvous_round"
         android:supportsRtl="true"
-        android:theme="@style/Theme.MyApp"
-        android:name=".ClassGlobalApp"
-        >
+        android:theme="@style/Theme.MyApp">
+        <activity android:name=".ActivityForTest"></activity>
 
 
 
         <activity
             android:name=".ActivityLogin"
+            android:launchMode="singleTask"
             android:screenOrientation="portrait"
+            android:alwaysRetainTaskState="true"
             >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
 
-<!--        android:launchMode="singleInstance"-->
+
         <activity
             android:name=".ActivityMeetings"
-            android:screenOrientation="portrait"
-            >
-            <intent-filter>
-                <action android:name="Open_ActivityMeetings" />
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
+            android:screenOrientation="portrait">
         </activity>
+<!--        <intent-filter>
+            <action android:name="Open_ActivityMeetings" />
+
+            <category android:name="android.intent.category.DEFAULT" />
+        </intent-filter>-->
 
 
 
         <activity
             android:name=".Activity_Yandex_Pay"
-            android:screenOrientation="portrait"
-            >
-            <!--Для Яндекс.Кассы-->
+            android:screenOrientation="portrait">
+
+            <!-- Для Яндекс.Кассы -->
             <meta-data
                 android:name="com.google.android.gms.wallet.api.enabled"
                 tools:node="remove" />
@@ -54,7 +60,7 @@
 
 
 
-        <!--Сервис для уведомлений-->
+        <!-- Сервис для уведомлений -->
         <service
             android:name=".ServiceFirebaseCloudMessaging"
             android:exported="false">
@@ -62,5 +68,11 @@
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />
             </intent-filter>
         </service>
+
+
+
     </application>
+
+
+
 </manifest>

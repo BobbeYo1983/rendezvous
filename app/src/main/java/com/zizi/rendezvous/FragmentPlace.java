@@ -102,7 +102,7 @@ public class FragmentPlace extends Fragment {
 
 
         //восстанавливаем галки из памяти////////////////////////////////////////////////////////////
-        if (classGlobalApp.GetParam("placeAnyPlace").equals(cb_anyPlace.getText().toString())) {// если галка любое место стоит и сохранена
+        if (classGlobalApp.GetParam("placeAnyPlace").equals(Data.anyPlace)) {// если галка любое место стоит и сохранена
             cb_anyPlace.setChecked(true); //ставим галку любое место, а другие пункты делаем не активными
 
             cb_street.setEnabled(false); // делаем не активные
@@ -269,25 +269,6 @@ public class FragmentPlace extends Fragment {
             getActivity().finish(); // убиваем активити
         }
 
-        // восстанавливаем места встречь из памяти телефона
-/*        if (saveParams.getString("placeAnyPlace",   cb_anyPlace.getText().toString())   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);} else {cb_anyPlace.setChecked(false);};
-        if (saveParams.getString("placeStreet",     cb_street.getText().toString())     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);} else {cb_street.setChecked(false);};
-        if (saveParams.getString("placePicnic",     cb_picnic.getText().toString())     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);} else {cb_picnic.setChecked(false);};
-        if (saveParams.getString("placeCar",        cb_car.getText().toString())        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);} else {cb_car.setChecked(false);};
-        if (saveParams.getString("placeSport",      cb_sport.getText().toString())      .equals(cb_sport.getText().toString()))     {cb_sport.setChecked(true);} else {cb_sport.setChecked(false);};
-        if (saveParams.getString("placeFilm",       cb_film.getText().toString())       .equals(cb_film.getText().toString()))      {cb_film.setChecked(true);} else {cb_film.setChecked(false);};
-        if (saveParams.getString("placeBilliards",  cb_billiards.getText().toString())  .equals(cb_billiards.getText().toString())) {cb_billiards.setChecked(true);} else {cb_billiards.setChecked(false);};
-        if (saveParams.getString("placeCafe",       cb_cafe.getText().toString())       .equals(cb_cafe.getText().toString()))      {cb_cafe.setChecked(true);} else {cb_cafe.setChecked(false);};
-        if (saveParams.getString("placeDisco",      cb_disco.getText().toString())      .equals(cb_disco.getText().toString()))     {cb_disco.setChecked(true);} else {cb_disco.setChecked(false);};
-        if (saveParams.getString("placeBath",       cb_bath.getText().toString())       .equals(cb_bath.getText().toString()))      {cb_bath.setChecked(true);} else {cb_bath.setChecked(false);};
-        if (saveParams.getString("placeMyHome",     cb_myHome.getText().toString())     .equals(cb_myHome.getText().toString()))    {cb_myHome.setChecked(true);} else {cb_myHome.setChecked(false);};
-        if (saveParams.getString("placeYouHome",    cb_youHome.getText().toString())    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);} else {cb_youHome.setChecked(false);};
-        if (saveParams.getString("placeHotel",      cb_hotel.getText().toString())      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);} else {cb_hotel.setChecked(false);};
-        if (saveParams.getString("placeOther",      cb_other.getText().toString())      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);} else {cb_other.setChecked(false);};
-        til_other_et.setText(saveParams.getString("placeOtherDescription", ""));*/
-
-
-
     }
 
 
@@ -297,7 +278,7 @@ public class FragmentPlace extends Fragment {
 
         // сохраняем выбранные места встреч
 
-        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   cb_anyPlace.getText().toString()); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
+        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   Data.anyPlace); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
         if (cb_street.isChecked())          { classGlobalApp.PreparingToSave("placeStreet",     cb_street.getText().toString()); } else {classGlobalApp.PreparingToSave("placeStreet",   ""); }
         if (cb_picnic.isChecked())          { classGlobalApp.PreparingToSave("placePicnic",     cb_picnic.getText().toString()); } else {classGlobalApp.PreparingToSave("placePicnic",   ""); }
         if (cb_car.isChecked())             { classGlobalApp.PreparingToSave("placeCar",        cb_car.getText().toString()); } else {classGlobalApp.PreparingToSave("placeCar",   ""); }

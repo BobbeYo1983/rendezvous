@@ -1,12 +1,16 @@
 package com.zizi.rendezvous;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 
+import android.text.Html;
+import android.text.method.LinkMovementMethod;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -112,6 +116,8 @@ public class FragmentDetailsMeeting extends Fragment {
         });
         //==========================================================================================
 
+
+
     }
 
     @Override //когда фрагмент становится видимым, но не интерактивным/ не нажимаемым
@@ -124,27 +130,21 @@ public class FragmentDetailsMeeting extends Fragment {
         }
 
 
+
         //Читаем документ со встречей партнера из БД //////////////////////////////////////////////////
-        documentReference = firebaseFirestore.collection("meetings").document(classGlobalApp.GetBundle("partnerEmail")); // формируем путь к документу
-        //documentReference = firebaseFirestore.collection("meetings").document("999999@1.com"); // формируем путь к документу
+        documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetBundle("partnerUserID")); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) { // как задача чтения выполнилась
-                classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Method is run", false);
                 if (task.isSuccessful()) { // если выполнилась успешно
-                    classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Task is Successful", false);
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
-
-                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Document is exists", false);
                         mapDocument = document.getData(); // получаем данные из документа БД
                         classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
-
                         UpdateUI(); // обновляем данные в полях
-
                     } else { // если документа не существует
 
-                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", false);
+                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", true);
                     }
 
                 } else { // если ошибка чтения БД
@@ -154,7 +154,6 @@ public class FragmentDetailsMeeting extends Fragment {
             }
         });
         //=============================================================================================
-
     }
 
     /**
@@ -173,6 +172,9 @@ public class FragmentDetailsMeeting extends Fragment {
         }
 
         til_soc_net_et.setText(mapDocument.get("socNet").toString());
+        Linkify.addLinks(til_soc_net_et, Linkify.ALL); // для распознования ссылок
+        til_soc_net_et.setLinkTextColor(Color.BLUE);
+
         til_contact_et.setText(mapDocument.get("contact").toString());
         til_place_et.setText(mapDocument.get("place").toString());
         til_time_et.setText(mapDocument.get("time").toString());

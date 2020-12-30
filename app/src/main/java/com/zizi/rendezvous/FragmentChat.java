@@ -4,7 +4,6 @@ package com.zizi.rendezvous;
 import android.content.Intent;
 
 import android.graphics.Point;
-import android.os.AsyncTask;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -31,14 +30,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.Query;
-import com.google.firebase.database.ServerValue;
 import com.google.firebase.database.ValueEventListener;
 
-import org.json.JSONObject;
-
-import java.io.OutputStreamWriter;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -124,8 +117,7 @@ public class FragmentChat extends Fragment {
 
         // информация о партнере чата ///////////////////////////////////////////////////////////////
         partnerInfo.setUserID(classGlobalApp.GetBundle("partnerID"));
-        partnerInfo.setToken(classGlobalApp.GetBundle("partnerToken"));
-        //classGlobalApp.Log ("FragmentChat", "onActivityCreated", "Вычитан из памяти токен партнера: " + classGlobalApp.GetBundle("partnerToken"), false);
+        partnerInfo.setTokenDevice(classGlobalApp.GetBundle("partnerTokenDevice"));
         partnerInfo.setName(classGlobalApp.GetBundle("partnerName"));
         partnerInfo.setAge(classGlobalApp.GetBundle("partnerAge"));
         partnerInfo.setUnReadMsg("0"); // делаем по умолчанию ноль непрочитанных сообщений
@@ -135,7 +127,7 @@ public class FragmentChat extends Fragment {
 
         // заготовим информацию о текущем пользователе при загрузке фрагмента////////////////////////
         currentUserInfo.setUserID(classGlobalApp.GetCurrentUserUid());
-        currentUserInfo.setToken(classGlobalApp.GetTokenDevice());
+        currentUserInfo.setTokenDevice(classGlobalApp.GetTokenDevice());
         currentUserInfo.setName(classGlobalApp.GetParam("name")); // подгружаем из памяти девайса
         currentUserInfo.setAge(classGlobalApp.GetParam("age")); // подгружаем из памяти девайса
         //==========================================================================================
@@ -147,6 +139,7 @@ public class FragmentChat extends Fragment {
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_arrow_back_24); // делаем кнопку навигации менюшкой в верхней панельке
 
+
         // событие при клике на кнопку навигации, на этом фрагменте она в виде стрелочки
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
@@ -157,7 +150,8 @@ public class FragmentChat extends Fragment {
 
         //ЗНАЧЕК в нашей нижней панели materialToolbar, слушаем, если нам прислали сообщение и мы находимся в чате с партнером (фрагмент работает),
         //то тут же делаем, что нами чат прочитан для показа правильного количества непрочитанных на значке в нижней панели
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/"); // путь к непрочитанным нашим чатам
+        //databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/"); // путь к непрочитанным нашим чатам
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/"); // путь к непрочитанным нашим чатам
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -165,7 +159,7 @@ public class FragmentChat extends Fragment {
                 // если ветка в непрочитанных с ID партнера существует и фрагмет активен/открыт, то ее нужно удалить, тем самым сказать, что чат прочитан
 
                 if (fragmentIsVisible){
-                    databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
+                    databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
                     databaseReference.removeValue();
                     classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Этот чат прочитан", false);
                 }
@@ -198,14 +192,17 @@ public class FragmentChat extends Fragment {
 
         //КОНВЕРТ/ИНДИКАТОР В СПИСКЕ ЧАТОВ//////////////////////////////////////////////////////////
         //слушаем, если нам прислали сообщение, то тут же делаем, что нами чат прочитан для правильного показа в списке наших чатов
-        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 // если непрочитанных сообщений больше нуля и фрагмент чата активен/открыт/показан, то сбросить опять в ноль
-                if (Integer.parseInt(snapshot.getValue(ModelChat.class).getUnReadMsg()) > 0 && fragmentIsVisible){
-                    databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/unReadMsg");
-                    databaseReference.setValue("0"); // делаем отметочку, что прочитали чат, чтобы убрать конвертик напротив чата в списке чатов.
+                if (snapshot.getValue(ModelChat.class) != null && //если вообще есть чаты
+                    Integer.parseInt(snapshot.getValue(ModelChat.class).getUnReadMsg()) > 0 &&
+                    classGlobalApp.GetVisibleWidget().equals(Data.fragmentChat)){ // сейчас показывается пользователю фрагмент с чатом
+                    //fragmentIsVisible){
+                        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/unReadMsg");
+                        databaseReference.setValue("0"); // делаем отметочку, что прочитали чат, чтобы убрать конвертик напротив чата в списке чатов.
                 }
 
             }
@@ -226,7 +223,7 @@ public class FragmentChat extends Fragment {
 
         //ИНДИКАТОР В ЧАТЕ tv_unread слушаем, прочитан чат партнером или нет, чтобы показать//////////////////
         tv_unread.setVisibility(View.INVISIBLE);
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID());
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + partnerInfo.getUserID());
         databaseReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -254,40 +251,6 @@ public class FragmentChat extends Fragment {
 
 
 
-        //формируем ссылку на данные сообщений чата с партнером
-        //databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()));
-        //Query queryLastMessages = databaseReference.orderByChild("timeStamp").limitToLast(100); //запрашиваем последние 100 сообщений
-        //Query queryLastMessages = databaseReference.orderByKey().limitToLast(100); //запрашиваем последние 100 сообщений
-        Query queryLastMessages = databaseReference.limitToLast(3); //запрашиваем последние 100 сообщений
-
-
-/*        queryLastMessages.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(@NonNull DataSnapshot snapshot) {
-                //snapshot.getRef().removeValue();
-                for (DataSnapshot child: snapshot.getChildren()) {
-
-                    classGlobalApp.Log("############", "################", child.getKey(), false);
-                    keyDeleteBefore = child.getKey();
-
-
-                    break;
-                }
-                classGlobalApp.Log("############", "################", String.valueOf(snapshot.getChildrenCount()), false);
-
-            }
-
-            @Override
-            public void onCancelled(@NonNull DatabaseError error) {
-
-            }
-        });*/
-
-
-
-
-
-
         // ОТПРАВКА СООБЩЕНИЯ ////////////////////////////////////////////////////////////////////////
         floatingActionButton.setOnClickListener(new View.OnClickListener() { // при нажатии на кнопку отправить сообщение в чате
             @Override
@@ -297,7 +260,7 @@ public class FragmentChat extends Fragment {
                 {
 
                     // отправляем сообщение /////////////////////////////////////////////////////////
-                    databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()) ); //ссылка на данные, формируем канал чата
+                    databaseReference = classGlobalApp.GenerateDatabaseReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()) ); //ссылка на данные, формируем канал чата
                     //modelMessage.userID = classGlobalApp.GetCurrentUserUid(); // формируем ID пользователя
                     //modelMessage.textMessage = til_message_et.getText().toString().trim(); // текст сообщения без пробелов в начале и конце строки
                     //modelMessage.dateTimeDevice = formatForDateNow.format(new Date()); // формируем даты на девайсе, не на сервере
@@ -313,21 +276,21 @@ public class FragmentChat extends Fragment {
 
 
                     //Если пишем партнеру в первый раз, то в нашем списке чатов создастся чат с партнером
-                    databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
+                    databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/");
                     databaseReference.setValue(partnerInfo); // записываем модель данных в БД
                     //=================================================================================
 
 
 
                     //ЗНАЧЕК в нижней панели и ИНДИКАТОР В ЧАТЕ, надо партнеру подсветить, что у него есть непрочитанный чат
-                    databaseReference = firebaseDatabase.getReference("chats/unreads/" + partnerInfo.getUserID() + "/"); // путь к непрочитанным чатам партнера
+                    databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + partnerInfo.getUserID() + "/"); // путь к непрочитанным чатам партнера
                     databaseReference.child(classGlobalApp.GetCurrentUserUid()).setValue("thisChatUnread"); // записываем, что от меня у партнера есть непрочитанный чат
                     //==============================================================================
 
 
 
                     //КОНВЕРТ/ИНДИКАТОР В СПИСКЕ ЧАТОВ ссылка на данные, формируем информацию о чатах партнера
-                    databaseReference = firebaseDatabase.getReference("chats/lists/" + partnerInfo.getUserID() + "/" + classGlobalApp.GetCurrentUserUid()  + "/"); // путь к листу чатов партнера
+                    databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + partnerInfo.getUserID() + "/" + classGlobalApp.GetCurrentUserUid()  + "/"); // путь к листу чатов партнера
                     currentUserInfo.setUnReadMsg("1"); // записываем отметку, что есть непрочитанные сообщения
                     databaseReference.setValue(currentUserInfo); // записываем модель данных в БД
                     //===================================================================================
@@ -337,8 +300,10 @@ public class FragmentChat extends Fragment {
                     til_message_et.setText(""); //очищаем поле с текстом
 
 
-                    //Отправляем уведомление в асинхронной задаче
-                    new Notify().execute();
+                    //Отправляем уведомление в асинхронной задаче по ключу устройства, в конструктор ссылку на глобальный класс, чтобы писать логи в БД
+                    new ClassNotificationMessage(classGlobalApp).execute(partnerInfo.getTokenDevice());
+                    classGlobalApp.Log("FragmentChat", "floatingActionButton.setOnClickListener", "partnerTokenDevice = " + partnerInfo.getTokenDevice(), false);
+
 
                 }
 
@@ -367,6 +332,7 @@ public class FragmentChat extends Fragment {
         super.onPause();
 
         fragmentIsVisible = false; // делаем статус фрагмента не видимым
+        classGlobalApp.SetVisibleWidget(""); // делаем статус фрагмента не видимым
 
     }
 
@@ -377,6 +343,7 @@ public class FragmentChat extends Fragment {
         super.onResume();
 
         fragmentIsVisible = true; // делаем статус фрагмента видимым
+        classGlobalApp.SetVisibleWidget(Data.fragmentChat + partnerInfo.getUserID()); // делаем статус фрагмента видимым и закладываем в строку с кем открыт чат
     }
 
     /**
@@ -387,10 +354,9 @@ public class FragmentChat extends Fragment {
         firstVisibleMessage = true; // флаг для определния первого видимого сообщения
 
         //ссылка на канал чата с партнером
-        databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID())); //ссылка на данные
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID())); //ссылка на данные
         query = databaseReference.orderByChild("pushKey").limitToLast(30); //читаем последние 30 сообщений, все остальные будут удалены
         query.addChildEventListener(new ChildEventListener() {
-        //databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД сообщения
             public void onChildAdded(@NonNull DataSnapshot snapshot, @Nullable String previousChildName) {
                 arrayListAllMessages.add(snapshot.getValue(ModelMessage.class)); // записываем сообщение в коллекцию со всеми сообщениями
@@ -444,7 +410,7 @@ public class FragmentChat extends Fragment {
      * @param pushKey уникальный идентификатор сообщения, генерируется в зависимости от времени, сравнивая их, можно определять кто был ранее сгенерирован
      */
     private void DeleteMessagesInDB (final String pushKey) {
-        databaseReference = firebaseDatabase.getReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()));
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/chanels/" + CreateChatChanel(classGlobalApp.GetCurrentUserUid(), partnerInfo.getUserID()));
         //запрос, упорядочиваем по полю и выбираем до указанного значения
         Query queryDeleteMessages = databaseReference.orderByChild("pushKey").endAt(pushKey);
 
@@ -456,7 +422,6 @@ public class FragmentChat extends Fragment {
                     if (!child.getKey().equals(pushKey)) { // сообщение с указанным идентификатором не чистим
                         child.getRef().removeValue(); // удаляем сообщение из БД
                     }
-                    //classGlobalApp.Log("############", "Delete", child.getKey(), false);
                 }
             }
 
@@ -558,87 +523,7 @@ public class FragmentChat extends Fragment {
         }
     }
 
-    /**
-     * Класс отправки уведомления в асинхронной задаче
-     */
-    public class Notify extends AsyncTask<Void,Void,Void>
-    {
 
-        @Override
-        protected Void doInBackground(Void... voids) {
-
-            try {
-
-                URL url = new URL("https://fcm.googleapis.com/fcm/send");
-                HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-
-                conn.setUseCaches(false);
-                conn.setDoInput(true);
-                conn.setDoOutput(true);
-
-                conn.setRequestMethod("POST");
-                // тут ключ сервака Farebase для FCM
-                conn.setRequestProperty("Authorization", "key=" + "AAAAbdXW9sc:APA91bGqfvYgRjMgjWVs4wBMFUheGra5ADSfrjP8xqDFwgflw1qPfdlz8QeUaK0_gNw8Mk-FEF9JrhA9D7UmIWUsIwKHP3HdB8GIyelP6N7hjEcyLshq-5Lw4QFqEF1vvN90fZSqcutS");
-                conn.setRequestProperty("Content-Type", "application/json");
-
-                JSONObject json = new JSONObject();
-
-                //json.put("to", ServiceFirebaseCloudMessaging.GetToken(getActivity().getApplicationContext()));
-                // тут указывается токен устройства на который отправляем
-                //json.put("to", "cMhgmmHISF-_LX7Kppl5YZ:APA91bGshqk6E77kn1soudXiL-s5b4OhTKkJ20JaGPMkIYkVNOaccVPNLT65ibHklqGvynWk_gTsV40-JZfMZ3gOXLHx1RZX7kPL3Lip-flMH6rlqN9zta4XG48Aton8vN626KQu4axQ");
-                json.put("to", partnerInfo.getToken());
-                //classGlobalApp.Log("Notify", "doInBackground", "Токен партнера: " + partnerInfo.getToken(), false);
-
-
-                JSONObject info = new JSONObject();
-                info.put("title", "Сообщение");   // Notification title
-                info.put("body", "У вас есть новое сообщение"); // Notification body
-                info.put("click_action", "Open_ActivityMeetings"); //типа в манифесте ищется такой фильтр у Активити и типа она вызывается при клике на уведомление
-
-                json.put("notification", info);
-                //json.put("data", info);
-
-                OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
-                wr.write(json.toString());
-                wr.flush();
-                wr.close();
-
-                if (conn.getResponseCode() != 200) { // если код ошибки от сервера не равен нормальному значению 200
-                    classGlobalApp.Log("Notify",
-                            "doInBackground",
-                            "Ошибка отправки уведомления, код: " + conn.getResponseCode() + ", сообщение от сервера: " + conn.getResponseMessage(),
-                            true
-                            );
-
-                    // тут закоментирован способ получения полного ответа
-                    /*
-                    BufferedReader in = new BufferedReader(new InputStreamReader(conn.getInputStream()));
-                    String inputLine;
-                    StringBuffer response = new StringBuffer();
-
-                    while ((inputLine = in.readLine()) != null) {
-                        response.append(inputLine);
-                    }
-                    in.close();
-                    classLogsAllApp.Log(conn.getResponseCode() + " " + response); // пишем лог на сервак
-                    */
-                }
-
-
-            }
-            catch (Exception e)
-            {
-                classGlobalApp.Log("Notify",
-                        "doInBackground",
-                        "Исключение при отправке уведомления: " + e.getMessage(),
-                        true
-                );
-
-
-            }
-            return null;
-        }
-    }
 
     /**
      * Формируем айдишник канала чата

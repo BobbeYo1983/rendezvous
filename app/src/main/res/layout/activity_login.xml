@@ -16,7 +16,7 @@
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_email"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="270dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:hint="email:"
         app:startIconDrawable="@drawable/ic_outline_email_24"
@@ -32,17 +32,19 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/til_email_et"
-            android:layout_width="270dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:inputType="textEmailAddress"
             android:maxLength="50"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
+
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/til_password"
         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-        android:layout_width="270dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:hint="Пароль:"
         app:startIconDrawable="@drawable/ic_outline_keyboard_24"
@@ -59,16 +61,18 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/til_password_et"
-            android:layout_width="270dp"
+            android:layout_width="280dp"
             android:layout_height="wrap_content"
             android:inputType="textPassword"
             android:maxLength="20"/>
 
     </com.google.android.material.textfield.TextInputLayout>
 
+
+
     <Button
         android:id="@+id/btn_signin"
-        android:layout_width="270dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:text="Войти"
         app:icon="@drawable/ic_outline_exit_to_app_24"
@@ -78,9 +82,11 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"/>
 
+
+
     <Button
         android:id="@+id/btn_reg"
-        android:layout_width="270dp"
+        android:layout_width="280dp"
         android:layout_height="wrap_content"
         android:text="Зарегистрироваться"
         style="@style/Widget.MaterialComponents.Button.OutlinedButton.Icon"
@@ -91,14 +97,7 @@
         android:layout_marginEnd="10dp"
         android:layout_marginBottom="10dp"/>
 
-<!--    <ProgressBar
-        android:id="@+id/progressBar"
-        style="?android:attr/progressBarStyleHorizontal"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />-->
+
 
     <ProgressBar
         android:id="@+id/progressBar"

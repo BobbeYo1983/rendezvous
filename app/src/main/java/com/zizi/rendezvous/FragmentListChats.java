@@ -45,6 +45,7 @@ public class FragmentListChats extends Fragment {
     private FragmentChat fragmentChat; // фрагмент с одним чатом
     private int countUnreads; // количество непрочитанных чатов текущего пользователя
     private BadgeDrawable badgeDrawable; // значек для изменения количества непрочитанных сообщений
+    private FragmentDetailsMeeting fragmentDetailsMeeting; // фрагмент с подробностями встречи
 
     //вьюхи
     private RecyclerView recyclerView; // список с сообщениями
@@ -71,6 +72,7 @@ public class FragmentListChats extends Fragment {
         adapter = new Adapter(arrayListAllItems);
         modelChat = new ModelChat();
         fragmentListMeetings = new FragmentListMeetings();
+        fragmentDetailsMeeting = new FragmentDetailsMeeting();
         fragmentChat = new FragmentChat(); // фрагмент с одним чатом
         activityMeetings = (ActivityMeetings)getActivity();
         linearLayoutManager = new LinearLayoutManager(getActivity().getApplicationContext()); // для вертикальной ориентации recyclerView
@@ -107,7 +109,7 @@ public class FragmentListChats extends Fragment {
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //getActivity().onBackPressed();
+                //ничего не делать при нажатии
             }
         });
         //==========================================================================================
@@ -122,7 +124,7 @@ public class FragmentListChats extends Fragment {
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()) {
                     case R.id.meetings: // при нажатии на кнопочку Встречи в нижней панели
-                        activityMeetings.ChangeFragment(fragmentListMeetings, "fragmentListMeetings", false);
+                        activityMeetings.ChangeFragment(fragmentListMeetings, false);
                         return true;
                 }
                 return false;
@@ -130,7 +132,7 @@ public class FragmentListChats extends Fragment {
         });
 
         // ЗНАЧЕК с количеством непрочитанных сообщений текущего пользователя
-        databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/");
         databaseReference.addValueEventListener(new ValueEventListener() { // добавляем слушателя при изменении значения
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -184,7 +186,7 @@ public class FragmentListChats extends Fragment {
      * Метод вызывается при изменении данных в БД в списке чатов пользователя
      */
     private void UpdateChats(){
-        databaseReference = firebaseDatabase.getReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/"); //ссылка на данные
+        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/"); //ссылка на данные
 
         databaseReference.addChildEventListener(new ChildEventListener() {
             @Override // при добавлении в БД чата
@@ -192,7 +194,7 @@ public class FragmentListChats extends Fragment {
                 classGlobalApp.Log("FragmentListChats", "UpdateChats/onChildAdded", "В список добавились чаты", false);
                 arrayListAllItems.add(snapshot.getValue(ModelChat.class)); // записываем инфу о чате в коллекцию со всеми сообщениями
                 adapter.notifyDataSetChanged(); // обновление адаптера
-                recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount()); // пролистать чат в самый конец
+                //recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount()); // пролистать чат в самый конец
 
             }
 
@@ -206,11 +208,11 @@ public class FragmentListChats extends Fragment {
 
             @Override // при удалении сообщения
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                // вся фича это искать по индексу, делать по аналогии, как м в изменении
-                //ModelMessage modelMessage = snapshot.getValue(ModelMessage.class);
-                //int index = GetItemIndex(modelMessage);
-                //arrayListAllMessages.remove(index);
-                //adapter.notifyItemRemoved(index); // удаляем по индексу
+                //вся фича это искать по индексу, делать по аналогии, как в изменении
+                ModelChat modelChat = snapshot.getValue(ModelChat.class);
+                int index = GetItemIndex(modelChat);
+                arrayListAllItems.remove(index);
+                adapter.notifyItemRemoved(index); // удаляем по индексу
 
             }
 
@@ -237,7 +239,12 @@ public class FragmentListChats extends Fragment {
 
         for (int i = 0; i < arrayListAllItems.size(); i++) { // пробегаемся по всей коллекции чатов и сверяем ID пользователей
 
-            if (arrayListAllItems.get(i).getUserID().equals(modelChat.getUserID())) { // если найден соответствующий чат
+            String userID_FromList = arrayListAllItems.get(i).getUserID(); // ID пользователя при переборе списка
+            //classGlobalApp.Log(getClass().getSimpleName(), "GetItemIndex", "ID пользователя при переборе списка = " + userID_FromList, false);
+            String userID = modelChat.getUserID(); // "##############ID пользователя на входе = "
+            //classGlobalApp.Log(getClass().getSimpleName(), "GetItemIndex", "ID пользователя на входе = " + userID, false);
+
+            if (userID_FromList.equals(userID)) { // если найден соответствующий чат
                 index = i; // запоминаем индекс
                 break;
             }
@@ -302,6 +309,8 @@ public class FragmentListChats extends Fragment {
             TextView tv_name; // имя партнера
             TextView tv_age; // возраст партнера
             ImageView iv_unReadMsg; // непрочитанные сообщения
+            MaterialButton btn_delete; // кнопка Удалить
+            MaterialButton btn_details; // кнопка подробности
             MaterialButton btn_write; // кнопка написать
 
 
@@ -312,8 +321,43 @@ public class FragmentListChats extends Fragment {
                 tv_name = itemView.findViewById(R.id.tv_name);
                 tv_age = itemView.findViewById(R.id.tv_age);
                 iv_unReadMsg = itemView.findViewById(R.id.iv_unReadMsg);
+                btn_delete = itemView.findViewById(R.id.btn_delete);
+                btn_details = itemView.findViewById(R.id.btn_details);
                 btn_write = itemView.findViewById(R.id.btn_write);
 
+
+
+                // КНОПКА УДАЛИТЬ ////////////////////////////////////////////////////////////////////
+                btn_delete.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        //удаляем всю ссылку с перепиской
+                        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + arrayListItems.get(getAdapterPosition()).getUserID()); //ссылка на данные
+                        databaseReference.removeValue();
+
+                    }
+                });
+                //==================================================================================
+
+
+
+                // КНОПКА ПОДРОБНОСТИ //////////////////////////////////////////////////////////////
+                btn_details.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                    //готовим аргументы для передачи в другой фрагмент
+                    classGlobalApp.ClearBundle();
+                    classGlobalApp.AddBundle("partnerUserID", arrayListItems.get(getAdapterPosition()).getUserID());
+
+                    activityMeetings.ChangeFragment(fragmentDetailsMeeting, true); //переходим в подробности встречи
+
+                    }
+                });
+                //==================================================================================
+
+
+
+                // КНОПКА НАПИСАТЬ /////////////////////////////////////////////////////////////////
                 btn_write.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку написать
                     @Override
                     public void onClick(View v) {
@@ -321,15 +365,15 @@ public class FragmentListChats extends Fragment {
                         // добавляем аргументы для передачи в другой фрагмент
                         classGlobalApp.ClearBundle();
                         classGlobalApp.AddBundle("partnerID", arrayListItems.get(getAdapterPosition()).getUserID());
-                        classGlobalApp.AddBundle("partnerToken", arrayListItems.get(getAdapterPosition()).getToken());
+                        classGlobalApp.AddBundle("partnerTokenDevice", arrayListItems.get(getAdapterPosition()).getTokenDevice());
                         classGlobalApp.AddBundle("partnerName", arrayListItems.get(getAdapterPosition()).getName());
                         classGlobalApp.AddBundle("partnerAge", arrayListItems.get(getAdapterPosition()).getAge());
 
-                        activityMeetings.ChangeFragment(fragmentChat, "fragmentChat", true); //переходим в личный чат
+                        activityMeetings.ChangeFragment(fragmentChat, true); //переходим в личный чат
 
                     }
                 });
-
+                //===================================================================================
             }
         }
     }

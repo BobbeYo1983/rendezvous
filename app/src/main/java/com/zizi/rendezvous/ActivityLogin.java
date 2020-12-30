@@ -5,10 +5,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Point;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
+import android.view.Display;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ProgressBar;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -19,6 +23,8 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.lang.reflect.Array;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +36,11 @@ public class ActivityLogin extends AppCompatActivity {
     private DocumentReference documentReference; // для работы с документами в базе, нужно знать структуру базы FirebaseFirestore
     private String email; // почта пользователя
     private String password; // пароль пользователя
-    private FragmentManager manager; //менеджер фрагментов
+    private Map<String, Object> user; // коллекция ключ-значение для сохранения профиля в БД
+    private FragmentManager fragmentManager; //менеджер фрагментов
     private ClassDialog classDialog; //класс для показа всплывающих окон
+    private Display display; // для разрешения экрана
+    private Point point; // для разрешения экрана
 
 
     //Вьюхи
@@ -51,13 +60,16 @@ public class ActivityLogin extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
+
         // Инициализация ////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
         classGlobalApp.Log("ActivityLogin", "onCreate", "Метод запущен.", false);
         firebaseAuth = FirebaseAuth.getInstance(); // инициализация объект для работы с авторизацией в FireBase
+        user = new HashMap<>(); // коллекция ключ-значение для сохранения профиля в БД
         firebaseFirestore = FirebaseFirestore.getInstance(); // инициализация объект для работы с базой
-        manager = getSupportFragmentManager();
+        fragmentManager = getSupportFragmentManager();
         classDialog = new ClassDialog(); // класс для показа всплывающих окон
+        point = new Point();
         //==========================================================================================
 
 
@@ -137,6 +149,7 @@ public class ActivityLogin extends AppCompatActivity {
 
         SetVisibilityViews(false); // делаем вьюхи невидимыми
 
+
     }
 
 
@@ -147,13 +160,21 @@ public class ActivityLogin extends AppCompatActivity {
 
         // если раньше не входили в приложение, то есть логин и пароль не запоминались и пустые
         if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
-            SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
+            //if (BuildConfig.DEBUG) { //если отладка, то входим с заданной учеткой
+                //email = "999999@1.com";
+                //email = "emul@1.com";
+                //password = "Qwerty123";
+                //Signin();
+            //} else { // если сборка релизная
+                SetVisibilityViews(true); // делаем вьюхи видимыми и предлагаем заполнить
+            //}
         } else { // если раньше заполнял пользователь логин и пароль, то автовход
+            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
             email = classGlobalApp.GetParam("email");
             password = classGlobalApp.GetParam("password");
-            classGlobalApp.Log("ActivityLogin", "onStart", "Запуск автоматического входа в приложение.", false);
             Signin();
         }
+
     }
 
 
@@ -203,53 +224,70 @@ public class ActivityLogin extends AppCompatActivity {
 
                             SetVisibilityViews(true); //показываем вьюхи
 
-                            switch (task.getException().getMessage()) { // переводим ошибки
-                                case "We have blocked all requests from this device due to unusual activity. Try again later. [ Too many unsuccessful login attempts. Please try again later. ]":
+                            String exceptionMessage = task.getException().getMessage(); // текст ошибки
 
-                                    //показываем всплывающее окно
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
-                                    classDialog.show(manager, "classDialog");
-                                    //til_password.setError("Много неуспешных попыток входа. Повторите вход позже.");
+                            Map<String, Integer> mapErrors = new HashMap<>(); // словарь с текстом ошибок
+                            mapErrors.put("Too many unsuccessful login attempts", 0);
+                            mapErrors.put("The password is invalid or the user does not have a password", 1);
+                            mapErrors.put("The email address is badly formatted", 2);
+                            mapErrors.put("There is no user record corresponding to this identifier", 3);
+                            mapErrors.put("Unable to resolve host \"www.googleapis.com\":No address associated with hostname", 4);
+                            mapErrors.put("network error", 5);
+                            mapErrors.put("Failure in SSL library", 6);
 
-                                    break;
-                                case "The password is invalid or the user does not have a password.":
-                                    til_password.setError("Неверный пароль.");
-                                    break;
-                                case "The email address is badly formatted.":
-                                    til_email.setError("Неверный формат email.");
-                                    break;
-                                case "There is no user record corresponding to this identifier. The user may have been deleted.":
-                                    til_email.setError("Нет пользователя с таким email. Возможно он был удален.");
-                                    break;
 
-                                case "An internal error has occurred. [ Unable to resolve host \"www.googleapis.com\":No address associated with hostname ]":
-                                    //показываем всплывающее окно
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
-                                    classDialog.show(manager, "classDialog");
-                                    break;
+                            for (Map.Entry<String, Integer> error : mapErrors.entrySet()) { //пробегаемся по словарю
+                                if (exceptionMessage.contains(error.getKey())) { //если в тексте исключения есть ошибка из словаря
+                                    switch (error.getValue()) {
+                                        case 0:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Много неуспешных попыток входа. Повторите вход позже.");
+                                            classDialog.show(fragmentManager, "classDialog");
+                                            break;
+                                        case 1:
+                                            til_password.setError("Неверный пароль.");
+                                            break;
+                                        case 2:
+                                            til_email.setError("Неверный формат email.");
+                                            break;
+                                        case 3:
+                                            til_email.setError("Нет пользователя с таким email. Возможно он был удален.");
+                                            break;
+                                        case 4:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Нет подключения к интернет, проверьте, что интернет включен на вашем устройстве.");
+                                            classDialog.show(fragmentManager, "classDialog");
+                                            break;
+                                        case 5:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
+                                            classDialog.show(fragmentManager, "classDialog");
+                                            break;
+                                        case 6:
+                                            //показываем всплывающее окно
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен. Проверьте, что интернет включен на вашем устройстве.");
+                                            classDialog.show(fragmentManager, "classDialog");
+                                            break;
+                                        default:
+                                            //показываем пользователю
+                                            classDialog.setTitle("Ошибка входа");
+                                            classDialog.setMessage("Ошибка при входе пользователя: " + exceptionMessage);
+                                            classDialog.show(fragmentManager, "classDialog");
 
-                                case "A network error (such as timeout, interrupted connection or unreachable host) has occurred.":
-                                    //показываем всплывающее окно
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Нет подключения к интернет, возможно интернет не доступен.");
-                                    classDialog.show(manager, "classDialog");
-                                    break;
-
-                                default:
-                                    //показываем пользователю
-                                    classDialog.setTitle("Ошибка входа");
-                                    classDialog.setMessage("Ошибка при входе пользователя: " + task.getException().getMessage());
-                                    classDialog.show(manager, "classDialog");
-
-                                    //добавляем в лог и в БД
-                                    classGlobalApp.Log("ActivityLogin",
-                                            "Signin/onComplete",
-                                            "Ошибка при входе пользователя: " + task.getException().getMessage(),
-                                            true
-                                    );
-                                    break;
+                                            //добавляем в лог и в БД
+                                            classGlobalApp.Log("ActivityLogin",
+                                                    "Signin/onComplete",
+                                                    "Ошибка при входе пользователя: " + exceptionMessage,
+                                                    true
+                                            );
+                                            break;
+                                    }
+                                    //break;
+                                }
                             }
 
                         }
@@ -304,7 +342,7 @@ public class ActivityLogin extends AppCompatActivity {
                                     //показываем пользователю
                                     classDialog.setTitle("Ошибка регистрации");
                                     classDialog.setMessage("Ошибка при регистрации пользователя: " + task.getException().getMessage());
-                                    classDialog.show(manager, "classDialog");
+                                    classDialog.show(fragmentManager, "classDialog");
 
                                     //добавляем в лог и в БД
                                     classGlobalApp.Log("ActivityLogin",
@@ -335,15 +373,19 @@ public class ActivityLogin extends AppCompatActivity {
     public void SaveProfileAndEnter (){
         classGlobalApp.Log("ActivityLogin", "SaveProfileAndEnter", "Метод запущен.", false);
 
-        documentReference = firebaseFirestore.collection("users").document(classGlobalApp.GetCurrentUserEmail()); // подготавливаем коллекцию, внутри нее будут документы, внутри документов поля
-        Map<String, Object> user = new HashMap<>(); // коллекция ключ-значение
+        //готовим коллекцию профайла пользователя для сохранениния
         user.put("email", classGlobalApp.GetCurrentUserEmail());
         user.put("userID", classGlobalApp.GetCurrentUserUid());
         user.put("tokenDevice", classGlobalApp.GetTokenDevice()); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
-        //user.put("email1", classGlobalApp.GetCurrentUserEmail());
-        //user.put("token", ServiceFirebaseCloudMessaging.GetToken(this)); //сохраняем токен приложения на сервер, чтобы токен всегда был свежий и по нему могли прислать push-уведомление
+
+        display = getWindowManager().getDefaultDisplay();  // получаем объект экрана
+        display.getSize(point); // получаем расширение экрана
+        classGlobalApp.Log(getClass().getSimpleName(), "SaveProfileAndEnter", "Расширение экрана: " + String.valueOf(point.x) + "x" + String.valueOf(point.y), false);
+
+        user.put("screenExtension", String.valueOf(point.x) + "x" + String.valueOf(point.y));
 
         //сохраняем профайл пользователя в БД
+        documentReference = classGlobalApp.GenerateDocumentReference("users", classGlobalApp.GetCurrentUserUid()); // формируем путь к документу
         documentReference.set(user).addOnCompleteListener(new OnCompleteListener<Void>() {
             @Override
             public void onComplete(@NonNull Task<Void> task) { //если задача сохранениеия выполнилась
@@ -357,10 +399,14 @@ public class ActivityLogin extends AppCompatActivity {
                     //}
 
 
+                    //создаем намерение, что хотим перейти на другую активити
+                    Intent intent = new Intent(ActivityLogin.this, ActivityMeetings.class);
+                    intent.setFlags( Intent.FLAG_ACTIVITY_CLEAR_TASK //очищаем стек с задачей
+                                    |Intent.FLAG_ACTIVITY_NEW_TASK   //хотим создать активити в основной очищенной задаче
+                                    );
 
-                    //переходим на другую активити, то есть фактически входим в приложение
-                    startActivity(new Intent(ActivityLogin.this, ActivityMeetings.class));// переходим на след активити ко встречам
-                    finish(); // убиваем активити
+                    startActivity(intent); //переходим на другую активити, то есть фактически входим в приложение
+                    finish(); // убиваем текущую активити, чтобы не возвращаться по кнопке назад на нее
 
                 } else { // если сохранение не успешно
 
@@ -369,7 +415,7 @@ public class ActivityLogin extends AppCompatActivity {
                     //показываем всплывающее окно
                     classDialog.setTitle("Ошибка входа");
                     classDialog.setMessage("Ошибка при сохранении профайла пользователя в БД: " + task.getException());
-                    classDialog.show(manager, "classDialog");
+                    classDialog.show(fragmentManager, "classDialog");
 
                     //делаем вьюхи видимыми
                     SetVisibilityViews(true);
@@ -377,7 +423,6 @@ public class ActivityLogin extends AppCompatActivity {
                 }
             }
         });
-
 
     }
 
