@@ -159,7 +159,6 @@ public class FragmentChat extends Fragment {
                 // если ветка в непрочитанных с ID партнера существует и фрагмет активен/открыт, то ее нужно удалить, тем самым сказать, что чат прочитан
 
                 if (fragmentIsVisible){
-                    //databaseReference = firebaseDatabase.getReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
                     databaseReference = classGlobalApp.GenerateDatabaseReference("chats/unreads/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID());
                     databaseReference.removeValue();
                     classGlobalApp.Log("FragmentChat", "onActivityCreated/onDataChange", "Этот чат прочитан", false);
@@ -303,8 +302,7 @@ public class FragmentChat extends Fragment {
 
                     //Отправляем уведомление в асинхронной задаче по ключу устройства, в конструктор ссылку на глобальный класс, чтобы писать логи в БД
                     new ClassNotificationMessage(classGlobalApp).execute(partnerInfo.getTokenDevice());
-                    //new Notify().execute(partnerInfo.getTokenDevice());
-                    //classGlobalApp.Log("FragmentChat", "floatingActionButton.setOnClickListener", "partnerTokenDevice = " + partnerInfo.getTokenDevice(), false);
+                    classGlobalApp.Log("FragmentChat", "floatingActionButton.setOnClickListener", "partnerTokenDevice = " + partnerInfo.getTokenDevice(), false);
 
 
                 }

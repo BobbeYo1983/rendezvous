@@ -194,7 +194,7 @@ public class FragmentListChats extends Fragment {
                 classGlobalApp.Log("FragmentListChats", "UpdateChats/onChildAdded", "В список добавились чаты", false);
                 arrayListAllItems.add(snapshot.getValue(ModelChat.class)); // записываем инфу о чате в коллекцию со всеми сообщениями
                 adapter.notifyDataSetChanged(); // обновление адаптера
-                recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount()); // пролистать чат в самый конец
+                //recyclerView.smoothScrollToPosition(recyclerView.getAdapter().getItemCount()); // пролистать чат в самый конец
 
             }
 
@@ -208,11 +208,11 @@ public class FragmentListChats extends Fragment {
 
             @Override // при удалении сообщения
             public void onChildRemoved(@NonNull DataSnapshot snapshot) {
-                // вся фича это искать по индексу, делать по аналогии, как м в изменении
-                //ModelMessage modelMessage = snapshot.getValue(ModelMessage.class);
-                //int index = GetItemIndex(modelMessage);
-                //arrayListAllMessages.remove(index);
-                //adapter.notifyItemRemoved(index); // удаляем по индексу
+                //вся фича это искать по индексу, делать по аналогии, как в изменении
+                ModelChat modelChat = snapshot.getValue(ModelChat.class);
+                int index = GetItemIndex(modelChat);
+                arrayListAllItems.remove(index);
+                adapter.notifyItemRemoved(index); // удаляем по индексу
 
             }
 
@@ -239,7 +239,12 @@ public class FragmentListChats extends Fragment {
 
         for (int i = 0; i < arrayListAllItems.size(); i++) { // пробегаемся по всей коллекции чатов и сверяем ID пользователей
 
-            if (arrayListAllItems.get(i).getUserID().equals(modelChat.getUserID())) { // если найден соответствующий чат
+            String userID_FromList = arrayListAllItems.get(i).getUserID(); // ID пользователя при переборе списка
+            //classGlobalApp.Log(getClass().getSimpleName(), "GetItemIndex", "ID пользователя при переборе списка = " + userID_FromList, false);
+            String userID = modelChat.getUserID(); // "##############ID пользователя на входе = "
+            //classGlobalApp.Log(getClass().getSimpleName(), "GetItemIndex", "ID пользователя на входе = " + userID, false);
+
+            if (userID_FromList.equals(userID)) { // если найден соответствующий чат
                 index = i; // запоминаем индекс
                 break;
             }
@@ -326,8 +331,9 @@ public class FragmentListChats extends Fragment {
                 btn_delete.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-
-
+                        //удаляем всю ссылку с перепиской
+                        databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + arrayListItems.get(getAdapterPosition()).getUserID()); //ссылка на данные
+                        databaseReference.removeValue();
 
                     }
                 });

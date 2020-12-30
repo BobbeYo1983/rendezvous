@@ -24,7 +24,9 @@
         <activity
             android:name=".ActivityLogin"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait">
+            android:screenOrientation="portrait"
+            android:alwaysRetainTaskState="true"
+            >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
