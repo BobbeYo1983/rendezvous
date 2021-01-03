@@ -1,5 +1,16 @@
 НУЖНО СДЕЛАТЬ
 
+Выложить пробное бесплатное приложение.
+Попробовать перевести targetSDK на API30.
+Прочитать про ограничения интерфейсов https://developer.android.com/distribute/best-practices/develop/restrictions-non-sdk-interfaces#test-for-non-sdk
+Посмотреть ролик о выкладывании https://www.youtube.com/watch?v=-gIpL8nvIjA
+
+ВОПРОСЫ
+Какой счет нужно открыть в долларах, чтобы получать переводы? https://support.google.com/googleplay/android-developer/answer/7161440
+Можно ли, чтобы разработчик был один, а платежный профиль был на другого человека?
+Можно ли оформить на самозанятого?
+Можно ли к бесплатному привязать платный контент?
+
 Чтобы продавать платные приложения и покупки в приложениях в Google Play, вы также должны настроить профиль в Google Payments Center, а затем связать этот профиль со своей учетной записью разработчика Google Play. 
 	https://pay.google.com/gp/w/u/0/home/activity?sctid=545640180225671
 	https://support.google.com/googleplay/android-developer/answer/3092739
@@ -7,7 +18,7 @@
 
 Нужно ли указывать в приложении о 18+?
 
-TrivialDrive приложение из примеров с оплатой и комментариями от Гугла
+TrivialDrive приложение из примеров в студии с оплатой и комментариями от Гугла
 Перед выкладыванием в магазин прочитать тут https://developer.android.com/distribute/best-practices/launch/launch-checklist
 SDKTargetcompile
 Возрастные ограничения
