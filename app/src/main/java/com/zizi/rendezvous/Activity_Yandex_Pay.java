@@ -1,4 +1,4 @@
-package com.zizi.rendezvous;
+/*package com.zizi.rendezvous;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -83,3 +83,5 @@ public class Activity_Yandex_Pay extends AppCompatActivity implements View.OnCli
 
     }
 }
+
+*/
