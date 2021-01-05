@@ -1,30 +1,22 @@
 НУЖНО СДЕЛАТЬ
-
+Как пользоваться gitignore
+Добавить ключ в проект 4 минута
+Tips and Tricks. Lint
+Сверить настройки ProGuard
 Выложить пробное бесплатное приложение.
 Попробовать перевести targetSDK на API30.
 Прочитать про ограничения интерфейсов https://developer.android.com/distribute/best-practices/develop/restrictions-non-sdk-interfaces#test-for-non-sdk
-Посмотреть ролик о выкладывании https://www.youtube.com/watch?v=-gIpL8nvIjA
+Возрастные ограничения. Нужно ли указывать в приложении о 18+?
+TrivialDrive приложение из примеров в студии с оплатой и комментариями от Гугла
+SDKTargetcompile
+Подготовить скриншоты и рекламный текст
+Доступ пользователей в магазине к приложению https://developer.android.com/studio/publish#publishing-release
 
 ВОПРОСЫ
 Какой счет нужно открыть в долларах, чтобы получать переводы? https://support.google.com/googleplay/android-developer/answer/7161440
 Можно ли, чтобы разработчик был один, а платежный профиль был на другого человека?
 Можно ли оформить на самозанятого?
 Можно ли к бесплатному привязать платный контент?
-
-Чтобы продавать платные приложения и покупки в приложениях в Google Play, вы также должны настроить профиль в Google Payments Center, а затем связать этот профиль со своей учетной записью разработчика Google Play. 
-	https://pay.google.com/gp/w/u/0/home/activity?sctid=545640180225671
-	https://support.google.com/googleplay/android-developer/answer/3092739
-	Для продажи через Гугл надо жобавлять в манифест <uses-permission android:name="com.android.vending.BILLING" />
-
-Нужно ли указывать в приложении о 18+?
-
-TrivialDrive приложение из примеров в студии с оплатой и комментариями от Гугла
-Перед выкладыванием в магазин прочитать тут https://developer.android.com/distribute/best-practices/launch/launch-checklist
-SDKTargetcompile
-Возрастные ограничения
-
-Подготовить скриншоты и рекламный текст
-Доступ пользователей в магазине к приложению https://developer.android.com/studio/publish#publishing-release
 
 СДЕЛАТЬ ПОТОМ
 Монетизация.
@@ -93,13 +85,8 @@ https://firebase.google.cn/docs/database/security/rules-conditions?authuser=3&hl
 БЭКЕНД
 Для начала https://cloud.google.com/tools/android-studio/app_engine/run_test_deploy
 
-
-ОПЛАТА
-1. FONDY нужен ИП и сайт визитка, есть мобильный SDK.
-	https://habr.com/ru/post/304650/ 
-	https://fondy.ua/ru/blog/about-fondy/payments-in-ios-and-android-sdk/
-2. Единая касса, работают с физиками, есть пример на Node.js
-3. https://github.com/ArsenalPay/Android-ArsenalPay-API-SDK 
+НЕ ЯСНО
+В настойках сборки пароль к ключу с подписью указывается явно, надо скрыть бы.
 
 ПЕРЕД КАЖДОЙ СБОРКОЙ
 Инкрементировать версии.
@@ -109,21 +96,4 @@ https://firebase.google.cn/docs/database/security/rules-conditions?authuser=3&hl
 Протестировать релизную версию.
 Выложить (обновить информацию, скриншоты).
 Слить в мастер ветку.
-
-НЕ ЯСНО
-В настойках сборки пароль к ключу с подписью указывается явно, надо скрыть бы.
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
