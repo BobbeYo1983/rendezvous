@@ -1,16 +1,16 @@
 НУЖНО СДЕЛАТЬ
-К дебагу добавить суффикс
-Добавить ключ в проект 4 минута
+Создать arrayList в глобальном классе и туда сохранить места.
+
 Tips and Tricks. Lint
 Сверить настройки ProGuard
 Выложить пробное бесплатное приложение.
-Попробовать перевести targetSDK на API30.
 Прочитать про ограничения интерфейсов https://developer.android.com/distribute/best-practices/develop/restrictions-non-sdk-interfaces#test-for-non-sdk
 Возрастные ограничения. Нужно ли указывать в приложении о 18+?
 TrivialDrive приложение из примеров в студии с оплатой и комментариями от Гугла
 SDKTargetcompile
 Подготовить скриншоты и рекламный текст
 Доступ пользователей в магазине к приложению https://developer.android.com/studio/publish#publishing-release
+Монетизация.
 
 ВОПРОСЫ
 Какой счет нужно открыть в долларах, чтобы получать переводы? https://support.google.com/googleplay/android-developer/answer/7161440
@@ -19,7 +19,6 @@ SDKTargetcompile
 Можно ли к бесплатному привязать платный контент?
 
 СДЕЛАТЬ ПОТОМ
-Монетизация.
 Нужно делать админку.
 Протестировать в режиме Strictmode https://developer.android.com/docs/quality-guidelines/core-app-quality#strictmode
 Протестировать, тесты тут: https://developer.android.com/docs/quality-guidelines/core-app-quality

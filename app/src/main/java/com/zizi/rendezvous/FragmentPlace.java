@@ -150,10 +150,8 @@ public class FragmentPlace extends Fragment {
             if (classGlobalApp.GetParam("placeHotel")      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);}         else {cb_hotel.setChecked(false);};
             if (classGlobalApp.GetParam("placeOther")      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);}         else {cb_other.setChecked(false);};
         }
-
-
-
         //============================================================================================
+
 
 
         // cb_anyPlace //////////////////////////////////////////////////////////////////////////////

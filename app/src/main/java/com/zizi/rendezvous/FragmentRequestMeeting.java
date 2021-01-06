@@ -94,10 +94,9 @@ public class FragmentRequestMeeting extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-
-
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getActivity().getApplicationContext();
+        classGlobalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Метод запущен", false);
         firebaseFirestore = FirebaseFirestore.getInstance(); //инициализация БД
         meeting = new HashMap<>(); // коллекция ключ-значение для описания встречи
         activityMeetings = (ActivityMeetings)getActivity();
@@ -136,7 +135,28 @@ public class FragmentRequestMeeting extends Fragment {
         btn_apply_request = getActivity().findViewById(R.id.btn_apply_request);
         //=========================================================================================
 
+    }
 
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
+            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
+            getActivity().finish(); // убиваем активити
+        } else {
+            UpdateUI();
+        }
+
+    }
+
+
+    /**
+     * Обновляет интерфейс пользователя
+     */
+    private void UpdateUI () {
 
         // materialToolbar ////////////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Заявка"); // заголовок в панельке верхней
@@ -381,10 +401,11 @@ public class FragmentRequestMeeting extends Fragment {
             til_town.setEnabled(true);
             til_town_act.setEnabled(true); // то делаем активным
             til_town_act.setText(classGlobalApp.GetParam("town")); // подгружаем имя города из памяти
+            classGlobalApp.Log(getClass().getSimpleName(), "onActivityCreated", "Имя города в памяти = " + classGlobalApp.GetParam("town"), false);
             til_town_act.setAdapter(CreateAdapterTowns(classGlobalApp.GetParam("region")));//тут нужно дернуть слушатель, чтобы подгрузил города
         }
 
-        til_town_act.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+        til_town_act.setOnItemClickListener(new AdapterView.OnItemClickListener() { //при нажатии на выбранный элемент
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 til_town.setErrorEnabled(false); // сбрасываем описание ошибки
@@ -395,7 +416,8 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         //til_place_et //////////////////////////////////////////////////////////////////////////////
-        til_place_et.setText(tmpStr);
+        til_place_et.setText(LoadFromMemory());
+
         // Слушатель при нажатии на поле
         til_place_et.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -464,15 +486,15 @@ public class FragmentRequestMeeting extends Fragment {
 
                 // Если поля все введены корректно
                 if (!til_name_et.getText().toString().isEmpty() &           // если имя не пустое
-                    !til_gender_act.getText().toString().isEmpty() &        // если пол выбран
-                    !til_age_act.getText().toString().isEmpty() &           //если возраст выбран
-                    !til_gender_partner_act.getText().toString().isEmpty() &//если пол партнера выбран
-                    !til_age_min_act.getText().toString().isEmpty() &       //если возраст минимальный партнера выбран
-                    !til_age_max_act.getText().toString().isEmpty() &       //если возраст максимальный партнера выбран
-                    !til_region_act.getText().toString().isEmpty() &        //если регион выбран
-                    !til_town_act.getText().toString().isEmpty() &          //если город выбран
-                    !til_place_et.getText().toString().isEmpty() &          //если место выбрано
-                    !til_time_act.getText().toString().isEmpty()            //если время выбрано
+                        !til_gender_act.getText().toString().isEmpty() &        // если пол выбран
+                        !til_age_act.getText().toString().isEmpty() &           //если возраст выбран
+                        !til_gender_partner_act.getText().toString().isEmpty() &//если пол партнера выбран
+                        !til_age_min_act.getText().toString().isEmpty() &       //если возраст минимальный партнера выбран
+                        !til_age_max_act.getText().toString().isEmpty() &       //если возраст максимальный партнера выбран
+                        !til_region_act.getText().toString().isEmpty() &        //если регион выбран
+                        !til_town_act.getText().toString().isEmpty() &          //если город выбран
+                        !til_place_et.getText().toString().isEmpty() &          //если место выбрано
+                        !til_time_act.getText().toString().isEmpty()            //если время выбрано
 
                 ) {
 
@@ -501,19 +523,19 @@ public class FragmentRequestMeeting extends Fragment {
 
                     //добавляем в массив внутри документа все места со встречами
                     meeting.put("placeArray", Arrays.asList(classGlobalApp.GetParam("placeStreet"),
-                                                            classGlobalApp.GetParam("placePicnic"),
-                                                            classGlobalApp.GetParam("placeCar"),
-                                                            classGlobalApp.GetParam("placeSport"),
-                                                            classGlobalApp.GetParam("placeFilm"),
-                                                            classGlobalApp.GetParam("placeBilliards"),
-                                                            classGlobalApp.GetParam("placeCafe"),
-                                                            classGlobalApp.GetParam("placeDisco"),
-                                                            classGlobalApp.GetParam("placeBath"),
-                                                            classGlobalApp.GetParam("placeMyHome"),
-                                                            classGlobalApp.GetParam("placeYouHome"),
-                                                            classGlobalApp.GetParam("placeHotel"),
-                                                            classGlobalApp.GetParam("placeOther")
-                                                            ));
+                            classGlobalApp.GetParam("placePicnic"),
+                            classGlobalApp.GetParam("placeCar"),
+                            classGlobalApp.GetParam("placeSport"),
+                            classGlobalApp.GetParam("placeFilm"),
+                            classGlobalApp.GetParam("placeBilliards"),
+                            classGlobalApp.GetParam("placeCafe"),
+                            classGlobalApp.GetParam("placeDisco"),
+                            classGlobalApp.GetParam("placeBath"),
+                            classGlobalApp.GetParam("placeMyHome"),
+                            classGlobalApp.GetParam("placeYouHome"),
+                            classGlobalApp.GetParam("placeHotel"),
+                            classGlobalApp.GetParam("placeOther")
+                    ));
 
 
                     meeting.put("time", til_time_act.getEditableText().toString().trim());
@@ -595,26 +617,17 @@ public class FragmentRequestMeeting extends Fragment {
             }
         });
         //==================================================================================================
+
     }
 
-    @Override
-    public void onStart() {
-        super.onStart();
-
-        //classGlobalApp.Log("FragmentRequestMeeting", "onStart", "Метод вызван", false);
-
-        if (!classGlobalApp.IsAuthorized()) { // если пользователь не авторизован
-            startActivity(new Intent(getActivity().getApplicationContext(), ActivityLogin.class)); // отправляем к началу на авторизацию
-            getActivity().finish(); // убиваем активити
-        }
 
 
-        //til_place_et /////////////////////////////////////////////////////////////////////////////////////
-        til_place_et.setText(""); //очищаем на всякий текст
+    private String LoadFromMemory () {
+
         tmpStr = "";
         // если любое место, то так и пишем, если нет, то перечисляем все выбранные
         if(!classGlobalApp.GetParam("placeAnyPlace").equals("")){
-            tmpStr = "Любое место";
+            tmpStr = Data.anyPlace;
         } else { // не выбрано, что встреча в любом месте
 
             tmpStr = "Выбранные места:";
@@ -677,11 +690,11 @@ public class FragmentRequestMeeting extends Fragment {
 
 
         }
-        til_place_et.setText(tmpStr);
-        //==================================================================================================
+        //til_place_et.setText(tmpStr);
 
-
+        return tmpStr;
     }
+
 
 
     /**
