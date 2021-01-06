@@ -2,12 +2,12 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
-def keyStoreZiziPropertiesFileDebug = rootProject.file('signing\\KeyStoreZiziDebug.properties') // файл, где прописаны пароли для дебажного ключа и путь к ключу
-def keyStoreZiziProperties = new Properties()
+//def keyStoreZiziPropertiesFileDebug = rootProject.file('C:\\KeyStoreZiziDebug.properties') // файл, где прописаны пароли для дебажного ключа и путь к ключу
+//def keyStoreZiziProperties = new Properties()
 
 android {
     signingConfigs {
-        debug {
+/*        debug {
             keyStoreZiziProperties.load(new FileInputStream(keyStoreZiziPropertiesFileDebug)) //загружаем настройки из файла
             storeFile file(keyStoreZiziProperties['storeFile'])
             keyAlias keyStoreZiziProperties['keyAlias']
@@ -27,10 +27,22 @@ android {
             keyAlias keyStoreZiziProperties['keyAlias']
             keyPassword keyStoreZiziProperties['keyPassword']
             storePassword keyStoreZiziProperties['storePassword']
-        }
+        }*/
 
         KeyStoreZizi {
             storeFile file('D:\\Develope\\KeyStoreZizi.jks')
+            keyAlias 'KeyStoreZizi'
+            storePassword 'Rend#1910'
+            keyPassword 'Rend#1910'
+        }
+        debug {
+            storeFile file('C:\\KeyStoreZiziDebug.jks')
+            storePassword 'KeyStoreZiziDebug'
+            keyAlias 'KeyStoreZiziDebug'
+            keyPassword 'KeyStoreZiziDebug'
+        }
+        release {
+            storeFile file('C:\\KeyStoreZizi.jks')
             keyAlias 'KeyStoreZizi'
             storePassword 'Rend#1910'
             keyPassword 'Rend#1910'
