@@ -2,47 +2,17 @@ apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
 apply plugin: 'com.google.firebase.crashlytics'
 
-//def keyStoreZiziPropertiesFileDebug = rootProject.file('C:\\KeyStoreZiziDebug.properties') // файл, где прописаны пароли для дебажного ключа и путь к ключу
-//def keyStoreZiziProperties = new Properties()
-
 android {
     signingConfigs {
-/*        debug {
-            keyStoreZiziProperties.load(new FileInputStream(keyStoreZiziPropertiesFileDebug)) //загружаем настройки из файла
-            storeFile file(keyStoreZiziProperties['storeFile'])
-            keyAlias keyStoreZiziProperties['keyAlias']
-            keyPassword keyStoreZiziProperties['keyPassword']
-            storePassword keyStoreZiziProperties['storePassword']
-        }
 
-        release {
-            def keyStoreZiziPropertiesFile = rootProject.file('signing\\KeyStoreZizi.properties')
-            if (rootProject.file(keyStoreZiziPropertiesFile).exists()) { // если релизный ключ есть на машине
-                keyStoreZiziProperties.load(new FileInputStream(rootProject.file(keyStoreZiziPropertiesFile))) //загружаем настройки из файла
-            } else { //если релизного ключа нет на машине, то собирать будем с Дебажным
-                keyStoreZiziProperties.load(new FileInputStream(keyStoreZiziPropertiesFileDebug)) //загружаем настройки из файла
-            }
-
-            storeFile file(keyStoreZiziProperties['storeFile'])
-            keyAlias keyStoreZiziProperties['keyAlias']
-            keyPassword keyStoreZiziProperties['keyPassword']
-            storePassword keyStoreZiziProperties['storePassword']
-        }*/
-
-        KeyStoreZizi {
-            storeFile file('D:\\Develope\\KeyStoreZizi.jks')
-            keyAlias 'KeyStoreZizi'
-            storePassword 'Rend#1910'
-            keyPassword 'Rend#1910'
-        }
         debug {
-            storeFile file('C:\\KeyStoreZiziDebug.jks')
+            storeFile file('KeyStoreZiziDebug.jks') // путь относительно настоящего файла
             storePassword 'KeyStoreZiziDebug'
             keyAlias 'KeyStoreZiziDebug'
             keyPassword 'KeyStoreZiziDebug'
         }
         release {
-            storeFile file('C:\\KeyStoreZizi.jks')
+            storeFile file('..\\..\\KeyStoreZizi.jks') // путь относительно настоящего файла
             keyAlias 'KeyStoreZizi'
             storePassword 'Rend#1910'
             keyPassword 'Rend#1910'
@@ -59,15 +29,19 @@ android {
         versionName '1.0.0'
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        signingConfig signingConfigs.KeyStoreZizi
+        signingConfig signingConfigs.release
     }
 
     buildTypes {
         release {
             minifyEnabled true // ProGuard выключен
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
-            signingConfig signingConfigs.KeyStoreZizi // подписываем приложение выбранной подписью
+            signingConfig signingConfigs.release // подписываем приложение выбранной подписью
 
+        }
+        debug {
+            signingConfig signingConfigs.debug
+            versionNameSuffix '.debug'
         }
     }
 }
