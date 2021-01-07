@@ -48,18 +48,6 @@
 
 
 
-        <activity
-            android:name=".Activity_Yandex_Pay"
-            android:screenOrientation="portrait">
-
-            <!-- Для Яндекс.Кассы -->
-            <meta-data
-                android:name="com.google.android.gms.wallet.api.enabled"
-                tools:node="remove" />
-        </activity>
-
-
-
         <!-- Сервис для уведомлений -->
         <service
             android:name=".ServiceFirebaseCloudMessaging"

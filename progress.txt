@@ -1,5 +1,9 @@
 НУЖНО СДЕЛАТЬ
-Создать arrayList в глобальном классе и туда сохранить места.
+То что проделал закомментить.
+Протестировать написанное
+При возвращении из заявки подгрузить актуальную
+
+При загрузке приложения грузить заявку.
 
 Tips and Tricks. Lint
 Сверить настройки ProGuard
@@ -19,6 +23,7 @@ SDKTargetcompile
 Можно ли к бесплатному привязать платный контент?
 
 СДЕЛАТЬ ПОТОМ
+Использую устаревшие методы, что пришло на замену? Например AsyncTask in android.os has been deprecated.
 Нужно делать админку.
 Протестировать в режиме Strictmode https://developer.android.com/docs/quality-guidelines/core-app-quality#strictmode
 Протестировать, тесты тут: https://developer.android.com/docs/quality-guidelines/core-app-quality

@@ -3,12 +3,15 @@ package com.zizi.rendezvous;
 class Data {
 
     //константы
-    public static final String anyPlace = "Любое место";
+    public static final String ANY_PLACE = "Любое место";
     public static final String anyTime = "Любое время";
     public static final String channelID = "Сообщения";
     public static final String tagLog = "!@#";
-    public static final String activityLogin = "ActivityLogin";
-    public static final String fragmentChat = "FragmentChat";
+    public static final String ACTIVITY_LOGIN = "ActivityLogin";
+    public static final String FRAGMENT_CHAT = "FragmentChat";
+    public static final String ACTIVE = "Active";
+    public static final String NOT_ACTIVE = "NotActive";
+    public static final String OTHER = "Прочее";
 
 
     public static final String[] regionsTmp = new String[]{

@@ -39,7 +39,7 @@ public class ClassDialog extends AppCompatDialogFragment {
                         // Закрываем окно
                         dialog.cancel();
 
-                        if (widgetName != null && widgetName.equals(Data.activityLogin)) {
+                        if (widgetName != null && widgetName.equals(Data.ACTIVITY_LOGIN)) {
 
                             //создаем намерение, что хотим перейти на другую активити
                             Intent intent = new Intent(getContext(), ActivityLogin.class);

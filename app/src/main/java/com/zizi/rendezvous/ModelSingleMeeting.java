@@ -1,5 +1,7 @@
 package com.zizi.rendezvous;
 
+import java.util.ArrayList;
+
 public class ModelSingleMeeting {
 
 
@@ -23,7 +25,10 @@ public class ModelSingleMeeting {
     private String age_max;
     private String region;
     private String town;
-    private String place;
+    //private String place;
+    private String placeAnyPlace;
+    private ArrayList<String> placeArray;
+    private String placeOtherDescription;
     private String time;
     private String comment;
 
@@ -96,8 +101,20 @@ public class ModelSingleMeeting {
         return town;
     }
 
-    public String getPlace() {
+/*    public String getPlace() {
         return place;
+    }*/
+
+    public String getPlaceAnyPlace() {
+        return placeAnyPlace;
+    }
+
+    public ArrayList<String> getPlaceArray() {
+        return placeArray;
+    }
+
+    public String getPlaceOtherDescription() {
+        return placeOtherDescription;
     }
 
     public String getTime() {
@@ -171,8 +188,20 @@ public class ModelSingleMeeting {
         this.town = town;
     }
 
-    public void setPlace(String place) {
+/*    public void setPlace(String place) {
         this.place = place;
+    }*/
+
+    public void setPlaceAnyPlace(String placeAnyPlace) {
+        this.placeAnyPlace = placeAnyPlace;
+    }
+
+    public void setPlaceArray(ArrayList<String> placeArray) {
+        this.placeArray = placeArray;
+    }
+
+    public void setPlaceOtherDescription(String placeOtherDescription) {
+        this.placeOtherDescription = placeOtherDescription;
     }
 
     public void setTime(String time) {

@@ -62,8 +62,8 @@ public class FragmentListMeetings extends Fragment {
     private DatabaseReference databaseReference;// ссылка на данные в БД
     private CollectionReference collectionReference; // для работы с коллекциями в БД, нужно знать структуру/информационную модель базы FirebaseFirestore
     private FirebaseDatabase firebaseDatabase; // БД RealTime DataBase
-    //private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
-    private ArrayList<?> arrayListPlaces; //сюда вычитывать массив с местами будем
+    private ArrayList<String> arrayListPlaces; // список с местами встреч партнера
+    ////private ArrayList<?> arrayListPlaces; //сюда вычитывать массив с местами будем
 
     //вьюхи
     private BottomNavigationView bottomNavigationView; // нижняя панель с кнопками
@@ -178,6 +178,7 @@ public class FragmentListMeetings extends Fragment {
         materialToolbar.setNavigationOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //ничего не делаем
                 //getActivity().onBackPressed();
             }
         });
@@ -216,7 +217,8 @@ public class FragmentListMeetings extends Fragment {
                 int age_max = Integer.parseInt(classGlobalApp.GetParam("age_max")); //максимальный возраст из заявки текущего пользователя
 
                 //arrayListPlaces = (ArrayList<String>) snapshot.get("placeArray"); // получаем все места партнера
-                arrayListPlaces = new ArrayList<>((Collection<?>)snapshot.get("placeArray")); // получаем все места партнера
+                ////arrayListPlaces = new ArrayList<>((Collection<?>)snapshot.get("placeArray")); // получаем все места партнера
+                arrayListPlaces = model.getPlaceArray();
 
                 //отфильтровываем встречи по фильтру текущего пользователя и свою заявку тоже скрываем
                 if (snapshot.getId().equals(classGlobalApp.GetCurrentUserEmail()) || // если название документа в коллекции встреч такое же, как у текущего юзера, то скрываем эту встречу в списке

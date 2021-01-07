@@ -38,7 +38,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
     public void onMessageReceived(RemoteMessage remoteMessage) { // когда получили уведомление не в фоновом режиме
         super.onMessageReceived(remoteMessage);
 
-        String stringTmp = Data.fragmentChat + remoteMessage.getData().get("userID"); //формируем строку для сравнения
+        String stringTmp = Data.FRAGMENT_CHAT + remoteMessage.getData().get("userID"); //формируем строку для сравнения
         // если в настоящее время открыт фрагмент (видимый виджет) с чатом пользователя, который прислал уведомление, то не формировать уведомление
         if (!classGlobalApp.GetVisibleWidget().equals(stringTmp)) {
 
@@ -47,7 +47,7 @@ public class ServiceFirebaseCloudMessaging extends FirebaseMessagingService
 
             //создаем намерение, что хотим перейти на другую активити
             Intent intent = new Intent(this, ActivityMeetings.class); // новое намерение для перехода на активити
-            intent.putExtra("fragmentForLoad", Data.fragmentChat);
+            intent.putExtra("fragmentForLoad", Data.FRAGMENT_CHAT);
             intent.putExtra("partnerID", remoteMessage.getData().get("userID")); //передаем идентификатор пользователя, чтобы открыть нужный чат
             intent.putExtra("partnerTokenDevice", remoteMessage.getData().get("tokenDevice"));
             intent.putExtra("partnerName", remoteMessage.getData().get("name"));

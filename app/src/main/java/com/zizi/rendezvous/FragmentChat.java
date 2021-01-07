@@ -199,7 +199,7 @@ public class FragmentChat extends Fragment {
                 // если непрочитанных сообщений больше нуля и фрагмент чата активен/открыт/показан, то сбросить опять в ноль
                 if (snapshot.getValue(ModelChat.class) != null && //если вообще есть чаты
                     Integer.parseInt(snapshot.getValue(ModelChat.class).getUnReadMsg()) > 0 &&
-                    classGlobalApp.GetVisibleWidget().equals(Data.fragmentChat)){ // сейчас показывается пользователю фрагмент с чатом
+                    classGlobalApp.GetVisibleWidget().equals(Data.FRAGMENT_CHAT)){ // сейчас показывается пользователю фрагмент с чатом
                     //fragmentIsVisible){
                         databaseReference = classGlobalApp.GenerateDatabaseReference("chats/lists/" + classGlobalApp.GetCurrentUserUid() + "/" + partnerInfo.getUserID() + "/unReadMsg");
                         databaseReference.setValue("0"); // делаем отметочку, что прочитали чат, чтобы убрать конвертик напротив чата в списке чатов.
@@ -343,7 +343,7 @@ public class FragmentChat extends Fragment {
         super.onResume();
 
         fragmentIsVisible = true; // делаем статус фрагмента видимым
-        classGlobalApp.SetVisibleWidget(Data.fragmentChat + partnerInfo.getUserID()); // делаем статус фрагмента видимым и закладываем в строку с кем открыт чат
+        classGlobalApp.SetVisibleWidget(Data.FRAGMENT_CHAT + partnerInfo.getUserID()); // делаем статус фрагмента видимым и закладываем в строку с кем открыт чат
     }
 
     /**
