@@ -107,7 +107,7 @@ public class ActivityMeetings extends AppCompatActivity {
             //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerName="  + bundle.getString("partnerName"),false);
             //classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Получен параметр: partnerAge="  + bundle.getString("partnerAge"),false);
 
-            if (bundle.getString("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
+            if (bundle != null && bundle.getString("fragmentForLoad").equals(Data.FRAGMENT_CHAT)) { // если нужно грузить фрагмент с чатом
                 classGlobalApp.Log(getClass().getSimpleName(), "onCreate", "Параметр: fragmentForLoad="  + bundle.getString("fragmentForLoad") + ", нужно грузить фрагмент с чатом",false);
 
                 //извлекаем параметры и передаем их дальше фрагменту

@@ -132,6 +132,7 @@ public class FragmentDetailsMeeting extends Fragment {
 
 
         //Читаем документ со встречей партнера из БД //////////////////////////////////////////////////
+        //classGlobalApp.Log(getClass().getSimpleName(), "onStart", "partnerUserID = ", false);
         documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetBundle("partnerUserID")); // формируем путь к документу
         documentReference.get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() { // вешаем слушателя на задачу чтения документа из БД
             @Override

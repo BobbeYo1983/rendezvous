@@ -1,11 +1,10 @@
 НУЖНО СДЕЛАТЬ
+На фрагменте с деталями, подгружать заявку в класс встречи и обновлять интерфейс.
 Tips and Tricks. Lint
-Сверить настройки ProGuard
 Выложить пробное бесплатное приложение.
 Прочитать про ограничения интерфейсов https://developer.android.com/distribute/best-practices/develop/restrictions-non-sdk-interfaces#test-for-non-sdk
 Возрастные ограничения. Нужно ли указывать в приложении о 18+?
 TrivialDrive приложение из примеров в студии с оплатой и комментариями от Гугла
-SDKTargetcompile
 Подготовить скриншоты и рекламный текст
 Доступ пользователей в магазине к приложению https://developer.android.com/studio/publish#publishing-release
 Монетизация.
@@ -85,6 +84,7 @@ https://firebase.google.cn/docs/database/security/rules-conditions?authuser=3&hl
 В настойках сборки пароль к ключу с подписью указывается явно, надо скрыть бы.
 
 ПЕРЕД КАЖДОЙ СБОРКОЙ
+Прогнать через Lint.
 Инкрементировать версии.
 Актуализировать целевые платформы.
 Сделать очистку проекта.

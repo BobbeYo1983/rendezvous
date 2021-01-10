@@ -330,7 +330,7 @@ public class FragmentListMeetings extends Fragment {
 
 
             //Нажати на кнопку ПОДРОБНОСТИ/////////////////////////////////////////////////////////////
-            btn_details.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку подробности
+            btn_details.setOnClickListener(new View.OnClickListener() { //если нажали на кнопку Инфо (Подробности)
                 @Override
                 public void onClick(View v) {
 
@@ -353,7 +353,7 @@ public class FragmentListMeetings extends Fragment {
 
                     //готовим аргументы для передачи
                     classGlobalApp.ClearBundle();
-                    classGlobalApp.AddBundle("partnerID", usersInfoAll.get(getAdapterPosition()).getUserID());
+                    classGlobalApp.AddBundle("partnerUserID", usersInfoAll.get(getAdapterPosition()).getUserID());
                     classGlobalApp.AddBundle("partnerTokenDevice", usersInfoAll.get(getAdapterPosition()).getTokenDevice());
                     classGlobalApp.AddBundle("partnerName", usersInfoAll.get(getAdapterPosition()).getName());
                     classGlobalApp.AddBundle("partnerAge", usersInfoAll.get(getAdapterPosition()).getAge());

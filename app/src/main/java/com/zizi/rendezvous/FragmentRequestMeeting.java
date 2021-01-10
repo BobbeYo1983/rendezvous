@@ -166,13 +166,6 @@ public class FragmentRequestMeeting extends Fragment {
      */
     private void UpdateUI () {
 
-/*        if (classGlobalApp.GetBundle("navigationFromFragmentPlace") != null
-                && !classGlobalApp.GetBundle("navigationFromFragmentPlace").equals("trueTrue")) {
-            classGlobalApp.LoadRequestMeetingFromMemory();//подгружаем заявку на встречу из памяти
-            classGlobalApp.ClearBundle();
-        }*/
-
-
         // materialToolbar ////////////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Заявка"); // заголовок в панельке верхней
         materialToolbar.getMenu().findItem(R.id.request).setVisible(false); // скрываем пункт заявки на встречу

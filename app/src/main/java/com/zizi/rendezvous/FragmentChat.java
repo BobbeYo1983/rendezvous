@@ -116,7 +116,7 @@ public class FragmentChat extends Fragment {
 
 
         // информация о партнере чата ///////////////////////////////////////////////////////////////
-        partnerInfo.setUserID(classGlobalApp.GetBundle("partnerID"));
+        partnerInfo.setUserID(classGlobalApp.GetBundle("partnerUserID"));
         partnerInfo.setTokenDevice(classGlobalApp.GetBundle("partnerTokenDevice"));
         partnerInfo.setName(classGlobalApp.GetBundle("partnerName"));
         partnerInfo.setAge(classGlobalApp.GetBundle("partnerAge"));

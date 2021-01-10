@@ -208,7 +208,7 @@ public class ActivityLogin extends AppCompatActivity {
 
 
     public void Signin (){ // вход в систему
-        classGlobalApp.Log("ActivityLogin", "onStart/Signin", "Метод запущен.", false);
+        classGlobalApp.Log(getClass().getSimpleName(), "Signin", "Метод запущен.", false);
 
         if (!email.equals("") ){ // если поле почты не пустое, то  переходим к проверке пароля пытаемся войти
             if (!password.equals("")) { // если пароль не пустой, то пытаемся войти
@@ -298,10 +298,14 @@ public class ActivityLogin extends AppCompatActivity {
                 til_password.setError(getString(R.string.til_password));
             }
         } else { // если поле почты пустое, то просим заполнить
+            classGlobalApp.Log(getClass().getSimpleName(), "Signin", "Поле с email пустое, введите email.", false);
             SetVisibilityViews(true);
             til_email.setError("Введите email");
         }
     }
+
+
+
     public void Registration () { // регистрация
         classGlobalApp.Log("ActivityLogin", "onStart/Registration", "Метод запущен.", false);
         if (!email.equals("")){ // если поля почты и пароля не пустые, то пытаемся делать регистрацию

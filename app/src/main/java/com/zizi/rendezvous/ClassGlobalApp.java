@@ -240,7 +240,10 @@ public class ClassGlobalApp extends Application {
      * @return индентификатор текущего пользователя
      */
     public String GetCurrentUserUid() {
-        return firebaseAuth.getCurrentUser().getUid();
+
+        //if (firebaseAuth != null) {
+            return firebaseAuth.getCurrentUser().getUid();
+        //} else {return "";}
     }
 
     /**
@@ -385,7 +388,7 @@ public class ClassGlobalApp extends Application {
         PreparingToSave("age_min",          requestMeeting.getAge_min());
         PreparingToSave("comment",          requestMeeting.getComment());
         PreparingToSave("contact",          requestMeeting.getContact());
-        PreparingToSave("email",            requestMeeting.getEmail());
+        //PreparingToSave("email",            requestMeeting.getEmail());
         PreparingToSave("gender",           requestMeeting.getGender());
         PreparingToSave("gender_partner",   requestMeeting.getGender_partner());
         PreparingToSave("name",             requestMeeting.getName());
@@ -432,7 +435,7 @@ public class ClassGlobalApp extends Application {
         requestMeeting.setAge_min(GetParam("age_min"));
         requestMeeting.setComment(GetParam("comment"));
         requestMeeting.setContact(GetParam("contact"));
-        requestMeeting.setEmail(GetParam("email"));
+        //requestMeeting.setEmail(GetParam("email"));
         requestMeeting.setGender(GetParam("gender"));
         requestMeeting.setGender_partner(GetParam("gender_partner"));
         requestMeeting.setName(GetParam("name"));
@@ -477,9 +480,9 @@ public class ClassGlobalApp extends Application {
         requestMeeting.setRegion(GetParam("region"));
         requestMeeting.setSocNet(GetParam("socNet"));
         requestMeeting.setTime(GetParam("time"));
-        //requestMeeting.setTokenDevice(GetTokenDevice());
+        requestMeeting.setTokenDevice(GetTokenDevice());
         requestMeeting.setTown(GetParam("town"));
-        //requestMeeting.setUserID(GetCurrentUserUid());
+        requestMeeting.setUserID(GetCurrentUserUid());
 
     }
 
