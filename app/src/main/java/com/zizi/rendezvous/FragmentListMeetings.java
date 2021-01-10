@@ -169,7 +169,7 @@ public class FragmentListMeetings extends Fragment {
         //============================================================================================
 
 
-        // topAppBar ////////////////////////////////////////////////////////////////////////////////
+        // materialToolbar ////////////////////////////////////////////////////////////////////////////////
         materialToolbar.setTitle("Встречи");
         materialToolbar.getMenu().findItem(R.id.request).setVisible(true); // показываем пункт заявки на встречу
         materialToolbar.setNavigationIcon(R.drawable.ic_outline_menu_24); // делаем кнопку навигации менюшкой

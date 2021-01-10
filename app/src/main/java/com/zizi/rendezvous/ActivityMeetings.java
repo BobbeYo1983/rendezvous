@@ -71,6 +71,7 @@ public class ActivityMeetings extends AppCompatActivity {
             public boolean onMenuItemClick(MenuItem item) {// слушатель нажатия на кнопки верхней панели
                 if (item.getItemId() == R.id.request) // если нажата кнопка показать заявку
                 {
+                    classGlobalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти телефона
                     ChangeFragment(fragmentRequestMeeting, true); // грузим фрагмент с заявкой на встречу
                 }
                 return false;

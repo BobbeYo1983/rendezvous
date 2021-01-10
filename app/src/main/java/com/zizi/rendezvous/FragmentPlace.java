@@ -299,23 +299,26 @@ public class FragmentPlace extends Fragment {
 
         ArrayList<String> arrayListPlaces = new ArrayList<String>();
 
-        if (cb_street.isChecked())      { arrayListPlaces.add(cb_street.getText().toString()); }     else { arrayListPlaces.set(0, ""); }
-        if (cb_picnic.isChecked())      { arrayListPlaces.add(cb_picnic.getText().toString()); }     else { arrayListPlaces.set(1, ""); }
-        if (cb_car.isChecked())         { arrayListPlaces.add(cb_car.getText().toString()); }        else { arrayListPlaces.set(2, ""); }
-        if (cb_sport.isChecked())       { arrayListPlaces.add(cb_sport.getText().toString()); }      else { arrayListPlaces.set(3, ""); }
-        if (cb_film.isChecked())        { arrayListPlaces.add(cb_film.getText().toString()); }       else { arrayListPlaces.set(4, ""); }
-        if (cb_billiards.isChecked())   { arrayListPlaces.add(cb_billiards.getText().toString()); }  else { arrayListPlaces.set(5, ""); }
-        if (cb_cafe.isChecked())        { arrayListPlaces.add(cb_cafe.getText().toString()); }       else { arrayListPlaces.set(6, ""); }
-        if (cb_disco.isChecked())       { arrayListPlaces.add(cb_disco.getText().toString()); }      else { arrayListPlaces.set(7, ""); }
-        if (cb_bath.isChecked())        { arrayListPlaces.add(cb_bath.getText().toString()); }       else { arrayListPlaces.set(8, ""); }
-        if (cb_myHome.isChecked())      { arrayListPlaces.add(cb_myHome.getText().toString()); }     else { arrayListPlaces.set(9, ""); }
-        if (cb_youHome.isChecked())     { arrayListPlaces.add(cb_youHome.getText().toString()); }    else { arrayListPlaces.set(10, ""); }
-        if (cb_hotel.isChecked())       { arrayListPlaces.add(cb_hotel.getText().toString()); }      else { arrayListPlaces.set(11, ""); }
-        if (cb_other.isChecked())       { arrayListPlaces.add(cb_other.getText().toString()); }      else { arrayListPlaces.set(12, ""); }
+        if (cb_street.isChecked())      { arrayListPlaces.add(cb_street.getText().toString()); }     else { arrayListPlaces.add(""); }
+        if (cb_picnic.isChecked())      { arrayListPlaces.add(cb_picnic.getText().toString()); }     else { arrayListPlaces.add("");}
+        if (cb_car.isChecked())         { arrayListPlaces.add(cb_car.getText().toString()); }        else { arrayListPlaces.add(""); }
+        if (cb_sport.isChecked())       { arrayListPlaces.add(cb_sport.getText().toString()); }      else { arrayListPlaces.add(""); }
+        if (cb_film.isChecked())        { arrayListPlaces.add(cb_film.getText().toString()); }       else { arrayListPlaces.add(""); }
+        if (cb_billiards.isChecked())   { arrayListPlaces.add(cb_billiards.getText().toString()); }  else { arrayListPlaces.add(""); }
+        if (cb_cafe.isChecked())        { arrayListPlaces.add(cb_cafe.getText().toString()); }       else { arrayListPlaces.add(""); }
+        if (cb_disco.isChecked())       { arrayListPlaces.add(cb_disco.getText().toString()); }      else { arrayListPlaces.add(""); }
+        if (cb_bath.isChecked())        { arrayListPlaces.add(cb_bath.getText().toString()); }       else { arrayListPlaces.add(""); }
+        if (cb_myHome.isChecked())      { arrayListPlaces.add(cb_myHome.getText().toString()); }     else { arrayListPlaces.add("");}
+        if (cb_youHome.isChecked())     { arrayListPlaces.add(cb_youHome.getText().toString()); }    else { arrayListPlaces.add(""); }
+        if (cb_hotel.isChecked())       { arrayListPlaces.add(cb_hotel.getText().toString()); }      else { arrayListPlaces.add(""); }
+        if (cb_other.isChecked())       { arrayListPlaces.add(cb_other.getText().toString()); }      else { arrayListPlaces.add(""); }
 
         classGlobalApp.GetRequestMeeting().setPlaceArray(arrayListPlaces);
 
         classGlobalApp.GetRequestMeeting().setPlaceOtherDescription(til_other_et.getText().toString());
+
+        classGlobalApp.ClearBundle();
+        classGlobalApp.AddBundle("navigationFromFragmentPlace", "trueTrue");
 
 /*        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   Data.ANY_PLACE); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
 

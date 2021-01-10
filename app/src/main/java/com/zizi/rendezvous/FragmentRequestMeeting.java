@@ -166,8 +166,11 @@ public class FragmentRequestMeeting extends Fragment {
      */
     private void UpdateUI () {
 
-        classGlobalApp.LoadRequestMeetingFromMemory();//подгружаем заявку на встречу из памяти
-
+/*        if (classGlobalApp.GetBundle("navigationFromFragmentPlace") != null
+                && !classGlobalApp.GetBundle("navigationFromFragmentPlace").equals("trueTrue")) {
+            classGlobalApp.LoadRequestMeetingFromMemory();//подгружаем заявку на встречу из памяти
+            classGlobalApp.ClearBundle();
+        }*/
 
 
         // materialToolbar ////////////////////////////////////////////////////////////////////////////////
@@ -513,18 +516,20 @@ public class FragmentRequestMeeting extends Fragment {
             public void onClick(View v) {
 
                 // Если поля все введены корректно
-                if (!til_name_et.getText().toString().isEmpty() &           // если имя не пустое
-                        !til_gender_act.getText().toString().isEmpty() &        // если пол выбран
-                        !til_age_act.getText().toString().isEmpty() &           //если возраст выбран
-                        !til_gender_partner_act.getText().toString().isEmpty() &//если пол партнера выбран
-                        !til_age_min_act.getText().toString().isEmpty() &       //если возраст минимальный партнера выбран
-                        !til_age_max_act.getText().toString().isEmpty() &       //если возраст максимальный партнера выбран
-                        !til_region_act.getText().toString().isEmpty() &        //если регион выбран
-                        !til_town_act.getText().toString().isEmpty() &          //если город выбран
-                        !til_place_et.getText().toString().isEmpty() &          //если место выбрано
-                        !til_time_act.getText().toString().isEmpty()            //если время выбрано
+                if (!til_name_et.getText().toString().equals("") &           // если имя не пустое
+                        !til_gender_act.getText().toString().equals("") &        // если пол выбран
+                        !til_age_act.getText().toString().equals("") &           //если возраст выбран
+                        !til_gender_partner_act.getText().toString().equals("") &//если пол партнера выбран
+                        !til_age_min_act.getText().toString().equals("") &       //если возраст минимальный партнера выбран
+                        !til_age_max_act.getText().toString().equals("") &       //если возраст максимальный партнера выбран
+                        !til_region_act.getText().toString().equals("") &        //если регион выбран
+                        !til_town_act.getText().toString().equals("") &          //если город выбран
+                        !til_place_et.getText().toString().equals("") &          //если место выбрано
+                        !til_time_act.getText().toString().equals("")            //если время выбрано
 
                 ) { // Если поля все введены корректно
+
+                    SaveParamsToRAM();
 
                     // сохраняем заявку в БД
                     documentReference = classGlobalApp.GenerateDocumentReference("meetings", classGlobalApp.GetCurrentUserUid());
@@ -536,6 +541,7 @@ public class FragmentRequestMeeting extends Fragment {
                                 classGlobalApp.SaveRequestMeetingToMemory(); // сохраняем заявку в память
 
                                 classGlobalApp.PreparingToSave("statusRequestMeeting", Data.ACTIVE); // отмечаем статус заявки активным
+                                classGlobalApp.SaveParams();
 
                                 activityMeetings.ChangeFragment(fragmentListMeetings, false); // переходим к списку встреч
 
@@ -712,7 +718,7 @@ public class FragmentRequestMeeting extends Fragment {
 
 
 
-    private String LoadFromMemory () {
+    /*private String LoadFromMemory () {
 
         tmpStr = "";
         // если любое место, то так и пишем, если нет, то перечисляем все выбранные
@@ -783,7 +789,7 @@ public class FragmentRequestMeeting extends Fragment {
         //til_place_et.setText(tmpStr);
 
         return tmpStr;
-    }
+    }*/
 
 
 

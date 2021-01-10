@@ -100,6 +100,8 @@ public class ClassGlobalApp extends Application {
 
         requestMeeting = new ModelSingleMeeting();
 
+        LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
+
     }
 
     /**
@@ -410,9 +412,9 @@ public class ClassGlobalApp extends Application {
         PreparingToSave("region",          requestMeeting.getRegion());
         PreparingToSave("socNet",          requestMeeting.getSocNet());
         PreparingToSave("time",            requestMeeting.getTime());
-        PreparingToSave("tokenDevice",     GetTokenDevice());
+        //PreparingToSave("tokenDevice",     GetTokenDevice());
         PreparingToSave("town",            requestMeeting.getTown());
-        PreparingToSave("userID",          GetCurrentUserUid());
+        //PreparingToSave("userID",          GetCurrentUserUid());
 
         SaveParams(); // сохраняем все подготовленные выше данные
 
@@ -475,9 +477,9 @@ public class ClassGlobalApp extends Application {
         requestMeeting.setRegion(GetParam("region"));
         requestMeeting.setSocNet(GetParam("socNet"));
         requestMeeting.setTime(GetParam("time"));
-        requestMeeting.setTokenDevice(GetTokenDevice());
+        //requestMeeting.setTokenDevice(GetTokenDevice());
         requestMeeting.setTown(GetParam("town"));
-        requestMeeting.setUserID(GetCurrentUserUid());
+        //requestMeeting.setUserID(GetCurrentUserUid());
 
     }
 
