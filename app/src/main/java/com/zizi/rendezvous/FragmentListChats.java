@@ -169,18 +169,6 @@ public class FragmentListChats extends Fragment {
 
     }
 
-    @Override
-    public void onResume() {
-        super.onResume();
-
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-    }
-
 
     /**
      * Метод вызывается при изменении данных в БД в списке чатов пользователя

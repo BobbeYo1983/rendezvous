@@ -182,26 +182,6 @@ public class FragmentDetailsMeeting extends Fragment {
         til_time_et.setText(requestMeetingPartner.getTime());
         til_comment_et.setText(requestMeetingPartner.getComment());
 
-
-/*        til_name_et.setText(mapDocument.get("name").toString());
-        til_age_et.setText(mapDocument.get("age").toString());
-        til_phone_et.setText(mapDocument.get("phone").toString());
-
-        if (mapDocument.get("onlyWrite").toString().equals("trueTrue")) {
-            cb_only_write.setChecked(true);
-        } else if (mapDocument.get("onlyWrite").toString().equals("falseFalse")) {
-            cb_only_write.setChecked(false);
-        }
-
-        til_soc_net_et.setText(mapDocument.get("socNet").toString());
-        Linkify.addLinks(til_soc_net_et, Linkify.ALL); // для распознования ссылок
-        til_soc_net_et.setLinkTextColor(Color.BLUE);
-
-        til_contact_et.setText(mapDocument.get("contact").toString());
-        til_place_et.setText(mapDocument.get("place").toString());
-        til_time_et.setText(mapDocument.get("time").toString());
-        til_comment_et.setText(mapDocument.get("comment").toString());*/
-
     }
 
 }
