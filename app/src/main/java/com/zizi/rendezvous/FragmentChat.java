@@ -554,7 +554,7 @@ public class FragmentChat extends Fragment {
         int index = -1;
 
         for (int i = 0; i < arrayListAllMessages.size(); i++) {
-            if (arrayListAllMessages.get(i).getUserID() == modelMessage.getUserID()) { // пробегаемся по всей коллекции пользователей
+            if (arrayListAllMessages.get(i).getUserID().equals(modelMessage.getUserID())) { // пробегаемся по всей коллекции пользователей
                 index = i;
                 break;
             }
