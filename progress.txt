@@ -1,5 +1,5 @@
 НУЖНО СДЕЛАТЬ
-На фрагменте с деталями, подгружать заявку в класс встречи и обновлять интерфейс.
+
 Tips and Tricks. Lint
 Выложить пробное бесплатное приложение.
 Прочитать про ограничения интерфейсов https://developer.android.com/distribute/best-practices/develop/restrictions-non-sdk-interfaces#test-for-non-sdk

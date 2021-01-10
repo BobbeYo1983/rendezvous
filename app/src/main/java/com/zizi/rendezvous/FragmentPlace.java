@@ -104,7 +104,6 @@ public class FragmentPlace extends Fragment {
 
 
         //восстанавливаем галки из памяти////////////////////////////////////////////////////////////
-        //if (classGlobalApp.GetParam("placeAnyPlace").equals(Data.ANY_PLACE)) {// если галка любое место стоит и сохранена
         if (classGlobalApp.GetRequestMeeting().getPlaceAnyPlace().equals(Data.ANY_PLACE)) {// если галка любое место стоит и сохранена
             cb_anyPlace.setChecked(true); //ставим галку любое место, а другие пункты делаем не активными
 
@@ -152,21 +151,6 @@ public class FragmentPlace extends Fragment {
             if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(11).equals(""))  {cb_hotel.setChecked(false);}         else {cb_hotel.setChecked(true);};
             if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(12).equals(""))  {cb_other.setChecked(false);}         else {cb_other.setChecked(true);};
 
-
-
-/*            if (classGlobalApp.GetParam("placeStreet")     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);}        else {cb_street.setChecked(false);};
-            if (classGlobalApp.GetParam("placePicnic")     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);}        else {cb_picnic.setChecked(false);};
-            if (classGlobalApp.GetParam("placeCar")        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);}           else {cb_car.setChecked(false);};
-            if (classGlobalApp.GetParam("placeSport")      .equals(cb_sport.getText().toString()))     {cb_sport.setChecked(true);}         else {cb_sport.setChecked(false);};
-            if (classGlobalApp.GetParam("placeFilm")       .equals(cb_film.getText().toString()))      {cb_film.setChecked(true);}          else {cb_film.setChecked(false);};
-            if (classGlobalApp.GetParam("placeBilliards")  .equals(cb_billiards.getText().toString())) {cb_billiards.setChecked(true);}     else {cb_billiards.setChecked(false);};
-            if (classGlobalApp.GetParam("placeCafe")       .equals(cb_cafe.getText().toString()))      {cb_cafe.setChecked(true);}          else {cb_cafe.setChecked(false);};
-            if (classGlobalApp.GetParam("placeDisco")      .equals(cb_disco.getText().toString()))     {cb_disco.setChecked(true);}         else {cb_disco.setChecked(false);};
-            if (classGlobalApp.GetParam("placeBath")       .equals(cb_bath.getText().toString()))      {cb_bath.setChecked(true);}          else {cb_bath.setChecked(false);};
-            if (classGlobalApp.GetParam("placeMyHome")     .equals(cb_myHome.getText().toString()))    {cb_myHome.setChecked(true);}        else {cb_myHome.setChecked(false);};
-            if (classGlobalApp.GetParam("placeYouHome")    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);}       else {cb_youHome.setChecked(false);};
-            if (classGlobalApp.GetParam("placeHotel")      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);}         else {cb_hotel.setChecked(false);};
-            if (classGlobalApp.GetParam("placeOther")      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);}         else {cb_other.setChecked(false);};*/
         }
         //============================================================================================
 
@@ -263,7 +247,7 @@ public class FragmentPlace extends Fragment {
 
 
         // til_other_et ////////////////////////////////////////////////////////////////////////////
-        til_other_et.setText(classGlobalApp.GetParam("placeOtherDescription"));
+        til_other_et.setText(classGlobalApp.GetRequestMeeting().getPlaceOtherDescription());
         if (cb_other.isChecked()){
             til_other.setEnabled(true);
             til_other_et.setEnabled(true);

@@ -396,7 +396,6 @@ public class ActivityLogin extends AppCompatActivity {
                 if (task.isSuccessful()) { //если сохранение успешно
 
                     // если раньше не входили в приложение, то есть логин и пароль не запоминались в память и пустые
-                    //if (classGlobalApp.GetParam("email").equals("") && classGlobalApp.GetParam("password").equals("") ) {
                         classGlobalApp.PreparingToSave("email", email);
                         classGlobalApp.PreparingToSave("password", password);
                         classGlobalApp.SaveParams(); // сохраним на устройство для автовхода

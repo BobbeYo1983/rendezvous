@@ -53,22 +53,11 @@ public class ClassNotificationMessage extends AsyncTask<String,Void,Void> {
             data.put("body", "У вас есть новое сообщение"); // Notification body
             data.put("userID", classGlobalApp.GetCurrentUserUid()); // ID пользователя отправителя
             data.put("tokenDevice", classGlobalApp.GetTokenDevice()); // tokenDevice отправителя
-            data.put("name", classGlobalApp.GetParam("name")); // имя отправителя
-            data.put("age", classGlobalApp.GetParam("age")); // возраст отправителя
-
-
-
+            data.put("name", classGlobalApp.GetRequestMeeting().getName()); // имя отправителя
+            data.put("age", classGlobalApp.GetRequestMeeting().getAge()); // возраст отправителя
 
             ///если не добавлять в посылку раздел notification, то данные гарантированно будут доставляться в метод onMessageReceived в службу ServiceFirebaseCloudMessaging, а из этого метода и формируем уведомление
             json.put("data", data); // добавляем в json - посылку
-
-
-            //JSONObject info = new JSONObject();
-            //info.put("title", "Сообщение");   // Notification title
-            //info.put("body", "У вас есть новое сообщение"); // Notification body
-            ////info.put("click_action", "Open_ActivityMeetings"); //типа в манифесте ищется такой фильтр у Активити и типа она вызывается при клике на уведомление
-
-            //json.put("notification", info);
 
             OutputStreamWriter wr = new OutputStreamWriter(conn.getOutputStream());
             wr.write(json.toString());

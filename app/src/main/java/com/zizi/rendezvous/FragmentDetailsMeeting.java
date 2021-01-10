@@ -140,9 +140,10 @@ public class FragmentDetailsMeeting extends Fragment {
                 if (task.isSuccessful()) { // если выполнилась успешно
                     DocumentSnapshot document = task.getResult(); // получаем документ
                     if (document.exists()) { // если документ такой есть, не null
-                        mapDocument = document.getData(); // получаем данные из документа БД
-                        classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
-                        UpdateUI(); // обновляем данные в полях
+                        ModelSingleMeeting requestMeetingPartner = document.toObject(ModelSingleMeeting.class); // получаем заявку текущего пользователя из БД
+                        //mapDocument = document.getData(); // получаем данные из документа БД
+                        //classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Fields count in document is: " + Integer.toString(mapDocument.size()), false);
+                        UpdateUI(requestMeetingPartner); // обновляем данные в полях
                     } else { // если документа не существует
 
                         classGlobalApp.Log("FragmentDetailsMeeting", "onStart/onComplete", "Запрошенного документа нет в БД", true);
@@ -160,9 +161,29 @@ public class FragmentDetailsMeeting extends Fragment {
     /**
      * Обновляет пользовательский интерфейс
      */
-    void UpdateUI() {
+    void UpdateUI(ModelSingleMeeting requestMeetingPartner) {
 
-        til_name_et.setText(mapDocument.get("name").toString());
+        til_name_et.setText(requestMeetingPartner.getName());
+        til_age_et.setText(requestMeetingPartner.getAge());
+        til_phone_et.setText(requestMeetingPartner.getPhone());
+
+        if (requestMeetingPartner.getOnlyWrite().equals("trueTrue")) {
+            cb_only_write.setChecked(true);
+        } else {
+            cb_only_write.setChecked(false);
+        }
+
+        til_soc_net_et.setText(requestMeetingPartner.getSocNet());
+        Linkify.addLinks(til_soc_net_et, Linkify.ALL); // для распознования ссылок
+        til_soc_net_et.setLinkTextColor(Color.BLUE);
+
+        til_contact_et.setText(requestMeetingPartner.getContact());
+        til_place_et.setText(requestMeetingPartner.CreateStringFromArrayListPlaces());
+        til_time_et.setText(requestMeetingPartner.getTime());
+        til_comment_et.setText(requestMeetingPartner.getComment());
+
+
+/*        til_name_et.setText(mapDocument.get("name").toString());
         til_age_et.setText(mapDocument.get("age").toString());
         til_phone_et.setText(mapDocument.get("phone").toString());
 
@@ -179,7 +200,7 @@ public class FragmentDetailsMeeting extends Fragment {
         til_contact_et.setText(mapDocument.get("contact").toString());
         til_place_et.setText(mapDocument.get("place").toString());
         til_time_et.setText(mapDocument.get("time").toString());
-        til_comment_et.setText(mapDocument.get("comment").toString());
+        til_comment_et.setText(mapDocument.get("comment").toString());*/
 
     }
 
