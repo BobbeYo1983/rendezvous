@@ -1,13 +1,13 @@
 НУЖНО СДЕЛАТЬ
+Сделать иконки и картинки для тестового приложения.
 
-Tips and Tricks. Lint
-Выложить пробное бесплатное приложение.
-Прочитать про ограничения интерфейсов https://developer.android.com/distribute/best-practices/develop/restrictions-non-sdk-interfaces#test-for-non-sdk
-Возрастные ограничения. Нужно ли указывать в приложении о 18+?
+МОНЕТИЗАЦИЯ
 TrivialDrive приложение из примеров в студии с оплатой и комментариями от Гугла
 Подготовить скриншоты и рекламный текст
 Доступ пользователей в магазине к приложению https://developer.android.com/studio/publish#publishing-release
-Монетизация.
+
+Реализовать модерацию.
+
 
 ВОПРОСЫ
 Какой счет нужно открыть в долларах, чтобы получать переводы? https://support.google.com/googleplay/android-developer/answer/7161440
