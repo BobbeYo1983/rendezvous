@@ -22,6 +22,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -30,8 +32,6 @@ import java.util.Map;
  * для всех активити, фрагментов и сервисов. Функции по логированию, авторизации, хранению переменных.
  */
 public class ClassGlobalApp extends Application {
-
-    //private boolean notificationMessage;
 
     private Map<String, String> paramsToSave; // коллекция ключ-значение
     private Map<String, String> paramsToBundle; // коллекция ключ-значение
@@ -52,6 +52,13 @@ public class ClassGlobalApp extends Application {
 
     private String tokenDevice; //идентификатор устройства, он меняется только в некоторых случаях, читать интернет
     private String visibleWidget; // фрагмент или активити который в данный момент открыт
+
+    /**
+     * Заявка на встречу текущего пользователя
+     */
+    private ModelSingleMeeting requestMeeting; // заявка на встречу текущего пользователя
+
+
 
 
 
@@ -90,6 +97,10 @@ public class ClassGlobalApp extends Application {
 
         //Прежде чем генерировать уведомления в приложении, нужно один раз хотя бы зарегистрировать канал уведомлений
         CreateNotificationChannel();
+
+        requestMeeting = new ModelSingleMeeting();
+
+        LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
 
     }
 
@@ -229,7 +240,10 @@ public class ClassGlobalApp extends Application {
      * @return индентификатор текущего пользователя
      */
     public String GetCurrentUserUid() {
-        return firebaseAuth.getCurrentUser().getUid();
+
+        //if (firebaseAuth != null) {
+            return firebaseAuth.getCurrentUser().getUid();
+        //} else {return "";}
     }
 
     /**
@@ -347,6 +361,129 @@ public class ClassGlobalApp extends Application {
 
     public void SetVisibleWidget(String visibleWidget) {
         this.visibleWidget = visibleWidget;
+    }
+
+
+
+    public ModelSingleMeeting GetRequestMeeting() {
+        return requestMeeting;
+    }
+
+
+
+    public void SetRequestMeeting(ModelSingleMeeting requestMeeting) {
+        this.requestMeeting = requestMeeting;
+    }
+
+
+
+    /**
+     * Сохраняет заявку на встречу текущего пользователя в память телефона из глобальной переменной requestMeeting
+     */
+    public void SaveRequestMeetingToMemory() {
+
+        // готовим данные к сохранению
+        PreparingToSave("age",              requestMeeting.getAge());
+        PreparingToSave("age_max",          requestMeeting.getAge_max());
+        PreparingToSave("age_min",          requestMeeting.getAge_min());
+        PreparingToSave("comment",          requestMeeting.getComment());
+        PreparingToSave("contact",          requestMeeting.getContact());
+        //PreparingToSave("email",            requestMeeting.getEmail());
+        PreparingToSave("gender",           requestMeeting.getGender());
+        PreparingToSave("gender_partner",   requestMeeting.getGender_partner());
+        PreparingToSave("name",             requestMeeting.getName());
+        PreparingToSave("onlyWrite",        requestMeeting.getOnlyWrite());
+        PreparingToSave("phone",            requestMeeting.getPhone());
+        //PreparingToSave("place",            requestMeeting.getPlace());
+        PreparingToSave("placeAnyPlace",    requestMeeting.getPlaceAnyPlace());
+
+        PreparingToSave("placeStreet",     requestMeeting.getPlaceArray().get(0));
+        PreparingToSave("placePicnic",     requestMeeting.getPlaceArray().get(1));
+        PreparingToSave("placeCar",        requestMeeting.getPlaceArray().get(2));
+        PreparingToSave("placeSport",      requestMeeting.getPlaceArray().get(3));
+        PreparingToSave("placeFilm",       requestMeeting.getPlaceArray().get(4));
+        PreparingToSave("placeBilliards",  requestMeeting.getPlaceArray().get(5));
+        PreparingToSave("placeCafe",       requestMeeting.getPlaceArray().get(6));
+        PreparingToSave("placeDisco",      requestMeeting.getPlaceArray().get(7));
+        PreparingToSave("placeBath",       requestMeeting.getPlaceArray().get(8));
+        PreparingToSave("placeMyHome",     requestMeeting.getPlaceArray().get(9));
+        PreparingToSave("placeYouHome",    requestMeeting.getPlaceArray().get(10));
+        PreparingToSave("placeHotel",      requestMeeting.getPlaceArray().get(11));
+        PreparingToSave("placeOther",      requestMeeting.getPlaceArray().get(12));
+
+        PreparingToSave("placeOtherDescription",    requestMeeting.getPlaceOtherDescription());
+        PreparingToSave("region",          requestMeeting.getRegion());
+        PreparingToSave("socNet",          requestMeeting.getSocNet());
+        PreparingToSave("time",            requestMeeting.getTime());
+        //PreparingToSave("tokenDevice",     GetTokenDevice());
+        PreparingToSave("town",            requestMeeting.getTown());
+        //PreparingToSave("userID",          GetCurrentUserUid());
+
+        SaveParams(); // сохраняем все подготовленные выше данные
+
+    }
+
+
+    /**
+     * Подгружает из памяти заявку на встречу текущего пользователя в глобальную переменную requestMeeting
+     */
+    public void LoadRequestMeetingFromMemory() {
+
+        //по алфавиту
+        requestMeeting.setAge(GetParam("age"));
+        requestMeeting.setAge_max(GetParam("age_max"));
+        requestMeeting.setAge_min(GetParam("age_min"));
+        requestMeeting.setComment(GetParam("comment"));
+        requestMeeting.setContact(GetParam("contact"));
+        //requestMeeting.setEmail(GetParam("email"));
+        requestMeeting.setGender(GetParam("gender"));
+        requestMeeting.setGender_partner(GetParam("gender_partner"));
+        requestMeeting.setName(GetParam("name"));
+        requestMeeting.setOnlyWrite(GetParam("onlyWrite"));
+        requestMeeting.setPhone(GetParam("phone"));
+        //requestMeeting.setPlace(GetParam("place"));
+        requestMeeting.setPlaceAnyPlace(GetParam("placeAnyPlace"));
+
+        ArrayList<String> arrayListPlaces = new ArrayList<String>();
+
+        arrayListPlaces.add(GetParam("placeStreet"));
+        arrayListPlaces.add(GetParam("placePicnic"));
+        arrayListPlaces.add(GetParam("placeCar"));
+        arrayListPlaces.add(GetParam("placeSport"));
+        arrayListPlaces.add(GetParam("placeFilm"));
+        arrayListPlaces.add(GetParam("placeBilliards"));
+        arrayListPlaces.add(GetParam("placeCafe"));
+        arrayListPlaces.add(GetParam("placeDisco"));
+        arrayListPlaces.add(GetParam("placeBath"));
+        arrayListPlaces.add(GetParam("placeMyHome"));
+        arrayListPlaces.add(GetParam("placeYouHome"));
+        arrayListPlaces.add(GetParam("placeHotel"));
+        arrayListPlaces.add(GetParam("placeOther"));
+
+/*        arrayListPlaces.set(0, GetParam("placeStreet"));
+        arrayListPlaces.set(1, GetParam("placePicnic"));
+        arrayListPlaces.set(2, GetParam("placeCar"));
+        arrayListPlaces.set(3, GetParam("placeSport"));
+        arrayListPlaces.set(4, GetParam("placeFilm"));
+        arrayListPlaces.set(5, GetParam("placeBilliards"));
+        arrayListPlaces.set(6, GetParam("placeCafe"));
+        arrayListPlaces.set(7, GetParam("placeDisco"));
+        arrayListPlaces.set(8, GetParam("placeBath"));
+        arrayListPlaces.set(9, GetParam("placeMyHome"));
+        arrayListPlaces.set(10, GetParam("placeYouHome"));
+        arrayListPlaces.set(11, GetParam("placeHotel"));
+        arrayListPlaces.set(12, GetParam("placeOther"));*/
+
+        requestMeeting.setPlaceArray(arrayListPlaces);
+
+        requestMeeting.setPlaceOtherDescription(GetParam("placeOtherDescription"));
+        requestMeeting.setRegion(GetParam("region"));
+        requestMeeting.setSocNet(GetParam("socNet"));
+        requestMeeting.setTime(GetParam("time"));
+        requestMeeting.setTokenDevice(GetTokenDevice());
+        requestMeeting.setTown(GetParam("town"));
+        requestMeeting.setUserID(GetCurrentUserUid());
+
     }
 
 }

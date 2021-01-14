@@ -24,7 +24,7 @@ allprojects {
     //Чтобы более подробно выводил ошибки при сборке
     gradle.projectsEvaluated {
         tasks.withType(JavaCompile) {
-            options.compilerArgs << "-Xlint:unchecked"
+            options.compilerArgs << "-Xlint:unchecked" << "-Xlint:deprecation"
         }
     }
 }

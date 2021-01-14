@@ -19,6 +19,8 @@ import com.google.android.material.textfield.TextInputLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+import java.util.ArrayList;
+
 import static android.content.Context.MODE_PRIVATE;
 
 
@@ -102,7 +104,7 @@ public class FragmentPlace extends Fragment {
 
 
         //восстанавливаем галки из памяти////////////////////////////////////////////////////////////
-        if (classGlobalApp.GetParam("placeAnyPlace").equals(Data.anyPlace)) {// если галка любое место стоит и сохранена
+        if (classGlobalApp.GetRequestMeeting().getPlaceAnyPlace().equals(Data.ANY_PLACE)) {// если галка любое место стоит и сохранена
             cb_anyPlace.setChecked(true); //ставим галку любое место, а другие пункты делаем не активными
 
             cb_street.setEnabled(false); // делаем не активные
@@ -135,25 +137,23 @@ public class FragmentPlace extends Fragment {
 
         } else { // если не стоит галка, что любое место, то пробегаемся по другим и восстанавливаем из памяти каждую
 
-            //if (classGlobalApp.GetParam("placeAnyPlace")   .equals(cb_anyPlace.getText().toString()))  {cb_anyPlace.setChecked(true);}      else {cb_anyPlace.setChecked(false);};
-            if (classGlobalApp.GetParam("placeStreet")     .equals(cb_street.getText().toString()))    {cb_street.setChecked(true);}        else {cb_street.setChecked(false);};
-            if (classGlobalApp.GetParam("placePicnic")     .equals(cb_picnic.getText().toString()))    {cb_picnic.setChecked(true);}        else {cb_picnic.setChecked(false);};
-            if (classGlobalApp.GetParam("placeCar")        .equals(cb_car.getText().toString()))       {cb_car.setChecked(true);}           else {cb_car.setChecked(false);};
-            if (classGlobalApp.GetParam("placeSport")      .equals(cb_sport.getText().toString()))     {cb_sport.setChecked(true);}         else {cb_sport.setChecked(false);};
-            if (classGlobalApp.GetParam("placeFilm")       .equals(cb_film.getText().toString()))      {cb_film.setChecked(true);}          else {cb_film.setChecked(false);};
-            if (classGlobalApp.GetParam("placeBilliards")  .equals(cb_billiards.getText().toString())) {cb_billiards.setChecked(true);}     else {cb_billiards.setChecked(false);};
-            if (classGlobalApp.GetParam("placeCafe")       .equals(cb_cafe.getText().toString()))      {cb_cafe.setChecked(true);}          else {cb_cafe.setChecked(false);};
-            if (classGlobalApp.GetParam("placeDisco")      .equals(cb_disco.getText().toString()))     {cb_disco.setChecked(true);}         else {cb_disco.setChecked(false);};
-            if (classGlobalApp.GetParam("placeBath")       .equals(cb_bath.getText().toString()))      {cb_bath.setChecked(true);}          else {cb_bath.setChecked(false);};
-            if (classGlobalApp.GetParam("placeMyHome")     .equals(cb_myHome.getText().toString()))    {cb_myHome.setChecked(true);}        else {cb_myHome.setChecked(false);};
-            if (classGlobalApp.GetParam("placeYouHome")    .equals(cb_youHome.getText().toString()))   {cb_youHome.setChecked(true);}       else {cb_youHome.setChecked(false);};
-            if (classGlobalApp.GetParam("placeHotel")      .equals(cb_hotel.getText().toString()))     {cb_hotel.setChecked(true);}         else {cb_hotel.setChecked(false);};
-            if (classGlobalApp.GetParam("placeOther")      .equals(cb_other.getText().toString()))     {cb_other.setChecked(true);}         else {cb_other.setChecked(false);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(0).equals(""))   {cb_street.setChecked(false);}        else {cb_street.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(1).equals(""))   {cb_picnic.setChecked(false);}        else {cb_picnic.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(2).equals(""))   {cb_car.setChecked(false);}           else {cb_car.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(3).equals(""))   {cb_sport.setChecked(false);}         else {cb_sport.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(4).equals(""))   {cb_film.setChecked(false);}          else {cb_film.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(5).equals(""))   {cb_billiards.setChecked(false);}     else {cb_billiards.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(6).equals(""))   {cb_cafe.setChecked(false);}          else {cb_cafe.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(7).equals(""))   {cb_disco.setChecked(false);}         else {cb_disco.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(8).equals(""))   {cb_bath.setChecked(false);}          else {cb_bath.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(9).equals(""))   {cb_myHome.setChecked(false);}        else {cb_myHome.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(10).equals(""))  {cb_youHome.setChecked(false);}       else {cb_youHome.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(11).equals(""))  {cb_hotel.setChecked(false);}         else {cb_hotel.setChecked(true);};
+            if (classGlobalApp.GetRequestMeeting().getPlaceArray().get(12).equals(""))  {cb_other.setChecked(false);}         else {cb_other.setChecked(true);};
+
         }
-
-
-
         //============================================================================================
+
 
 
         // cb_anyPlace //////////////////////////////////////////////////////////////////////////////
@@ -247,7 +247,7 @@ public class FragmentPlace extends Fragment {
 
 
         // til_other_et ////////////////////////////////////////////////////////////////////////////
-        til_other_et.setText(classGlobalApp.GetParam("placeOtherDescription"));
+        til_other_et.setText(classGlobalApp.GetRequestMeeting().getPlaceOtherDescription());
         if (cb_other.isChecked()){
             til_other.setEnabled(true);
             til_other_et.setEnabled(true);
@@ -276,9 +276,36 @@ public class FragmentPlace extends Fragment {
     public void onPause() {
         super.onPause();
 
-        // сохраняем выбранные места встреч
+        // сохраняем выбранные места встреч в RAM
+        classGlobalApp.Log("FragmentPlace", "onPause", "Сохранение выбранных мест в RAM", false);
 
-        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   Data.anyPlace); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
+        if (cb_anyPlace.isChecked())        { classGlobalApp.GetRequestMeeting().setPlaceAnyPlace(Data.ANY_PLACE); } else { classGlobalApp.GetRequestMeeting().setPlaceAnyPlace(""); }
+
+        ArrayList<String> arrayListPlaces = new ArrayList<String>();
+
+        if (cb_street.isChecked())      { arrayListPlaces.add(cb_street.getText().toString()); }     else { arrayListPlaces.add(""); }
+        if (cb_picnic.isChecked())      { arrayListPlaces.add(cb_picnic.getText().toString()); }     else { arrayListPlaces.add("");}
+        if (cb_car.isChecked())         { arrayListPlaces.add(cb_car.getText().toString()); }        else { arrayListPlaces.add(""); }
+        if (cb_sport.isChecked())       { arrayListPlaces.add(cb_sport.getText().toString()); }      else { arrayListPlaces.add(""); }
+        if (cb_film.isChecked())        { arrayListPlaces.add(cb_film.getText().toString()); }       else { arrayListPlaces.add(""); }
+        if (cb_billiards.isChecked())   { arrayListPlaces.add(cb_billiards.getText().toString()); }  else { arrayListPlaces.add(""); }
+        if (cb_cafe.isChecked())        { arrayListPlaces.add(cb_cafe.getText().toString()); }       else { arrayListPlaces.add(""); }
+        if (cb_disco.isChecked())       { arrayListPlaces.add(cb_disco.getText().toString()); }      else { arrayListPlaces.add(""); }
+        if (cb_bath.isChecked())        { arrayListPlaces.add(cb_bath.getText().toString()); }       else { arrayListPlaces.add(""); }
+        if (cb_myHome.isChecked())      { arrayListPlaces.add(cb_myHome.getText().toString()); }     else { arrayListPlaces.add("");}
+        if (cb_youHome.isChecked())     { arrayListPlaces.add(cb_youHome.getText().toString()); }    else { arrayListPlaces.add(""); }
+        if (cb_hotel.isChecked())       { arrayListPlaces.add(cb_hotel.getText().toString()); }      else { arrayListPlaces.add(""); }
+        if (cb_other.isChecked())       { arrayListPlaces.add(cb_other.getText().toString()); }      else { arrayListPlaces.add(""); }
+
+        classGlobalApp.GetRequestMeeting().setPlaceArray(arrayListPlaces);
+
+        classGlobalApp.GetRequestMeeting().setPlaceOtherDescription(til_other_et.getText().toString());
+
+        classGlobalApp.ClearBundle();
+        classGlobalApp.AddBundle("navigationFromFragmentPlace", "trueTrue");
+
+/*        if (cb_anyPlace.isChecked())        { classGlobalApp.PreparingToSave("placeAnyPlace",   Data.ANY_PLACE); } else {classGlobalApp.PreparingToSave("placeAnyPlace",   ""); }
+
         if (cb_street.isChecked())          { classGlobalApp.PreparingToSave("placeStreet",     cb_street.getText().toString()); } else {classGlobalApp.PreparingToSave("placeStreet",   ""); }
         if (cb_picnic.isChecked())          { classGlobalApp.PreparingToSave("placePicnic",     cb_picnic.getText().toString()); } else {classGlobalApp.PreparingToSave("placePicnic",   ""); }
         if (cb_car.isChecked())             { classGlobalApp.PreparingToSave("placeCar",        cb_car.getText().toString()); } else {classGlobalApp.PreparingToSave("placeCar",   ""); }
@@ -296,7 +323,7 @@ public class FragmentPlace extends Fragment {
         classGlobalApp.PreparingToSave("placeOtherDescription", til_other_et.getText().toString());
 
         classGlobalApp.Log("FragmentPlace", "onPause", "Сохранение выбранных мест в память", false);
-        classGlobalApp.SaveParams();
+        classGlobalApp.SaveParams();*/
 
     }
 
