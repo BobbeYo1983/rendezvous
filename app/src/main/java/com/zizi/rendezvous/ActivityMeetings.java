@@ -52,6 +52,8 @@ public class ActivityMeetings extends AppCompatActivity {
         //инициализация /////////////////////////////////////////////////////////////////////////////
         classGlobalApp = (ClassGlobalApp) getApplicationContext();
         //classGlobalApp.Log("ActivityMeetings", "onCreate", "Method is run", false);
+        classGlobalApp.LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
+
         fragmentManager = getSupportFragmentManager();
         fragmentListMeetings = new FragmentListMeetings();
         fragmentRequestMeeting = new FragmentRequestMeeting();

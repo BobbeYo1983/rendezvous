@@ -100,7 +100,7 @@ public class ClassGlobalApp extends Application {
 
         requestMeeting = new ModelSingleMeeting();
 
-        LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
+        //LoadRequestMeetingFromMemory(); // подгружаем заявку из памяти, даже если там нет ничего, заполнятся пустые поля
 
     }
 
